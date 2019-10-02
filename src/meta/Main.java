@@ -1,11 +1,9 @@
 package meta;
 
-public class Main {
-    // Datos
-    static final int NUM_ARCHIVOS = 8;
-    static final String[] nombres_archivos = {"madrid01.dat", "madrid02.dat", "madrid03.dat",
-            "madrid04.dat", "malaga01.dat", "malaga02.dat", "malaga03.dat", "malaga04.dat"};
+import java.io.File;
+import java.io.FilenameFilter;
 
+public class Main {
     /**
      * @param solucion   Vector con la solución del problema
      * @param aeropuerto Fabrica con las matrices de piezas transferidas y las distancias entre unidades de producción
@@ -23,6 +21,23 @@ public class Main {
     } // calcularCoste()
 
     public static void main(String[] args) {
+        // Datos
+        File folder = new File("_data/");
+        File[] listOfFiles = folder.listFiles((new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return name.toLowerCase().endsWith(".dat");
+            }
+        }));
+        final int NUM_ARCHIVOS = listOfFiles.length;
+        String[] nombres_archivos = new String[NUM_ARCHIVOS];
+
+        int tam_nombres_archivos = 0;
+        for (int i = 0; i < listOfFiles.length; i++) {
+            if (listOfFiles[i].isFile()) {
+                nombres_archivos[tam_nombres_archivos] = listOfFiles[i].getName();
+                tam_nombres_archivos++;
+            }
+        }
         // Declaraciones
         String direccion;
         Aeropuerto aeropuertos[] = new Aeropuerto[NUM_ARCHIVOS];
