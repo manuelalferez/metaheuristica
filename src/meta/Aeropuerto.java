@@ -9,6 +9,7 @@ public class Aeropuerto {
     protected int[][] distancias;
     protected int num_puertas;
     protected String nombre_archivo;
+    protected boolean esSimetrica;
 
     public Aeropuerto(String _direccionArchivo) {
         File archivo;
@@ -57,12 +58,7 @@ public class Aeropuerto {
                     col = 0;
                 }
             }
-  /*          for (int i = 0; i < num_puertas; i++) {
-                System.out.printf("\n");
-                for (int j = 0; j < num_puertas; j++) {
-                    System.out.printf("%d ", flujos[i][j]);
-                }
-            }*/
+
             fila = 0;
             col = 0;
             br.readLine();
@@ -82,15 +78,6 @@ public class Aeropuerto {
                     col = 0;
                 }
             }
-
- /*           System.out.printf("\n");
-            for (int i = 0; i < num_puertas; i++) {
-                System.out.printf("\n");
-                for (int j = 0; j < num_puertas; j++) {
-                    System.out.printf("%d ", distancias[i][j]);
-                }
-            }*/
-
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -104,5 +91,19 @@ public class Aeropuerto {
                 e2.printStackTrace();
             }
         }
+        esSimetrica = esSimetrica();
+    }
+
+    protected boolean esSimetrica() {
+        for (int i = 0; i < this.num_puertas; i++)
+            for (int j = i + 1; j < this.num_puertas; j++) {
+                if (this.flujos[i][j] != this.flujos[j][i])
+                    return false;
+            }
+        return true;
+    }
+
+    public boolean getEsSimetrica() {
+        return this.esSimetrica;
     }
 }
