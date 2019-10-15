@@ -1,4 +1,3 @@
-algorithm;greedy
-input;madrid01.dat madrid02.dat malaga01.dat
+algorithm;bl
+input;all
 seed;45678123
-output;logmadrid01.txt

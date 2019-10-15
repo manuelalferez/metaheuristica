@@ -1,0 +1,186 @@
+
+-------------------------------------------------------------------------------
+Solución inicial:    12 10 20 19 2 5 6 3 11 13 17 15 7 9 18 8 0 16 21 1 4 14 
+Coste:               4878
+Iteración:           0
+-------------------------------------------------------------------------------
+Entorno:             0
+Movimiento:          9 18
+Coste:               4742
+Iteración:           1
+----------------------------------------
+Entorno:             1
+Movimiento:          8 13
+Coste:               4682
+Iteración:           2
+----------------------------------------
+Entorno:             2
+Movimiento:          1 18
+Coste:               4608
+Iteración:           3
+----------------------------------------
+Entorno:             3
+Movimiento:          17 21
+Coste:               4528
+Iteración:           4
+----------------------------------------
+Entorno:             4
+Movimiento:          3 18
+Coste:               4464
+Iteración:           5
+----------------------------------------
+Entorno:             5
+Movimiento:          6 11
+Coste:               4428
+Iteración:           6
+----------------------------------------
+Entorno:             6
+Movimiento:          0 12
+Coste:               4344
+Iteración:           7
+----------------------------------------
+Entorno:             7
+Movimiento:          9 10
+Coste:               4278
+Iteración:           8
+----------------------------------------
+Entorno:             8
+Movimiento:          2 9
+Coste:               4216
+Iteración:           9
+----------------------------------------
+Entorno:             9
+Movimiento:          5 9
+Coste:               4196
+Iteración:           10
+----------------------------------------
+Entorno:             10
+Movimiento:          6 15
+Coste:               4104
+Iteración:           11
+----------------------------------------
+Entorno:             12
+Movimiento:          10 20
+Coste:               4076
+Iteración:           12
+----------------------------------------
+Entorno:             13
+Movimiento:          3 17
+Coste:               4060
+Iteración:           13
+----------------------------------------
+Entorno:             14
+Movimiento:          9 15
+Coste:               4044
+Iteración:           14
+----------------------------------------
+Entorno:             16
+Movimiento:          0 15
+Coste:               4036
+Iteración:           15
+----------------------------------------
+Entorno:             18
+Movimiento:          9 20
+Coste:               4010
+Iteración:           16
+----------------------------------------
+Entorno:             19
+Movimiento:          7 14
+Coste:               3986
+Iteración:           17
+----------------------------------------
+Entorno:             20
+Movimiento:          4 13
+Coste:               3970
+Iteración:           18
+----------------------------------------
+Entorno:             24
+Movimiento:          1 15
+Coste:               3962
+Iteración:           19
+----------------------------------------
+Entorno:             26
+Movimiento:          15 16
+Coste:               3958
+Iteración:           20
+----------------------------------------
+Entorno:             29
+Movimiento:          12 20
+Coste:               3950
+Iteración:           21
+----------------------------------------
+Entorno:             31
+Movimiento:          1 4
+Coste:               3930
+Iteración:           22
+----------------------------------------
+Entorno:             32
+Movimiento:          13 16
+Coste:               3870
+Iteración:           23
+----------------------------------------
+Entorno:             34
+Movimiento:          5 17
+Coste:               3826
+Iteración:           24
+----------------------------------------
+Entorno:             39
+Movimiento:          9 11
+Coste:               3818
+Iteración:           25
+----------------------------------------
+Entorno:             40
+Movimiento:          10 20
+Coste:               3806
+Iteración:           26
+----------------------------------------
+Entorno:             43
+Movimiento:          8 17
+Coste:               3772
+Iteración:           27
+----------------------------------------
+Entorno:             47
+Movimiento:          10 17
+Coste:               3744
+Iteración:           28
+----------------------------------------
+Entorno:             50
+Movimiento:          12 15
+Coste:               3742
+Iteración:           29
+----------------------------------------
+Entorno:             71
+Movimiento:          7 16
+Coste:               3738
+Iteración:           30
+----------------------------------------
+Entorno:             99
+Movimiento:          1 16
+Coste:               3734
+Iteración:           31
+----------------------------------------
+Entorno:             100
+Movimiento:          3 10
+Coste:               3730
+Iteración:           32
+----------------------------------------
+Entorno:             104
+Movimiento:          5 9
+Coste:               3718
+Iteración:           33
+----------------------------------------
+Entorno:             109
+Movimiento:          6 18
+Coste:               3702
+Iteración:           34
+----------------------------------------
+Entorno:             125
+Movimiento:          0 19
+Coste:               3694
+Iteración:           35
+----------------------------------------
+Entorno:             134
+Movimiento:          5 16
+Coste:               3690
+Iteración:           36
+----------------------------------------

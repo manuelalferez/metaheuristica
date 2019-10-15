@@ -1,9 +1,6 @@
 package meta;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FilenameFilter;
+import java.io.*;
 
 public class Main {
     /*
@@ -11,9 +8,43 @@ public class Main {
         0: algorithm
         1: input
         2: seed
-        3: output
      */
-    protected static String[] parametros = new String[4];
+    protected static String[] parametros = new String[3];
+
+    protected static final String TODOS_ARCHIVOS = "all";
+    protected static final String GREEDY = "greedy";
+    protected static final String BL = "bl";
+    protected static final String TABU = "tabu";
+
+    protected static final int ALGORITHM = 0;
+    protected static final int INPUT = 1;
+    protected static final int SEED = 2;
+
+    /**
+     * @param mensaje Mensaje a escribir en el fichero
+     * @brief Método que escribe en un fichero
+     * @post Escribir un mensaje en un fichero llamado solucion.txt
+     */
+    public static void escribirFichero(String _nombre_fichero, String _mensaje) {
+        FileWriter fichero = null;
+        PrintWriter pw;
+        try {
+            fichero = new FileWriter(_nombre_fichero, false);
+            pw = new PrintWriter(fichero);
+            pw.println(_mensaje);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                // Para asegurarnos que se cierra el fichero
+                if (null != fichero)
+                    fichero.close();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+    } // escribirFichero()
 
     /**
      * @param solucion   Vector con la solución del problema
@@ -21,8 +52,6 @@ public class Main {
      * @return El peso de la solucion
      * @brief Calcula el peso de la solución
      */
-
-
     public static int calcularCoste(int[] solucion, Aeropuerto aeropuerto) {
         int peso = 0;
 
@@ -39,15 +68,15 @@ public class Main {
         return peso;
     } // calcularCoste()
 
-    public static int calcularCosteParcial(int[] solucion, Aeropuerto aeropuerto, int r, int s){
+    public static int calcularCosteParcial(int[] solucion, Aeropuerto aeropuerto, int r, int s) {
         int coste = 0;
 
-        if(aeropuerto.getEsSimetrica()){
+        if (aeropuerto.getEsSimetrica()) {
             for (int i = 0; i < solucion.length; i++) {
-                if (i != r) coste += 2* aeropuerto.flujos[r][i] * aeropuerto.distancias[solucion[r]][solucion[i]];
-                if (i != s) coste += 2* aeropuerto.flujos[s][i] * aeropuerto.distancias[solucion[s]][solucion[i]];
+                if (i != r) coste += 2 * aeropuerto.flujos[r][i] * aeropuerto.distancias[solucion[r]][solucion[i]];
+                if (i != s) coste += 2 * aeropuerto.flujos[s][i] * aeropuerto.distancias[solucion[s]][solucion[i]];
             }
-        }else{
+        } else {
             for (int i = 0; i < solucion.length; i++) {
                 if (i != r) {
                     coste += aeropuerto.flujos[r][i] * aeropuerto.distancias[solucion[r]][solucion[i]];
@@ -62,21 +91,21 @@ public class Main {
         return coste;
     }
 
-    public static void intercambio(int[]v, int r, int s){
+    public static void intercambio(int[] v, int r, int s) {
         int aux = v[r];
         v[r] = v[s];
         v[s] = aux;
     }
 
     public static int calcularCosteParametrizado(int[] permutacion, int coste, Aeropuerto aeropuerto, int r, int s) {
-        int costeP_A = 0, costeP_D=0;
-        costeP_A = calcularCosteParcial(permutacion,aeropuerto, r,s);
-        intercambio(permutacion,r,s);
-        costeP_D = calcularCosteParcial(permutacion,aeropuerto, r,s);
+        int costeP_A = 0, costeP_D = 0;
+        costeP_A = calcularCosteParcial(permutacion, aeropuerto, r, s);
+        intercambio(permutacion, r, s);
+        costeP_D = calcularCosteParcial(permutacion, aeropuerto, r, s);
         // Deshacemos el intercambio
-        intercambio(permutacion,r,s);
+        intercambio(permutacion, r, s);
 
-        return coste+costeP_D-costeP_A;
+        return coste + costeP_D - costeP_A;
     } // calcularCoste()
 
 
@@ -96,13 +125,6 @@ public class Main {
                 String[] linea_troceada = linea.split(";");
                 parametros[i++] = linea_troceada[1];
             }
-/*            System.out.printf(parametros[0]);
-            System.out.printf("\n");
-            System.out.printf(parametros[1]);
-            System.out.printf("\n");
-            System.out.println(parametros[2]);
-            System.out.printf(parametros[3]);
-            System.out.printf("\n");*/
         } catch (
                 Exception e) {
             e.printStackTrace();
@@ -134,42 +156,72 @@ public class Main {
         final int NUM_ARCHIVOS = listOfFiles.length;
         String[] nombres_archivos = new String[NUM_ARCHIVOS];
 
-        int tam_nombres_archivos = 0;
         for (int i = 0; i < listOfFiles.length; i++) {
             if (listOfFiles[i].isFile()) {
-                nombres_archivos[tam_nombres_archivos] = listOfFiles[i].getName();
-                tam_nombres_archivos++;
+                nombres_archivos[i] = listOfFiles[i].getName();
             }
         }
-        // Declaraciones
+
+        String[] archivos_seleccionados;
+        if (parametros[INPUT].equals(TODOS_ARCHIVOS)) {
+            archivos_seleccionados = nombres_archivos;
+        } else {
+            String[] linea_troceada = parametros[INPUT].split(" ");
+            archivos_seleccionados = new String[linea_troceada.length];
+
+            for (int i = 0; i < linea_troceada.length; i++)
+                archivos_seleccionados[i] = linea_troceada[i];
+        }
+
         String direccion;
-        Aeropuerto aeropuertos[] = new Aeropuerto[NUM_ARCHIVOS];
-        Greedy greedy[] = new Greedy[NUM_ARCHIVOS];
-        int solucion_greedy[];
-
-        // Creación de aeropuertos y generación de soluciones
-        for (int i = 0; i < NUM_ARCHIVOS; i++) {
-            direccion = "_data/" + nombres_archivos[i];
+        Aeropuerto aeropuertos[] = new Aeropuerto[archivos_seleccionados.length];
+        for (int i = 0; i < archivos_seleccionados.length; i++) {
+            direccion = "_data/" + archivos_seleccionados[i];
             aeropuertos[i] = new Aeropuerto(direccion);
-            greedy[i] = new Greedy(aeropuertos[i]);
-            solucion_greedy = greedy[i].algoritmoGreedy();
-            System.out.printf("%s: \n", nombres_archivos[i]);
-            for (int j = 0; j < greedy[i].tam; j++) {
-                System.out.printf("%d ", solucion_greedy[j]);
+        }
+
+        if (parametros[ALGORITHM].toLowerCase().equals(GREEDY)) {
+            Greedy greedy[] = new Greedy[archivos_seleccionados.length];
+            int solucion_greedy[];
+            for (int i = 0; i < archivos_seleccionados.length; i++) {
+                greedy[i] = new Greedy(aeropuertos[i]);
+                solucion_greedy = greedy[i].algoritmoGreedy();
+
+                System.out.printf("%s: \n", nombres_archivos[i]);
+                for (int j = 0; j < greedy[i].tam; j++) {
+                    System.out.printf("%d ", solucion_greedy[j]);
+                }
+                System.out.printf("\nCoste: %d \n\n", calcularCoste(solucion_greedy, aeropuertos[i]));
             }
-            System.out.printf("\nCoste: %d \n\n", calcularCoste(solucion_greedy, aeropuertos[i]));
+        }
+        if (parametros[ALGORITHM].toLowerCase().equals(BL)) {
+            int semilla = Integer.parseInt(parametros[SEED]);
+            int[] solucion_BL;
+            String fichero_log;
+            File directorio = new File("_logs");
+            directorio.mkdir();
+
+            BusquedaLocal[] busqueda_local = new BusquedaLocal[archivos_seleccionados.length];
+            for (int i = 0; i < archivos_seleccionados.length; i++) {
+                busqueda_local[i] = new BusquedaLocal(semilla, aeropuertos[i].num_puertas);
+                busqueda_local[i].algoritmoBusquedaLocal(aeropuertos[i]);
+                solucion_BL = busqueda_local[i].getSolucion();
+
+                //Escribimos en archivo log
+                String[] nombre_sin_formato = archivos_seleccionados[i].split("\\.");
+                fichero_log = "_logs/log" + nombre_sin_formato[0] + ".txt";
+                escribirFichero(fichero_log, busqueda_local[i].contenido_log);
+
+                System.out.printf("\n%s: \n", aeropuertos[i].nombre_archivo);
+                for (int j = 0; j < aeropuertos[i].num_puertas; j++) {
+                    System.out.printf("%d ", solucion_BL[j]);
+                }
+                System.out.printf("\nCoste BL: %d\n", busqueda_local[i].getCosteSolucion());
+            }
+        }
+        if (parametros[ALGORITHM].toLowerCase().equals(TABU)) {
+
         }
 
-        int semilla = Integer.parseInt(parametros[2]);
-
-        BusquedaLocal busqueda_local = new BusquedaLocal(semilla,aeropuertos[5].num_puertas);
-        busqueda_local.algoritmoBusquedaLocal(aeropuertos[5]);
-        int[] solucion_BL = busqueda_local.getSolucion();
-
-        System.out.printf("%s: \n",aeropuertos[5].nombre_archivo);
-        for (int j = 0; j < aeropuertos[5].num_puertas; j++) {
-            System.out.printf("%d ", solucion_BL[j]);
-        }
-        System.out.printf("\nCoste BL: %d\n", busqueda_local.getCosteSolucion());
     } // main()
 } // Main()
