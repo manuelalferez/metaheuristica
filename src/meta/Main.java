@@ -91,7 +91,7 @@ public class Main {
         return coste;
     }
 
-    static void intercambio(int[] v, int r, int s) {
+    static void realizarMovimiento(int[] v, int r, int s) {
         int aux = v[r];
         v[r] = v[s];
         v[s] = aux;
@@ -100,10 +100,10 @@ public class Main {
     static int calcularCosteParametrizado(int[] permutacion, int coste, Aeropuerto aeropuerto, int r, int s) {
         int costeP_A = 0, costeP_D = 0;
         costeP_A = calcularCosteParcial(permutacion, aeropuerto, r, s);
-        intercambio(permutacion, r, s);
+        realizarMovimiento(permutacion, r, s);
         costeP_D = calcularCosteParcial(permutacion, aeropuerto, r, s);
         // Deshacemos el intercambio
-        intercambio(permutacion, r, s);
+        realizarMovimiento(permutacion, r, s);
 
         return coste + costeP_D - costeP_A;
     } // calcularCoste()

@@ -79,7 +79,7 @@ public class BusquedaTabu {
                 }
             }
             if (coste_mejor_vecino < coste_s_act) {
-                Main.intercambio(s_act, mejor_vecino[0], mejor_vecino[1]);
+                Main.realizarMovimiento(s_act, mejor_vecino[0], mejor_vecino[1]);
                 coste_s_act = coste_mejor_vecino;
                 evaluaciones++;
                 intentos = 0;
