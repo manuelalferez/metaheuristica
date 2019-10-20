@@ -9,7 +9,7 @@ public class Greedy {
     protected static final int MARCA = -1; // Posición añadida a la solución
 
     public Greedy(Aeropuerto aeropuerto) {
-        tam = aeropuerto.num_puertas;
+        tam = aeropuerto.numPuertas;
         sumatorio_flujos = new int[tam];
         sumatorio_distancias = new int[tam];
 

@@ -7,17 +7,17 @@ import java.io.FileReader;
 public class Aeropuerto {
     protected int[][] flujos;
     protected int[][] distancias;
-    protected int num_puertas;
-    protected String nombre_archivo;
+    protected int numPuertas;
+    protected String nombreArchivo;
     protected boolean esSimetrica;
 
-    public Aeropuerto(String _direccionArchivo) {
+    public Aeropuerto(String direccionArchivo) {
         File archivo;
         FileReader fr = null;
         BufferedReader br;
 
         try {
-            archivo = new File(nombre_archivo = _direccionArchivo);
+            archivo = new File(nombreArchivo = direccionArchivo);
             fr = new FileReader(archivo);
             br = new BufferedReader(fr);
 
@@ -25,15 +25,15 @@ public class Aeropuerto {
 
             // Lectura de la dimensión
             linea = br.readLine().replaceAll(" +", " ").trim();
-            num_puertas = Integer.parseInt(linea);
+            numPuertas = Integer.parseInt(linea);
 
             // Creación de las matrices
-            flujos = new int[num_puertas][num_puertas];
-            distancias = new int[num_puertas][num_puertas];
+            flujos = new int[numPuertas][numPuertas];
+            distancias = new int[numPuertas][numPuertas];
 
             // Inicialización de las matrices
-            for (int i = 0; i < num_puertas; i++)
-                for (int j = 0; j < num_puertas; j++) {
+            for (int i = 0; i < numPuertas; i++)
+                for (int j = 0; j < numPuertas; j++) {
                     flujos[i][j] = 0;
                     distancias[i][j] = 0;
                 }
@@ -44,7 +44,7 @@ public class Aeropuerto {
             int col = 0;
             String[] linea_troceada;
             // Leemos matriz de flujos
-            while ((fila < num_puertas)) {
+            while ((fila < numPuertas)) {
                 linea = br.readLine().replaceAll(" +", " ").trim();
                 linea_troceada = linea.split(" ");
 
@@ -53,7 +53,7 @@ public class Aeropuerto {
                     col++;
                 }
 
-                if (col == num_puertas) {
+                if (col == numPuertas) {
                     fila++;
                     col = 0;
                 }
@@ -64,7 +64,7 @@ public class Aeropuerto {
             br.readLine();
 
             // Leemos matriz de distancias
-            while ((fila < num_puertas)) {
+            while ((fila < numPuertas)) {
                 linea = br.readLine().replaceAll(" +", " ").trim();
                 linea_troceada = linea.split(" ");
 
@@ -73,7 +73,7 @@ public class Aeropuerto {
                     col++;
                 }
 
-                if (col == num_puertas) {
+                if (col == numPuertas) {
                     fila++;
                     col = 0;
                 }
@@ -95,8 +95,8 @@ public class Aeropuerto {
     }
 
     protected boolean esSimetrica() {
-        for (int i = 0; i < this.num_puertas; i++)
-            for (int j = i + 1; j < this.num_puertas; j++) {
+        for (int i = 0; i < this.numPuertas; i++)
+            for (int j = i + 1; j < this.numPuertas; j++) {
                 if (this.flujos[i][j] != this.flujos[j][i])
                     return false;
             }

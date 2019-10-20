@@ -9,23 +9,23 @@ public class Main {
         1: input
         2: seed
      */
-    protected static String[] parametros = new String[3];
+    private static String[] parametros = new String[3];
 
-    protected static final String TODOS_ARCHIVOS = "all";
-    protected static final String GREEDY = "greedy";
-    protected static final String BL = "bl";
-    protected static final String TABU = "tabu";
+    private static final String TODOS_ARCHIVOS = "all";
+    private static final String GREEDY = "greedy";
+    private static final String BL = "bl";
+    private static final String TABU = "tabu";
 
-    protected static final int ALGORITHM = 0;
-    protected static final int INPUT = 1;
-    protected static final int SEED = 2;
+    private static final int ALGORITHM = 0;
+    private static final int INPUT = 1;
+    private static final int SEED = 2;
 
     /**
      * @param mensaje Mensaje a escribir en el fichero
      * @brief Método que escribe en un fichero
      * @post Escribir un mensaje en un fichero llamado solucion.txt
      */
-    public static void escribirFichero(String _nombre_fichero, String _mensaje) {
+    private static void escribirFichero(String _nombre_fichero, String _mensaje) {
         FileWriter fichero = null;
         PrintWriter pw;
         try {
@@ -52,7 +52,7 @@ public class Main {
      * @return El peso de la solucion
      * @brief Calcula el peso de la solución
      */
-    public static int calcularCoste(int[] solucion, Aeropuerto aeropuerto) {
+    static int calcularCoste(int[] solucion, Aeropuerto aeropuerto) {
         int peso = 0;
 
         if (aeropuerto.getEsSimetrica()) {
@@ -68,7 +68,7 @@ public class Main {
         return peso;
     } // calcularCoste()
 
-    public static int calcularCosteParcial(int[] solucion, Aeropuerto aeropuerto, int r, int s) {
+    private static int calcularCosteParcial(int[] solucion, Aeropuerto aeropuerto, int r, int s) {
         int coste = 0;
 
         if (aeropuerto.getEsSimetrica()) {
@@ -91,13 +91,13 @@ public class Main {
         return coste;
     }
 
-    public static void intercambio(int[] v, int r, int s) {
+    static void intercambio(int[] v, int r, int s) {
         int aux = v[r];
         v[r] = v[s];
         v[s] = aux;
     }
 
-    public static int calcularCosteParametrizado(int[] permutacion, int coste, Aeropuerto aeropuerto, int r, int s) {
+    static int calcularCosteParametrizado(int[] permutacion, int coste, Aeropuerto aeropuerto, int r, int s) {
         int costeP_A = 0, costeP_D = 0;
         costeP_A = calcularCosteParcial(permutacion, aeropuerto, r, s);
         intercambio(permutacion, r, s);
@@ -109,7 +109,7 @@ public class Main {
     } // calcularCoste()
 
 
-    public static void lecturaArchivoConf(String dir) {
+    private static void lecturaArchivoConf(String dir) {
         File archivo;
         FileReader fr = null;
         BufferedReader br;
@@ -203,17 +203,17 @@ public class Main {
 
             BusquedaLocal[] busqueda_local = new BusquedaLocal[archivos_seleccionados.length];
             for (int i = 0; i < archivos_seleccionados.length; i++) {
-                busqueda_local[i] = new BusquedaLocal(semilla, aeropuertos[i].num_puertas);
+                busqueda_local[i] = new BusquedaLocal(semilla, aeropuertos[i].numPuertas);
                 busqueda_local[i].algoritmoBusquedaLocal(aeropuertos[i]);
                 solucion_BL = busqueda_local[i].getSolucion();
 
                 //Escribimos en archivo log
                 String[] nombre_sin_formato = archivos_seleccionados[i].split("\\.");
                 fichero_log = "_logs/log" + nombre_sin_formato[0] + ".txt";
-                escribirFichero(fichero_log, busqueda_local[i].contenido_log);
+                escribirFichero(fichero_log, busqueda_local[i].contenidoLog);
 
-                System.out.printf("\n%s: \n", aeropuertos[i].nombre_archivo);
-                for (int j = 0; j < aeropuertos[i].num_puertas; j++) {
+                System.out.printf("\n%s: \n", aeropuertos[i].nombreArchivo);
+                for (int j = 0; j < aeropuertos[i].numPuertas; j++) {
                     System.out.printf("%d ", solucion_BL[j]);
                 }
                 System.out.printf("\nCoste BL: %d\n", busqueda_local[i].getCosteSolucion());
@@ -222,6 +222,5 @@ public class Main {
         if (parametros[ALGORITHM].toLowerCase().equals(TABU)) {
 
         }
-
     } // main()
 } // Main()

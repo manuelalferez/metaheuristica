@@ -99,7 +99,7 @@ public class BusquedaTabu {
     public int getCosteSolucion() {
         return this.coste_s_act;
     }
-}
+
 
     public void escribirMovimiento(int _entorno, int[] _movimiento, int _coste, int _iteracion) {
         contenido_log += "\nEntorno:             " + _entorno;
@@ -120,3 +120,4 @@ public class BusquedaTabu {
         contenido_log += "\nIteración:           " + _iteracion;
         contenido_log += "\n-------------------------------------------------------------------------------";
     }
+}

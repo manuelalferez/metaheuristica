@@ -4,10 +4,11 @@ import java.util.Random;
 
 public class BusquedaLocal {
     static int NUM_VECINOS = 10;
-    static int NUM_EVALUACIONES = 50000;
-    String contenido_log = "";
+    static int MAX_INTENTOS = 100;
+    static int MAX_EVALUACIONES = 50000;
+    String contenidoLog = "";
     Random random;
-    int[][] matriz_generar_vecinos;
+    int[][] matrizGenerarVecinos;
 
     int[] s_act;
     int coste_s_act;
@@ -16,7 +17,7 @@ public class BusquedaLocal {
     public BusquedaLocal(int _seed, int _tam) {
         random = new Random(_seed);
         tam = _tam;
-        matriz_generar_vecinos = new int[tam][tam];
+        matrizGenerarVecinos = new int[tam][tam];
     }
 
     public void generar_solucion_inicial() {
@@ -36,7 +37,7 @@ public class BusquedaLocal {
     private void limpiarMatriz() {
         for (int i = 0; i < tam; i++)
             for (int j = i + 1; j < tam; j++)
-                matriz_generar_vecinos[i][j] = 0;
+                matrizGenerarVecinos[i][j] = 0;
     }
 
     public int[] generarVecino() {
@@ -49,29 +50,29 @@ public class BusquedaLocal {
                 rs[0] = rs[1];
                 rs[1] = aux;
             }
-        } while (matriz_generar_vecinos[rs[0]][rs[1]] == 1 || rs[0] == rs[1]);
-        matriz_generar_vecinos[rs[0]][rs[1]] = 1;
+        } while (matrizGenerarVecinos[rs[0]][rs[1]] == 1 || rs[0] == rs[1]);
+        matrizGenerarVecinos[rs[0]][rs[1]] = 1;
         return rs;
     }
 
     public void escribirMovimiento(int _entorno, int[] _movimiento, int _coste, int _iteracion) {
-        contenido_log += "\nEntorno:             " + _entorno;
-        contenido_log += "\nMovimiento:          " + _movimiento[0] + " " + _movimiento[1];
-        contenido_log += "\nCoste:               " + _coste;
-        contenido_log += "\nIteración:           " + _iteracion;
-        contenido_log += "\n----------------------------------------";
+        contenidoLog += "\nEntorno:             " + _entorno;
+        contenidoLog += "\nMovimiento:          " + _movimiento[0] + " " + _movimiento[1];
+        contenidoLog += "\nCoste:               " + _coste;
+        contenidoLog += "\nIteración:           " + _iteracion;
+        contenidoLog += "\n----------------------------------------";
     }
 
     public void escribirSolucionInicial(int _iteracion) {
-        contenido_log += "\n-------------------------------------------------------------------------------";
-        contenido_log += "\nSolución inicial:    ";
+        contenidoLog += "\n-------------------------------------------------------------------------------";
+        contenidoLog += "\nSolución inicial:    ";
         for (int j = 0; j < s_act.length; j++) {
-            contenido_log += s_act[j] + " ";
+            contenidoLog += s_act[j] + " ";
         }
 
-        contenido_log += "\nCoste:               " + coste_s_act;
-        contenido_log += "\nIteración:           " + _iteracion;
-        contenido_log += "\n-------------------------------------------------------------------------------";
+        contenidoLog += "\nCoste:               " + coste_s_act;
+        contenidoLog += "\nIteración:           " + _iteracion;
+        contenidoLog += "\n-------------------------------------------------------------------------------";
     }
 
     public void algoritmoBusquedaLocal(Aeropuerto aeropuerto) {
@@ -109,7 +110,7 @@ public class BusquedaLocal {
             }
             entorno++;
             limpiarMatriz();
-        } while (evaluaciones < 50000 && intentos != 100);
+        } while (evaluaciones < MAX_EVALUACIONES && intentos != MAX_INTENTOS);
     }
 
     public int[] getSolucion() {
