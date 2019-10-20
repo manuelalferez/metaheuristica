@@ -4,14 +4,19 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
-public class Aeropuerto {
-    protected int[][] flujos;
-    protected int[][] distancias;
-    protected int numPuertas;
-    protected String nombreArchivo;
-    protected boolean esSimetrica;
+/**
+ * Esta clase almacena la información relevante que usarán los algoritmos. Dada la dirección de un archivo, almacena
+ * en sus atributos las matrices y el nombre del archivo. Éste último es importante para tener referenciada la fuente
+ * de los datos.
+ */
+class Aeropuerto {
+    int[][] flujos;
+    int[][] distancias;
+    int numPuertas;
+    String nombreArchivo;
+    private boolean esSimetrica;
 
-    public Aeropuerto(String direccionArchivo) {
+    Aeropuerto(String direccionArchivo) {
         File archivo;
         FileReader fr = null;
         BufferedReader br;
@@ -22,6 +27,9 @@ public class Aeropuerto {
             br = new BufferedReader(fr);
 
             String linea;
+            int fila = 0;
+            int col = 0;
+            String[] linea_troceada;
 
             // Lectura de la dimensión
             linea = br.readLine().replaceAll(" +", " ").trim();
@@ -40,16 +48,13 @@ public class Aeropuerto {
 
             br.readLine(); // Eliminamos línea separatoria
 
-            int fila = 0;
-            int col = 0;
-            String[] linea_troceada;
             // Leemos matriz de flujos
             while ((fila < numPuertas)) {
                 linea = br.readLine().replaceAll(" +", " ").trim();
                 linea_troceada = linea.split(" ");
 
-                for (int p = 0; p < linea_troceada.length; p++) {
-                    flujos[fila][col] = Integer.parseInt(linea_troceada[p]);
+                for (String s : linea_troceada) {
+                    flujos[fila][col] = Integer.parseInt(s);
                     col++;
                 }
 
@@ -68,8 +73,8 @@ public class Aeropuerto {
                 linea = br.readLine().replaceAll(" +", " ").trim();
                 linea_troceada = linea.split(" ");
 
-                for (int p = 0; p < linea_troceada.length; p++) {
-                    distancias[fila][col] = Integer.parseInt(linea_troceada[p]);
+                for (String s : linea_troceada) {
+                    distancias[fila][col] = Integer.parseInt(s);
                     col++;
                 }
 
@@ -94,7 +99,7 @@ public class Aeropuerto {
         esSimetrica = esSimetrica();
     }
 
-    protected boolean esSimetrica() {
+    private boolean esSimetrica() {
         for (int i = 0; i < this.numPuertas; i++)
             for (int j = i + 1; j < this.numPuertas; j++) {
                 if (this.flujos[i][j] != this.flujos[j][i])
@@ -103,7 +108,7 @@ public class Aeropuerto {
         return true;
     }
 
-    public boolean getEsSimetrica() {
+    boolean getEsSimetrica() {
         return this.esSimetrica;
     }
 }
