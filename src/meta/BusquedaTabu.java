@@ -2,122 +2,109 @@ package meta;
 
 import java.util.Random;
 
-public class BusquedaTabu {
-    static int NUM_VECINOS = 10;
-    static int NUM_EVALUACIONES = 50000;
-    String contenido_log = "";
-    Random random;
-    int[][] lista_tabu;
+class BusquedaTabu {
+/*    private final static int VECINO_SELECCIONADO = 1;
 
-    int[] s_act;
-    int coste_s_act;
-    int tam;
+    private Random random;
+    private int[][] vecinosGenerados;
+    private int tamSolucion;
 
-    public BusquedaTabu(int _seed, int _tam) {
-        random = new Random(_seed);
-        tam = _tam;
-        lista_tabu = new int[tam][tam];
+    private int[] situacionActual;
+    private int costeSituacionActual;
+
+    BusquedaTabu(int seed, int tam) {
+        random = new Random(seed);
+        this.tamSolucion = tam;
+        vecinosGenerados = new int[tam][tam];
     }
 
-    public void generar_solucion_inicial() {
-        int[] posiciones = new int[tam];
-        int taml = tam;
-        for (int i = 0; i < tam; i++) posiciones[i] = i;
-        s_act = new int[tam];
+    void algoritmoTabu(Aeropuerto aeropuerto) {
+      *//*  generarSolucionInicial();
+        costeSituacionActual = Utils.calcularCoste(situacionActual, aeropuerto);
 
-        while (taml != 0) {
-            int number = random.nextInt(taml);
-            s_act[tam - taml] = posiciones[number];
-            posiciones[number] = posiciones[taml - 1];
-            taml--;
-        }
-    } //generar_solucion_inicial()
-
-    private void limpiarMatriz() {
-        for (int i = 0; i < tam; i++)
-            for (int j = i + 1; j < tam; j++)
-                lista_tabu[i][j] = 0;
-    }
-
-    public int[] generarVecino() {
-        int rs[] = new int[2];
-        do {
-            rs[0] = random.nextInt(tam);
-            rs[1] = random.nextInt(tam);
-            if (rs[0] > rs[1]) {
-                int aux = rs[0];
-                rs[0] = rs[1];
-                rs[1] = aux;
-            }
-        } while (lista_tabu[rs[0]][rs[1]] == 1 || rs[0] == rs[1]);
-        lista_tabu[rs[0]][rs[1]] = 1;
-        return rs;
-    }
-
-    public void BusquedaTabu(Aeropuerto aeropuerto) {
-        generar_solucion_inicial();
-        coste_s_act = Main.calcularCoste(s_act, aeropuerto);
-
-        int coste_mejor_vecino = coste_s_act;
-        int coste_vecino;
+        int costeMejorVecino = costeSituacionActual;
+        Vecino mejorVecino = new Vecino();
+        int costeVecinoActual;
+        Vecino vecinoActual = new Vecino();
         int evaluaciones = 0, intentos = 0, entorno = 0;
 
-        // r: 0
-        // s: 1
-        int[] mejor_vecino = new int[2];
-        int[] rs = new int[2];
-        escribirSolucionInicial(evaluaciones);
+        int MAX_EVALUACIONES = 50000;
+        int MAX_INTENTOS = 100;
+        int NUM_VECINOS = 10;
+
+        Utils.escribirSolucionInicial(situacionActual, costeSituacionActual, evaluaciones);
         do {
             for (int i = 0; i < NUM_VECINOS; i++) {
-                rs = generarVecino();
-                coste_vecino = Main.calcularCosteParametrizado(s_act, coste_s_act, aeropuerto, rs[0], rs[1]);
+                vecinoActual = generarVecino();
+                costeVecinoActual = Utils.calcularCosteParametrizado(situacionActual, costeSituacionActual, aeropuerto,
+                        vecinoActual);
 
-                if (coste_vecino < coste_mejor_vecino) {
-                    mejor_vecino[0] = rs[0];
-                    mejor_vecino[1] = rs[1];
-                    coste_mejor_vecino = coste_vecino;
+                if (costeVecinoActual < costeMejorVecino) {
+                    mejorVecino.copiarVecino(vecinoActual);
+                    costeMejorVecino = costeVecinoActual;
                 }
             }
-            if (coste_mejor_vecino < coste_s_act) {
-                Main.realizarMovimiento(s_act, mejor_vecino[0], mejor_vecino[1]);
-                coste_s_act = coste_mejor_vecino;
+            if (costeMejorVecino < costeSituacionActual) {
+                Utils.realizarMovimiento(situacionActual, mejorVecino);
+                costeSituacionActual = costeMejorVecino;
                 evaluaciones++;
                 intentos = 0;
-                escribirMovimiento(entorno, rs, coste_s_act, evaluaciones);
+                Utils.escribirMovimiento(entorno, mejorVecino, costeSituacionActual, evaluaciones);
             } else {
-                intentos += 1;
+                intentos++;
             }
             entorno++;
-            limpiarMatriz();
-        } while (evaluaciones < 50000 && intentos != 100);
+            limpiarMatriz();*//*
+        } while (evaluaciones < MAX_EVALUACIONES && intentos != MAX_INTENTOS);
+    }
+
+    private void generarSolucionInicial() {
+        int[] posiciones = new int[tamSolucion];
+        int tamLogico = tamSolucion;
+        for (int i = 0; i < tamSolucion; i++) posiciones[i] = i;
+        situacionActual = new int[tamSolucion];
+
+        while (tamLogico != 0) {
+            int number = random.nextInt(tamLogico);
+            situacionActual[tamSolucion - tamLogico] = posiciones[number];
+            posiciones[number] = posiciones[tamLogico - 1];
+            tamLogico--;
+        }
+    }
+
+    private Vecino generarVecino() {
+        Vecino nuevoVecino = new Vecino();
+        do {
+            nuevoVecino.setPrimeraPosicion(random.nextInt(tamSolucion));
+            nuevoVecino.setSegundaPosicion(random.nextInt(tamSolucion));
+            if (nuevoVecino.getPrimeraPosicion() > nuevoVecino.getSegundaPosicion()) {
+                nuevoVecino.intercambiarPosiciones();
+            }
+        } while (vecinoSeleccionado(nuevoVecino) || nuevoVecino.tienePosicionesIguales());
+        anadirVecino(nuevoVecino);
+
+        return nuevoVecino;
+    }
+
+    private void limpiarMatriz() {
+        for (int i = 0; i < tamSolucion; i++)
+            for (int j = i + 1; j < tamSolucion; j++)
+                vecinosGenerados[i][j] = 0;
+    }
+
+    private boolean vecinoSeleccionado(Vecino vecino) {
+        return vecinosGenerados[vecino.getPrimeraPosicion()][vecino.getSegundaPosicion()] == VECINO_SELECCIONADO;
+    }
+
+    private void anadirVecino(Vecino vecino) {
+        vecinosGenerados[vecino.getPrimeraPosicion()][vecino.getSegundaPosicion()] = VECINO_SELECCIONADO;
     }
 
     public int[] getSolucion() {
-        return this.s_act;
+        return this.situacionActual;
     }
 
     public int getCosteSolucion() {
-        return this.coste_s_act;
-    }
-
-
-    public void escribirMovimiento(int _entorno, int[] _movimiento, int _coste, int _iteracion) {
-        contenido_log += "\nEntorno:             " + _entorno;
-        contenido_log += "\nMovimiento:          " + _movimiento[0] + " " + _movimiento[1];
-        contenido_log += "\nCoste:               " + _coste;
-        contenido_log += "\nIteración:           " + _iteracion;
-        contenido_log += "\n----------------------------------------";
-    }
-
-    public void escribirSolucionInicial(int _iteracion) {
-        contenido_log += "\n-------------------------------------------------------------------------------";
-        contenido_log += "\nSolución inicial:    ";
-        for (int j = 0; j < s_act.length; j++) {
-            contenido_log += s_act[j] + " ";
-        }
-
-        contenido_log += "\nCoste:               " + coste_s_act;
-        contenido_log += "\nIteración:           " + _iteracion;
-        contenido_log += "\n-------------------------------------------------------------------------------";
-    }
+        return this.costeSituacionActual;
+    }*/
 }
