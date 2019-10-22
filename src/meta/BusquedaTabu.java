@@ -5,8 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 class BusquedaTabu {
-    private final static int DIVERSIFICAR = 1;
-    private final static int INTENSIFICAR = 0;
+    private static boolean DIVERSIFICAR = false; // Si no diversificamos, intensificamos
 
     private Random random;
     private int tamSolucion;
@@ -70,17 +69,24 @@ class BusquedaTabu {
             }
 
             if (intentos == MAX_INTENTOS) {
-                double probabilidad = random.nextDouble();
-                double cincuentaPorCiento = 0.5;
-                if (probabilidad < cincuentaPorCiento) generarEntorno(DIVERSIFICAR);
-                else generarEntorno(INTENSIFICAR);
+                calcularEstrategia();
+                solucionActual = generarEntorno();
                 intentos = 0;
                 entorno++;
+                costeSolucionActual= Utils.calcularCoste(solucionActual, aeropuerto);
             }
-            System.out.printf("%d\n",iteraciones);
+
             listaTabues.clear();
             costeMejorVecino = Integer.MAX_VALUE;
         } while (iteraciones < MAX_ITERACIONES);
+    }
+
+    /**
+     * Elegimos entre diversificar o intensificar
+     */
+    private void calcularEstrategia() {
+        double probabilidad = random.nextDouble();
+        DIVERSIFICAR = probabilidad < 0.5;
     }
 
     private int[] generarSolucionInicial() {
@@ -113,7 +119,7 @@ class BusquedaTabu {
     }
 
     private boolean esVecinoTabu(Vecino vecino) {
-        if(listaTabues.size()==0) return false;
+        if (listaTabues.size() == 0) return false;
         for (Vecino v : listaTabues) {
             if (v.sonIguales(vecino)) return true;
         }
@@ -136,59 +142,26 @@ class BusquedaTabu {
 
     private void actualizaMemoriaLargoPlazo(Vecino vecino) {
         memoriaLargoPlazo[vecino.getPrimeraPosicion()][vecino.getSegundaPosicion()] += 1;
+        memoriaLargoPlazo[vecino.getSegundaPosicion()][vecino.getPrimeraPosicion()] += 1;
     }
 
     /**
-     * La solución se genera desde la última fila y columna de la matriz, hasta terminar en
-     * la fila=0. Esta técnica se usa porque son las posiciones de la matriz que tienen menos
-     * elementos para buscar entre mayores valores
+     * Genera el entorno teniendo en cuenta que la memoria a largo plazo es una matriz triangular superior. Empezamos
+     * a recorrerla desde abajo hacia arriba, de menos elementos en la fila a más elementos
      */
-    private int[] generarEntorno(int opcion){
+    private int[] generarEntorno() {
         int[] nuevoEntorno = new int[tamSolucion];
-        int mejorValor, posicionMejor= 0;
+        int mejorValor, posicionMejor = 0;
         boolean esMejor;
 
-        mejorValor = reiniciarMejorValor(opcion);
-
-        int penultimaFila = memoriaLargoPlazo.length-2; // La última fila no tiene elementos
-        int ultimaColumna = memoriaLargoPlazo.length-1;
-
-        /*
-         * Rellenamos la última posición del nuevo entorno, debido a que al tener una matriz con la
-         * diagonal principal vacía no podemos generar la posición i=tamanio-1 y j=tamanio-1
-         */
-        for(int k = 0;k<memoriaLargoPlazo.length;k++){
-            esMejor = calcularSiEsMejor(opcion, k, ultimaColumna, mejorValor);
-
-            if (opcion == INTENSIFICAR && esMejor) { // Intensificamos
-                if (!estaValor(nuevoEntorno, k, ultimaColumna)) {
-                    mejorValor = memoriaLargoPlazo[k][ultimaColumna];
-                    posicionMejor = k;
-                }
-            }else if (esMejor){ // Diversificamos
-                if (!estaValor(nuevoEntorno, k, ultimaColumna)) {
-                    mejorValor = memoriaLargoPlazo[k][ultimaColumna];
-                    posicionMejor = k;
-                }
-            }
-        }
-        nuevoEntorno[ultimaColumna] = posicionMejor;
-
-        // Generamos lo restante del entorno
-        for (int i = penultimaFila; i >= 0; i--) {
-            mejorValor = reiniciarMejorValor(opcion);
+        for (int i = 0; i < memoriaLargoPlazo.length; i++) {
+            mejorValor = reiniciarMejorValor();
             posicionMejor = 0;
+            for (int j = 0; j < memoriaLargoPlazo.length; j++) {
+                if (i != j) {
+                    esMejor = calcularSiEsMejor(i, j, mejorValor);
 
-            for (int j = i + 1; j < memoriaLargoPlazo.length; j++) {
-                esMejor = calcularSiEsMejor(opcion, i, j, mejorValor);
-
-                if (opcion == INTENSIFICAR && esMejor) { // Intensificamos
-                    if (!estaValor(nuevoEntorno, j, i)) {
-                        mejorValor = memoriaLargoPlazo[i][j];
-                        posicionMejor = j;
-                    }
-                }else if (esMejor){ // Diversificamos
-                    if (!estaValor(nuevoEntorno, j, i)) {
+                    if (esMejor && noEsta(nuevoEntorno, i, j)) {
                         mejorValor = memoriaLargoPlazo[i][j];
                         posicionMejor = j;
                     }
@@ -200,28 +173,26 @@ class BusquedaTabu {
         return nuevoEntorno;
     }
 
-    private boolean calcularSiEsMejor(int opcion, int fila, int columna, int mejorValor){
-        if(opcion==INTENSIFICAR) return  memoriaLargoPlazo[fila][columna] > mejorValor;
-        else return memoriaLargoPlazo[fila][columna] < mejorValor;
+    private boolean calcularSiEsMejor(int fila, int columna, int mejorValor) {
+        if (DIVERSIFICAR) return memoriaLargoPlazo[fila][columna] < mejorValor;
+        else return memoriaLargoPlazo[fila][columna] > mejorValor;
     }
 
-    private int reiniciarMejorValor(int opcion){
-        if(opcion==INTENSIFICAR) return Integer.MIN_VALUE;
-        else return Integer.MAX_VALUE;
+    private int reiniciarMejorValor() {
+        if (DIVERSIFICAR) return Integer.MAX_VALUE;
+        else return Integer.MIN_VALUE;
     }
 
-    private boolean estaValor(int[] vector, int valor, int cotaSuperior) {
-        for (int i = 0; i < cotaSuperior; i++) {
-            if (vector[i] == valor) return true;
-        }
-        return false;
+    private boolean noEsta(int[] vector, int cotaSuperior, int valor) {
+        for (int i = 0; i < cotaSuperior; i++) if (vector[i] == valor) return false;
+        return true;
     }
 
-    public int[] getSolucion() {
+    int[] getSolucion() {
         return this.mejorSolucion;
     }
 
-    public int getCosteSolucion() {
+    int getCosteSolucion() {
         return this.costeMejorSolucion;
     }
 }
