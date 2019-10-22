@@ -26,6 +26,11 @@ class Vecino {
         posiciones[SEGUNDA_POSICION] = aux;
     }
 
+    boolean sonIguales(Vecino vecino) {
+        return this.getPrimeraPosicion() == vecino.getPrimeraPosicion() &&
+                this.getSegundaPosicion() == vecino.getSegundaPosicion();
+    }
+
     boolean tienePosicionesIguales() {
         return posiciones[PRIMERA_POSICION] == posiciones[SEGUNDA_POSICION];
     }
@@ -45,4 +50,5 @@ class Vecino {
     int getSegundaPosicion() {
         return posiciones[SEGUNDA_POSICION];
     }
+
 }

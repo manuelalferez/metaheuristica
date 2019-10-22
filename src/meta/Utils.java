@@ -127,11 +127,11 @@ class Utils {
         }
     }
 
-    static void escribirMovimiento(int entorno, Vecino vecino, int coste, int evaluaciones) {
+    static void escribirMovimiento(int entorno, Vecino vecino, int coste, int iteraciones) {
         Main.contenidoLog += "\nEntorno:             " + entorno;
         Main.contenidoLog += "\nMovimiento:          " + vecino.getPrimeraPosicion() + " " + vecino.getSegundaPosicion();
         Main.contenidoLog += "\nCoste:               " + coste;
-        Main.contenidoLog += "\nIteración:           " + evaluaciones;
+        Main.contenidoLog += "\nIteración:           " + iteraciones;
         Main.contenidoLog += "\n----------------------------------------";
     }
 

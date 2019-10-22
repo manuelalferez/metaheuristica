@@ -96,7 +96,29 @@ public class Main {
             }
         }
         if (parametros[ALGORITHM].toLowerCase().equals(TABU)) {
+            int semilla = Integer.parseInt(parametros[SEED]);
+            int[] solucion_BT;
+            String fichero_log;
+            File directorio = new File("_logs");
+            directorio.mkdir();
 
+            BusquedaTabu[] busquedaTabu = new BusquedaTabu[archivos_seleccionados.length];
+            for (int i = 0; i < archivos_seleccionados.length; i++) {
+                busquedaTabu[i] = new BusquedaTabu(semilla, aeropuertos[i].numPuertas);
+                busquedaTabu[i].algoritmoTabu(aeropuertos[i]);
+                solucion_BT = busquedaTabu[i].getSolucion();
+
+                //Escribimos en archivo log
+                String[] nombre_sin_formato = archivos_seleccionados[i].split("\\.");
+                fichero_log = "_logs/log" + nombre_sin_formato[0] + ".txt";
+                Utils.escribirFichero(fichero_log, contenidoLog);
+
+                System.out.printf("\n%s: \n", aeropuertos[i].nombreArchivo);
+                for (int j = 0; j < aeropuertos[i].numPuertas; j++) {
+                    System.out.printf("%d ", solucion_BT[j]);
+                }
+                System.out.printf("\nCoste BT: %d\n", busquedaTabu[i].getCosteSolucion());
+            }
         }
     } // main()
 } // Main()
