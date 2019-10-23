@@ -4,7 +4,7 @@ public class Greedy {
     int[] sumatorio_flujos;
     int[] sumatorio_distancias;
     int tam;
-    int[] sol;
+    Solucion solucion;
 
     protected static final int MARCA = -1; // Posición añadida a la solución
 
@@ -19,10 +19,10 @@ public class Greedy {
                 sumatorio_flujos[i] += Main.aeropuertoActual.flujos[i][j];
                 sumatorio_distancias[i] += Main.aeropuertoActual.distancias[i][j];
             }
-        sol = new int[tam];
+        solucion = new Solucion(tam);
     } // constructor()
 
-    public int[] algoritmoGreedy() {
+    public void algoritmoGreedy() {
         // i=0 -> Posición del mejor flujo
         // i=1 -> Posición de la mejor distancia
         int[] pos_mejores = new int[2];
@@ -30,11 +30,11 @@ public class Greedy {
         do {
             seleccionar(pos_mejores);
             eliminar(pos_mejores);
-            sol[pos_mejores[0]]=pos_mejores[1];
+            solucion.solucion[pos_mejores[0]]=pos_mejores[1];
             tam_sol++;
         }while (tam_sol<tam);
 
-        return sol;
+        solucion.coste = Utils.calcularCoste(solucion.solucion);
     } // algoritmoGreedy()
 
     public void seleccionar(int[] _pos_mejores) {
