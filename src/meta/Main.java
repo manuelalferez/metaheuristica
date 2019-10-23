@@ -9,7 +9,7 @@ public class Main {
         1: input
         2: seed
      */
-    static String[] parametros = new String[3];
+    private static String[] parametros = new String[3];
     private static final int ALGORITHM = 0;
     private static final int INPUT = 1;
     private static final int SEED = 2;
@@ -23,7 +23,8 @@ public class Main {
     static Aeropuerto aeropuertoActual;
 
     private static String[] nombres_archivos;
-    static Aeropuerto[] aeropuertos;
+    private static Aeropuerto[] aeropuertos;
+    private static String ficheroLogNombre;
 
     /**
      * Lectura del archivo de configuración y almacenamiento de parámetros en el vector de parámetros (variable declarada
@@ -116,6 +117,14 @@ public class Main {
         contenidoLog += "\nTiempo: " + tiempoEjecucionMilisegundos/1000 +" s";
     }
 
+    /**
+     * Crea el nombre del archivo log a partir del archivo de datos (forma: archivo.dat)
+     */
+    private static void crearFicheroLog(String nombreArchivoDatos){
+        String[] nombreSinFormato = nombreArchivoDatos.split("\\."); // Eliminamos .dat
+        ficheroLogNombre = "_logs/log" + nombreSinFormato[0] + ".txt";
+    }
+
     public static void main(String[] args) {
         lecturaParametrosConfiguracion();
         lecturaNombresArchivosDatos();
@@ -126,12 +135,14 @@ public class Main {
 
         crearAeropuertos(archivos_seleccionados);
 
-        Solucion solucion;
+        Solucion solucion = new Solucion();
 
         if (parametros[ALGORITHM].toLowerCase().equals(GREEDY)) {
-            Greedy greedy[] = new Greedy[archivos_seleccionados.length];
+            Greedy[] greedy = new Greedy[archivos_seleccionados.length];
+
             for (int i = 0; i < archivos_seleccionados.length; i++) {
                 aeropuertoActual = aeropuertos[i];
+
                 greedy[i] = new Greedy();
                 T_INICIO = System.currentTimeMillis();
                 greedy[i].algoritmoGreedy();
@@ -139,14 +150,8 @@ public class Main {
                 T_EJECUCION = T_FIN - T_INICIO;
 
                 escribirSolucionYTiempos(solucion,T_EJECUCION );
-
-
-
-                //Escribimos en archivo log
-                String fichero_log;
-                String[] nombre_sin_formato = archivos_seleccionados[i].split("\\.");
-                fichero_log = "_logs/log" + nombre_sin_formato[0] + ".txt";
-                Utils.escribirFichero(fichero_log, contenidoLog);
+                crearFicheroLog(archivos_seleccionados[i]);
+                Utils.escribirFichero(ficheroLogNombre, contenidoLog);
             }
         }
         if (parametros[ALGORITHM].toLowerCase().equals(BL)) {
