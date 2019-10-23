@@ -35,14 +35,15 @@ class BusquedaTabu {
     }
 
     void algoritmoTabu() {
-        generarSolucionInicial();
+        //generarSolucionInicial();
+        solucionActual=Utils.generarSolucionInicial(tamSolucion,random);
         mejorSolucion = new Solucion(solucionActual);
         do {
             generarMejorVecino();
             realizarMovimiento();
             actualizaMemoriaLargoPlazo(mejorVecino);
 
-            Utils.escribirMovimiento(entorno, mejorVecino, solucionActual.coste, iteraciones); // logs
+            //Utils.escribirMovimiento(entorno, mejorVecino, solucionActual.coste, iteraciones); // logs
             iteraciones++;
 
             if (solucionActual.coste < mejorSolucion.coste) {
@@ -60,22 +61,6 @@ class BusquedaTabu {
         } while (iteraciones < MAX_ITERACIONES);
     }
 
-    private void generarSolucionInicial() {
-        int[] posicionesGeneradas = new int[tamSolucion];
-        int tamLogico = tamSolucion;
-        for (int i = 0; i < tamSolucion; i++) posicionesGeneradas[i] = i;
-        solucionActual = new Solucion(tamSolucion);
-
-        while (tamLogico != 0) {
-            int posicionAleatoria = random.nextInt(tamLogico);
-            solucionActual.solucion[tamSolucion - tamLogico] = posicionesGeneradas[posicionAleatoria];
-            posicionesGeneradas[posicionAleatoria] = posicionesGeneradas[tamLogico - 1];
-            tamLogico--;
-        }
-
-        solucionActual.coste = Utils.calcularCoste(solucionActual.solucion);
-        Utils.escribirSolucionInicial(solucionActual.solucion, solucionActual.coste, iteraciones);
-    }
 
     private void generarMejorVecino(){
         Vecino vecinoActual;
@@ -195,8 +180,8 @@ class BusquedaTabu {
         return true;
     }
 
-    int[] getSolucion() {
-        return this.mejorSolucion.solucion;
+    Solucion getSolucion() {
+        return this.mejorSolucion;
     }
 
     int getCosteSolucion() {

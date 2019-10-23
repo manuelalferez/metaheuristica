@@ -19,8 +19,9 @@ class BusquedaLocal {
     }
 
     void algoritmoBusquedaLocal() {
-        generarSolucionInicial();
-        costeSituacionActual = Utils.calcularCoste(situacionActual);
+        //generarSolucionInicial();
+        situacionActual= Utils.generarSolucionInicial(tamSolucion,random);
+        costeSituacionActual = Utils.calcularCoste(situacionActual.solucion);
 
         int costeMejorVecino = costeSituacionActual;
         Vecino mejorVecino = new Vecino();
@@ -32,11 +33,11 @@ class BusquedaLocal {
         int MAX_INTENTOS = 100;
         int NUM_VECINOS = 10;
 
-        Utils.escribirSolucionInicial(situacionActual, costeSituacionActual, evaluaciones);
+        Utils.escribirSolucionInicial(situacionActual.solucion, costeSituacionActual, evaluaciones);
         do {
             for (int i = 0; i < NUM_VECINOS; i++) {
                 vecinoActual = generarVecino();
-                costeVecinoActual = Utils.calcularCosteParametrizado(situacionActual, costeSituacionActual, vecinoActual);
+                costeVecinoActual = Utils.calcularCosteParametrizado(situacionActual.solucion, costeSituacionActual, vecinoActual);
 
                 if (costeVecinoActual < costeMejorVecino) {
                     mejorVecino.copiarVecino(vecinoActual);
@@ -44,7 +45,7 @@ class BusquedaLocal {
                 }
             }
             if (costeMejorVecino < costeSituacionActual) {
-                Utils.realizarMovimiento(situacionActual, mejorVecino);
+                Utils.realizarMovimiento(situacionActual.solucion, mejorVecino);
                 costeSituacionActual = costeMejorVecino;
                 evaluaciones++;
                 intentos = 0;
@@ -57,19 +58,7 @@ class BusquedaLocal {
         } while (evaluaciones < MAX_EVALUACIONES && intentos != MAX_INTENTOS);
     }
 
-    private void generarSolucionInicial() {
-        int[] posiciones = new int[tamSolucion];
-        int tamLogico = tamSolucion;
-        for (int i = 0; i < tamSolucion; i++) posiciones[i] = i;
-        situacionActual = new Solucion(tamSolucion);
 
-        while (tamLogico != 0) {
-            int number = random.nextInt(tamLogico);
-            situacionActual.solucion[tamSolucion - tamLogico] = posiciones[number];
-            posiciones[number] = posiciones[tamLogico - 1];
-            tamLogico--;
-        }
-    }
 
     private Vecino generarVecino() {
         Vecino nuevoVecino = new Vecino();
