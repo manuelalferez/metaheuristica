@@ -94,49 +94,16 @@ class Utils {
         return coste + costeDespues - costeAntes;
     }
 
-
-    static void lecturaArchivoConf(String dir, String[] parametros) {
-        File archivo;
-        FileReader fr = null;
-        BufferedReader br;
-
-        try {
-            archivo = new File(dir);
-            fr = new FileReader(archivo);
-            br = new BufferedReader(fr);
-
-            String linea;
-            int i = 0;
-            while ((linea = br.readLine()) != null) {
-                String[] linea_troceada = linea.split(";");
-                parametros[i++] = linea_troceada[1];
-            }
-        } catch (
-                Exception e) {
-            e.printStackTrace();
-        } finally {
-            // En el finally cerramos el fichero, para asegurarnos que se cierra
-            // tanto como si va bien la lectura como si no
-            try {
-                if (fr != null) {
-                    fr.close();
-                }
-            } catch (Exception e2) {
-                e2.printStackTrace();
-            }
-        }
-    }
-
     static void escribirMovimiento(int entorno, Vecino vecino, int coste, int iteraciones) {
         Main.contenidoLog += "\nEntorno:             " + entorno;
         Main.contenidoLog += "\nMovimiento:          " + vecino.getPrimeraPosicion() + " " + vecino.getSegundaPosicion();
         Main.contenidoLog += "\nCoste:               " + coste;
         Main.contenidoLog += "\nIteración:           " + iteraciones;
-        Main.contenidoLog += "\n----------------------------------------";
+        Main.contenidoLog += "\n";
     }
 
     static void escribirSolucionInicial(int[] situacionActual, int costeSituacionActual, int iteracion) {
-        Main.contenidoLog += "\n-------------------------------------------------------------------------------";
+        Main.contenidoLog += "\n\n";
         Main.contenidoLog += "\nSolución inicial:    ";
         for (int i : situacionActual) {
             Main.contenidoLog += i + " ";
@@ -144,6 +111,7 @@ class Utils {
 
         Main.contenidoLog += "\nCoste:               " + costeSituacionActual;
         Main.contenidoLog += "\nIteración:           " + iteracion;
-        Main.contenidoLog += "\n-------------------------------------------------------------------------------";
+        Main.contenidoLog += "\n\n";
     }
+
 }

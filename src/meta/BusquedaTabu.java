@@ -67,9 +67,9 @@ class BusquedaTabu {
         solucionActual = new Solucion(tamSolucion);
 
         while (tamLogico != 0) {
-            int number = random.nextInt(tamLogico);
-            solucionActual.solucion[tamSolucion - tamLogico] = posicionesGeneradas[number];
-            posicionesGeneradas[number] = posicionesGeneradas[tamLogico - 1];
+            int posicionAleatoria = random.nextInt(tamLogico);
+            solucionActual.solucion[tamSolucion - tamLogico] = posicionesGeneradas[posicionAleatoria];
+            posicionesGeneradas[posicionAleatoria] = posicionesGeneradas[tamLogico - 1];
             tamLogico--;
         }
 
