@@ -20,6 +20,7 @@ public class Main {
     private static final String TABU = "tabu";
 
     static String contenidoLog = "";
+    public static Aeropuerto aeropuertoActual;
 
     public static void main(String[] args) {
         String archivo_conf = args[0];
@@ -60,14 +61,15 @@ public class Main {
             Greedy greedy[] = new Greedy[archivos_seleccionados.length];
             int solucion_greedy[];
             for (int i = 0; i < archivos_seleccionados.length; i++) {
-                greedy[i] = new Greedy(aeropuertos[i]);
+                aeropuertoActual = aeropuertos[i];
+                greedy[i] = new Greedy();
                 solucion_greedy = greedy[i].algoritmoGreedy();
 
                 System.out.printf("%s: \n", nombres_archivos[i]);
                 for (int j = 0; j < greedy[i].tam; j++) {
                     System.out.printf("%d ", solucion_greedy[j]);
                 }
-                System.out.printf("\nCoste: %d \n\n", Utils.calcularCoste(solucion_greedy, aeropuertos[i]));
+                System.out.printf("\nCoste: %d \n\n", Utils.calcularCoste(solucion_greedy));
             }
         }
         if (parametros[ALGORITHM].toLowerCase().equals(BL)) {
@@ -80,7 +82,8 @@ public class Main {
             BusquedaLocal[] busqueda_local = new BusquedaLocal[archivos_seleccionados.length];
             for (int i = 0; i < archivos_seleccionados.length; i++) {
                 busqueda_local[i] = new BusquedaLocal(semilla, aeropuertos[i].numPuertas);
-                busqueda_local[i].algoritmoBusquedaLocal(aeropuertos[i]);
+                aeropuertoActual=aeropuertos[i];
+                busqueda_local[i].algoritmoBusquedaLocal();
                 solucion_BL = busqueda_local[i].getSolucion();
 
                 //Escribimos en archivo log
@@ -105,7 +108,8 @@ public class Main {
             BusquedaTabu[] busquedaTabu = new BusquedaTabu[archivos_seleccionados.length];
             for (int i = 0; i < archivos_seleccionados.length; i++) {
                 busquedaTabu[i] = new BusquedaTabu(semilla, aeropuertos[i].numPuertas);
-                busquedaTabu[i].algoritmoTabu(aeropuertos[i]);
+                aeropuertoActual=aeropuertos[i];
+                busquedaTabu[i].algoritmoTabu();
                 solucion_BT = busquedaTabu[i].getSolucion();
 
                 //Escribimos en archivo log

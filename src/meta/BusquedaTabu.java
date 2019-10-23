@@ -6,78 +6,55 @@ import java.util.Random;
 
 class BusquedaTabu {
     private static boolean DIVERSIFICAR = false; // Si no diversificamos, intensificamos
+    private static final int MAX_ITERACIONES = 10000;
+    private static final int MAX_INTENTOS = 100;
+    private static final int NUM_VECINOS = 10;
+    private static int intentos = 0;
+    private static int iteraciones = 0;
+    private static int entorno = 0;
+
+    private static Solucion solucionActual = new Solucion();
+    private static Vecino mejorVecino = new Vecino();
+    private static int costeMejorVecino = Integer.MAX_VALUE;
 
     private Random random;
     private int tamSolucion;
 
-    private int[] mejorSolucion;
-    private int costeMejorSolucion;
+    private Solucion mejorSolucion;
 
     private List<Vecino> listaTabues;
     private int[][] memoriaLargoPlazo;
 
     BusquedaTabu(int seed, int tam) {
         random = new Random(seed);
-        this.tamSolucion = tam;
-        listaTabues = new ArrayList<Vecino>();
+        tamSolucion = tam;
+        listaTabues = new ArrayList<>();
         memoriaLargoPlazo = new int[tam][tam];
     }
 
-    void algoritmoTabu(Aeropuerto aeropuerto) {
-        int[] solucionActual = generarSolucionInicial();
-        mejorSolucion = solucionActual;
-        int costeSolucionActual = Utils.calcularCoste(mejorSolucion, aeropuerto);
-        costeMejorSolucion = costeSolucionActual;
-
-        int costeMejorVecino = costeSolucionActual;
-        Vecino mejorVecino = new Vecino();
-        int costeVecinoActual;
-        Vecino vecinoActual;
-        int iteraciones = 0, intentos = 0, entorno = 0;
-
-        int MAX_ITERACIONES = 50000;
-        int MAX_INTENTOS = 100;
-        int NUM_VECINOS = 10;
-
-        Utils.escribirSolucionInicial(mejorSolucion, costeSolucionActual, iteraciones);
+    void algoritmoTabu() {
+        generarSolucionInicial();
+        mejorSolucion = new Solucion(solucionActual);
         do {
-            // Generamos los 10 vecinos
-            for (int i = 0; i < NUM_VECINOS; i++) {
-                vecinoActual = generarVecino();
-                costeVecinoActual = Utils.calcularCosteParametrizado(solucionActual, costeSolucionActual, aeropuerto,
-                        vecinoActual);
-
-                if (costeVecinoActual < costeMejorVecino) {
-                    mejorVecino.copiarVecino(vecinoActual);
-                    costeMejorVecino = costeVecinoActual;
-                }
-            }
-
-            Utils.realizarMovimiento(solucionActual, mejorVecino);
-            costeSolucionActual = costeMejorVecino;
+            generarMejorVecino();
+            realizarMovimiento();
             actualizaMemoriaLargoPlazo(mejorVecino);
 
-            //Utils.escribirMovimiento(entorno, mejorVecino, costeSolucionActual, iteraciones);
+            //Utils.escribirMovimiento(entorno, mejorVecino, solucionActual.coste, iteraciones);
             iteraciones++;
 
-            if (costeSolucionActual < costeMejorSolucion) {
-                mejorSolucion = solucionActual;
-                costeMejorSolucion = costeSolucionActual;
+            if (solucionActual.coste < mejorSolucion.coste) {
+                mejorSolucion.copiar(solucionActual);
                 intentos = 0;
-            } else {
-                intentos++;
-            }
+            } else intentos++;
 
             if (intentos == MAX_INTENTOS) {
                 calcularEstrategia();
-                solucionActual = generarEntorno();
+                generarEntorno();
                 intentos = 0;
                 entorno++;
-                costeSolucionActual= Utils.calcularCoste(solucionActual, aeropuerto);
             }
-
             listaTabues.clear();
-            costeMejorVecino = Integer.MAX_VALUE;
         } while (iteraciones < MAX_ITERACIONES);
     }
 
@@ -89,19 +66,42 @@ class BusquedaTabu {
         DIVERSIFICAR = probabilidad < 0.5;
     }
 
-    private int[] generarSolucionInicial() {
+    private void realizarMovimiento(){
+        Utils.realizarMovimiento(solucionActual.solucion, mejorVecino);
+        solucionActual.coste = costeMejorVecino;
+    }
+
+    private void generarMejorVecino(){
+        Vecino vecinoActual;
+        costeMejorVecino = Integer.MAX_VALUE;
+        int costeVecinoActual;
+        // Generamos los 10 vecinos
+        for (int i = 0; i < NUM_VECINOS; i++) {
+            vecinoActual = generarVecino();
+            costeVecinoActual = Utils.calcularCosteParametrizado(solucionActual.solucion, solucionActual.coste, vecinoActual);
+
+            if (costeVecinoActual < costeMejorVecino) {
+                mejorVecino.copiarVecino(vecinoActual);
+                costeMejorVecino = costeVecinoActual;
+            }
+        }
+    }
+
+    private void generarSolucionInicial() {
         int[] posicionesGeneradas = new int[tamSolucion];
         int tamLogico = tamSolucion;
         for (int i = 0; i < tamSolucion; i++) posicionesGeneradas[i] = i;
-        int[] solucionInicial = new int[tamSolucion];
+        solucionActual = new Solucion(tamSolucion);
 
         while (tamLogico != 0) {
             int number = random.nextInt(tamLogico);
-            solucionInicial[tamSolucion - tamLogico] = posicionesGeneradas[number];
+            solucionActual.solucion[tamSolucion - tamLogico] = posicionesGeneradas[number];
             posicionesGeneradas[number] = posicionesGeneradas[tamLogico - 1];
             tamLogico--;
         }
-        return solucionInicial;
+
+        solucionActual.coste = Utils.calcularCoste(solucionActual.solucion);
+        Utils.escribirSolucionInicial(solucionActual.solucion, solucionActual.coste, iteraciones);
     }
 
     private Vecino generarVecino() {
@@ -140,6 +140,9 @@ class BusquedaTabu {
         }
     }
 
+    /**
+     * Se copia dos veces, hace más simple la búsqueda de los mejores valores en la generación del entorno
+     */
     private void actualizaMemoriaLargoPlazo(Vecino vecino) {
         memoriaLargoPlazo[vecino.getPrimeraPosicion()][vecino.getSegundaPosicion()] += 1;
         memoriaLargoPlazo[vecino.getSegundaPosicion()][vecino.getPrimeraPosicion()] += 1;
@@ -149,9 +152,9 @@ class BusquedaTabu {
      * Genera el entorno teniendo en cuenta que la memoria a largo plazo es una matriz triangular superior. Empezamos
      * a recorrerla desde abajo hacia arriba, de menos elementos en la fila a más elementos
      */
-    private int[] generarEntorno() {
-        int[] nuevoEntorno = new int[tamSolucion];
-        int mejorValor, posicionMejor = 0;
+    private void generarEntorno() {
+        solucionActual = new Solucion(tamSolucion); // La situación actual cambiará por el nuevo entorno
+        int mejorValor, posicionMejor;
         boolean esMejor;
 
         for (int i = 0; i < memoriaLargoPlazo.length; i++) {
@@ -161,16 +164,15 @@ class BusquedaTabu {
                 if (i != j) {
                     esMejor = calcularSiEsMejor(i, j, mejorValor);
 
-                    if (esMejor && noEsta(nuevoEntorno, i, j)) {
+                    if (esMejor && valorNoEsta(solucionActual.solucion, i, j)) {  // j = valor a introducir
                         mejorValor = memoriaLargoPlazo[i][j];
                         posicionMejor = j;
                     }
                 }
             }
-            nuevoEntorno[i] = posicionMejor;
+            solucionActual.solucion[i] = posicionMejor;
         }
-
-        return nuevoEntorno;
+        solucionActual.coste = Utils.calcularCoste(solucionActual.solucion);
     }
 
     private boolean calcularSiEsMejor(int fila, int columna, int mejorValor) {
@@ -183,16 +185,19 @@ class BusquedaTabu {
         else return Integer.MIN_VALUE;
     }
 
-    private boolean noEsta(int[] vector, int cotaSuperior, int valor) {
-        for (int i = 0; i < cotaSuperior; i++) if (vector[i] == valor) return false;
+    /**
+     * El entorno se va generando desde el inicio. La cotaSuperior mejora la eficiencia
+     */
+    private boolean valorNoEsta(int[] entorno, int cotaSuperior, int valor) {
+        for (int i = 0; i < cotaSuperior; i++) if (entorno[i] == valor) return false;
         return true;
     }
 
     int[] getSolucion() {
-        return this.mejorSolucion;
+        return this.mejorSolucion.solucion;
     }
 
     int getCosteSolucion() {
-        return this.costeMejorSolucion;
+        return this.mejorSolucion.coste;
     }
 }

@@ -8,16 +8,16 @@ public class Greedy {
 
     protected static final int MARCA = -1; // Posición añadida a la solución
 
-    public Greedy(Aeropuerto aeropuerto) {
-        tam = aeropuerto.numPuertas;
+    public Greedy() {
+        tam = Main.aeropuertoActual.numPuertas;
         sumatorio_flujos = new int[tam];
         sumatorio_distancias = new int[tam];
 
         // Creación de los vectores suma de flujos y distancias
         for (int i = 0; i < tam; i++)
             for (int j = 0; j < tam; j++) {
-                sumatorio_flujos[i] += aeropuerto.flujos[i][j];
-                sumatorio_distancias[i] += aeropuerto.distancias[i][j];
+                sumatorio_flujos[i] += Main.aeropuertoActual.flujos[i][j];
+                sumatorio_distancias[i] += Main.aeropuertoActual.distancias[i][j];
             }
         sol = new int[tam];
     } // constructor()

@@ -18,9 +18,9 @@ class BusquedaLocal {
         vecinosGenerados = new int[tam][tam];
     }
 
-    void algoritmoBusquedaLocal(Aeropuerto aeropuerto) {
+    void algoritmoBusquedaLocal() {
         generarSolucionInicial();
-        costeSituacionActual = Utils.calcularCoste(situacionActual, aeropuerto);
+        costeSituacionActual = Utils.calcularCoste(situacionActual);
 
         int costeMejorVecino = costeSituacionActual;
         Vecino mejorVecino = new Vecino();
@@ -36,8 +36,7 @@ class BusquedaLocal {
         do {
             for (int i = 0; i < NUM_VECINOS; i++) {
                 vecinoActual = generarVecino();
-                costeVecinoActual = Utils.calcularCosteParametrizado(situacionActual, costeSituacionActual, aeropuerto,
-                        vecinoActual);
+                costeVecinoActual = Utils.calcularCosteParametrizado(situacionActual, costeSituacionActual, vecinoActual);
 
                 if (costeVecinoActual < costeMejorVecino) {
                     mejorVecino.copiarVecino(vecinoActual);

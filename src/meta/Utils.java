@@ -28,18 +28,18 @@ class Utils {
     /**
      * Calcula el coste de una solución, cada posición con todas (n^2)
      */
-    static int calcularCoste(int[] solucion, Aeropuerto aeropuerto) {
+    static int calcularCoste(int[] solucion) {
         int coste = 0;
 
-        if (aeropuerto.getEsSimetrica()) {
+        if (Main.aeropuertoActual.getEsSimetrica()) {
             for (int i = 0; i < solucion.length; i++)
                 for (int j = i + 1; j < solucion.length; j++)
-                    coste += 2 * (aeropuerto.flujos[i][j] * aeropuerto.distancias[solucion[i]][solucion[j]]);
+                    coste += 2 * (Main.aeropuertoActual.flujos[i][j] * Main.aeropuertoActual.distancias[solucion[i]][solucion[j]]);
         } else {
             for (int i = 0; i < solucion.length; i++)
                 for (int j = 0; j < solucion.length; j++)
                     if (i != j)
-                        coste += aeropuerto.flujos[i][j] * aeropuerto.distancias[solucion[i]][solucion[j]];
+                        coste += Main.aeropuertoActual.flujos[i][j] * Main.aeropuertoActual.distancias[solucion[i]][solucion[j]];
         }
         return coste;
     }
@@ -49,24 +49,24 @@ class Utils {
      * La forma de calcularlo es obteniendo el coste asociado de una puerta intercambiada con todas. Las puertas
      * no intercambiadas se obvia el cálculo (n)
      */
-    private static int calcularCosteMovimiento(int[] solucion, Aeropuerto aeropuerto, Vecino vecino) {
+    private static int calcularCosteMovimiento(int[] solucion, Vecino vecino) {
         int coste = 0;
         int r = vecino.getPrimeraPosicion();
         int s = vecino.getSegundaPosicion();
-        if (aeropuerto.getEsSimetrica()) {
+        if (Main.aeropuertoActual.getEsSimetrica()) {
             for (int i = 0; i < solucion.length; i++) {
-                if (i != r) coste += 2 * aeropuerto.flujos[r][i] * aeropuerto.distancias[solucion[r]][solucion[i]];
-                if (i != s) coste += 2 * aeropuerto.flujos[s][i] * aeropuerto.distancias[solucion[s]][solucion[i]];
+                if (i != r) coste += 2 * Main.aeropuertoActual.flujos[r][i] * Main.aeropuertoActual.distancias[solucion[r]][solucion[i]];
+                if (i != s) coste += 2 * Main.aeropuertoActual.flujos[s][i] * Main.aeropuertoActual.distancias[solucion[s]][solucion[i]];
             }
         } else {
             for (int i = 0; i < solucion.length; i++) {
                 if (i != r) {
-                    coste += aeropuerto.flujos[r][i] * aeropuerto.distancias[solucion[r]][solucion[i]];
-                    coste += aeropuerto.flujos[i][r] * aeropuerto.distancias[solucion[i]][solucion[r]];
+                    coste += Main.aeropuertoActual.flujos[r][i] * Main.aeropuertoActual.distancias[solucion[r]][solucion[i]];
+                    coste += Main.aeropuertoActual.flujos[i][r] * Main.aeropuertoActual.distancias[solucion[i]][solucion[r]];
                 }
                 if (i != s) {
-                    coste += aeropuerto.flujos[s][i] * aeropuerto.distancias[solucion[s]][solucion[i]];
-                    coste += aeropuerto.flujos[i][s] * aeropuerto.distancias[solucion[i]][solucion[s]];
+                    coste += Main.aeropuertoActual.flujos[s][i] * Main.aeropuertoActual.distancias[solucion[s]][solucion[i]];
+                    coste += Main.aeropuertoActual.flujos[i][s] * Main.aeropuertoActual.distancias[solucion[i]][solucion[s]];
                 }
             }
         }
@@ -83,11 +83,11 @@ class Utils {
      * Calcula el coste del movimiento antes de intercambiar las puertas y después. Después se restan a coste total
      * para calcular el coste final asociado al movimiento
      */
-    static int calcularCosteParametrizado(int[] permutacion, int coste, Aeropuerto aeropuerto, Vecino vecino) {
+    static int calcularCosteParametrizado(int[] permutacion, int coste, Vecino vecino) {
         int costeAntes = 0, costeDespues = 0;
-        costeAntes = calcularCosteMovimiento(permutacion, aeropuerto, vecino);
+        costeAntes = calcularCosteMovimiento(permutacion, vecino);
         realizarMovimiento(permutacion, vecino);
-        costeDespues = calcularCosteMovimiento(permutacion, aeropuerto, vecino);
+        costeDespues = calcularCosteMovimiento(permutacion, vecino);
         // Deshacemos el intercambio
         realizarMovimiento(permutacion, vecino);
 
