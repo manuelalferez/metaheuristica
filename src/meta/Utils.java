@@ -1,6 +1,7 @@
 package meta;
 
 import java.io.*;
+import java.util.Random;
 
 class Utils {
 
@@ -114,4 +115,22 @@ class Utils {
         Main.contenidoLog += "\n\n";
     }
 
+
+    static Solucion generarSolucionInicial(int tamSolucion, Random random) {
+        Solucion situacionActual = new Solucion();
+        int[] posiciones = new int[tamSolucion];
+        int tamLogico = tamSolucion;
+        for (int i = 0; i < tamSolucion; i++) posiciones[i] = i;
+        situacionActual = new Solucion(tamSolucion);
+
+        while (tamLogico != 0) {
+            int number = random.nextInt(tamLogico);
+            situacionActual.solucion[tamSolucion - tamLogico] = posiciones[number];
+            posiciones[number] = posiciones[tamLogico - 1];
+            tamLogico--;
+        }
+        situacionActual.coste = Utils.calcularCoste(situacionActual.solucion);
+        //Utils.escribirSolucionInicial(solucionActual.solucion, solucionActual.coste, iteraciones);
+        return situacionActual;
+    }
 }
