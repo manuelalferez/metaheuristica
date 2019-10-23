@@ -184,7 +184,7 @@ public class Main {
                 T_FIN = System.currentTimeMillis();
                 T_EJECUCION = T_FIN - T_INICIO;
                 solucion_BT = busquedaTabu[i].getSolucion();
-
+                //Prueba
                 //Escribimos en archivo log
                 String[] nombre_sin_formato = archivos_seleccionados[i].split("\\.");
                 fichero_log = "_logs/log" + nombre_sin_formato[0] + ".txt";
