@@ -5,22 +5,19 @@ import java.util.Random;
 class BusquedaLocal {
     private final static int VECINO_SELECCIONADO = 1;
 
-    private Random random;
     private int[][] vecinosGenerados;
     private int tamSolucion;
 
     private Solucion situacionActual;
     private int costeSituacionActual;
 
-    BusquedaLocal(int seed, int tam) {
-        random = new Random(seed);
+    BusquedaLocal(int tam) {
         this.tamSolucion = tam;
         vecinosGenerados = new int[tam][tam];
     }
 
     void algoritmoBusquedaLocal() {
-        //generarSolucionInicial();
-        situacionActual= Utils.generarSolucionInicial(tamSolucion,random);
+        situacionActual= Utils.generarSolucionInicial(tamSolucion);
         costeSituacionActual = Utils.calcularCoste(situacionActual.solucion);
 
         int costeMejorVecino = costeSituacionActual;
@@ -63,8 +60,8 @@ class BusquedaLocal {
     private Vecino generarVecino() {
         Vecino nuevoVecino = new Vecino();
         do {
-            nuevoVecino.setPrimeraPosicion(random.nextInt(tamSolucion));
-            nuevoVecino.setSegundaPosicion(random.nextInt(tamSolucion));
+            nuevoVecino.setPrimeraPosicion(Main.random.nextInt(tamSolucion));
+            nuevoVecino.setSegundaPosicion(Main.random.nextInt(tamSolucion));
             if (nuevoVecino.getPrimeraPosicion() > nuevoVecino.getSegundaPosicion()) {
                 nuevoVecino.intercambiarPosiciones();
             }

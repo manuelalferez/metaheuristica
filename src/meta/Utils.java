@@ -37,6 +37,7 @@ class Utils {
                 for (int j = i + 1; j < solucion.length; j++)
                     coste += 2 * (Main.aeropuertoActual.flujos[i][j] * Main.aeropuertoActual.distancias[solucion[i]][solucion[j]]);
         } else {
+            System.out.print("Es asimetrica.");
             for (int i = 0; i < solucion.length; i++)
                 for (int j = 0; j < solucion.length; j++)
                     if (i != j)
@@ -116,21 +117,21 @@ class Utils {
     }
 
 
-    static Solucion generarSolucionInicial(int tamSolucion, Random random) {
-        Solucion situacionActual = new Solucion();
+    static Solucion generarSolucionInicial(int tamSolucion) {
+        Solucion solucionInicial = new Solucion(tamSolucion);
         int[] posiciones = new int[tamSolucion];
         int tamLogico = tamSolucion;
         for (int i = 0; i < tamSolucion; i++) posiciones[i] = i;
-        situacionActual = new Solucion(tamSolucion);
+
 
         while (tamLogico != 0) {
-            int number = random.nextInt(tamLogico);
-            situacionActual.solucion[tamSolucion - tamLogico] = posiciones[number];
+            int number = Main.random.nextInt(tamLogico);
+            solucionInicial.solucion[tamSolucion - tamLogico] = posiciones[number];
             posiciones[number] = posiciones[tamLogico - 1];
             tamLogico--;
         }
-        situacionActual.coste = Utils.calcularCoste(situacionActual.solucion);
-        //Utils.escribirSolucionInicial(solucionActual.solucion, solucionActual.coste, iteraciones);
-        return situacionActual;
+        solucionInicial.coste = Utils.calcularCoste(solucionInicial.solucion);
+
+        return solucionInicial;
     }
 }

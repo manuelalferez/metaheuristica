@@ -1,6 +1,7 @@
 package meta;
 
 import java.io.*;
+import java.util.Random;
 
 public class Main {
     /*
@@ -25,6 +26,7 @@ public class Main {
     private static String[] nombres_archivos;
     private static Aeropuerto[] aeropuertos;
     private static String ficheroLogNombre;
+    static Random random;
 
     /**
      * Lectura del archivo de configuración y almacenamiento de parámetros en el vector de parámetros (variable declarada
@@ -110,8 +112,8 @@ public class Main {
 
     private static void escribirSolucionYTiempos(Solucion solucion, long tiempoEjecucionMilisegundos){
         contenidoLog += "Solución: ";
-        for (int j = 0; j < solucion.solucion[i].tam; j++) {
-            contenidoLog += solucion[j] + " ";
+        for (int j = 0; j < solucion.solucion.length; j++) {
+            contenidoLog += solucion.solucion[j] + " ";
         }
         contenidoLog += "\nCoste: " + solucion.coste;
         contenidoLog += "\nTiempo: " + tiempoEjecucionMilisegundos/1000 +" s";
@@ -155,14 +157,14 @@ public class Main {
             }
         }
         if (parametros[ALGORITHM].toLowerCase().equals(BL)) {
-            int semilla = Integer.parseInt(parametros[SEED]);
+            random= new Random(Integer.parseInt(parametros[SEED]));
             String fichero_log;
             File directorio = new File("_logs");
             directorio.mkdir();
 
             BusquedaLocal[] busqueda_local = new BusquedaLocal[archivos_seleccionados.length];
             for (int i = 0; i < archivos_seleccionados.length; i++) {
-                busqueda_local[i] = new BusquedaLocal(semilla, aeropuertos[i].numPuertas);
+                busqueda_local[i] = new BusquedaLocal(aeropuertos[i].numPuertas);
                 aeropuertoActual = aeropuertos[i];
                 T_INICIO = System.currentTimeMillis();
                 busqueda_local[i].algoritmoBusquedaLocal();
@@ -177,7 +179,7 @@ public class Main {
 
                 contenidoLog += "\nSolución: ";
                 for (int j = 0; j < aeropuertos[i].numPuertas; j++) {
-                    contenidoLog+=solucion[j]+" ";
+                    contenidoLog+=solucion.solucion[j]+" ";
                 }
                 contenidoLog += "\nCoste: " + busqueda_local[i].getCosteSolucion();
                 contenidoLog += "\nTiempo: " + T_EJECUCION/1000 +" s";
@@ -185,28 +187,27 @@ public class Main {
             }
         }
         if (parametros[ALGORITHM].toLowerCase().equals(TABU)) {
-            int semilla = Integer.parseInt(parametros[SEED]);
+            random= new Random(Integer.parseInt(parametros[SEED]));
             String fichero_log;
             File directorio = new File("_logs");
             directorio.mkdir();
 
             BusquedaTabu[] busquedaTabu = new BusquedaTabu[archivos_seleccionados.length];
             for (int i = 0; i < archivos_seleccionados.length; i++) {
-                busquedaTabu[i] = new BusquedaTabu(semilla, aeropuertos[i].numPuertas);
+                busquedaTabu[i] = new BusquedaTabu(aeropuertos[i].numPuertas);
                 aeropuertoActual = aeropuertos[i];
                 T_INICIO = System.currentTimeMillis();
                 busquedaTabu[i].algoritmoTabu();
                 T_FIN = System.currentTimeMillis();
                 T_EJECUCION = T_FIN - T_INICIO;
                 solucion = busquedaTabu[i].getSolucion();
-                //Prueba
                 //Escribimos en archivo log
                 String[] nombre_sin_formato = archivos_seleccionados[i].split("\\.");
                 fichero_log = "_logs/log" + nombre_sin_formato[0] + ".txt";
 
                 contenidoLog += "\nSolución: ";
                 for (int j = 0; j < aeropuertos[i].numPuertas; j++) {
-                    contenidoLog+=solucion[j]+" ";
+                    contenidoLog+=solucion.solucion[j]+" ";
                 }
                 contenidoLog += "\nCoste: " + busquedaTabu[i].getCosteSolucion();
                 contenidoLog += "\nTiempo: " + T_EJECUCION/1000 +" s";

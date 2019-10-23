@@ -7,7 +7,7 @@ import java.util.Random;
 class BusquedaTabu {
     // Variables compartidas entre funciones de la clase
     private static boolean DIVERSIFICAR = false; // Si no diversificamos, intensificamos
-    private static final int MAX_ITERACIONES = 50000;
+    private static final int MAX_ITERACIONES = 10000;
     private static final int MAX_INTENTOS = 100;
     private static final int NUM_VECINOS = 10;
 
@@ -20,30 +20,28 @@ class BusquedaTabu {
     private static int costeMejorVecino = Integer.MAX_VALUE;
 
     // Atributos
-    private Random random;
     private int tamSolucion;
 
     private List<Vecino> listaTabues;
     private int[][] memoriaLargoPlazo;
     private Solucion mejorSolucion;
 
-    BusquedaTabu(int seed, int tam) {
-        random = new Random(seed);
+    BusquedaTabu(int tam) {
         tamSolucion = tam;
         listaTabues = new ArrayList<>();
         memoriaLargoPlazo = new int[tam][tam];
     }
 
     void algoritmoTabu() {
-        //generarSolucionInicial();
-        solucionActual=Utils.generarSolucionInicial(tamSolucion,random);
+        solucionActual=Utils.generarSolucionInicial(tamSolucion);
+        Utils.escribirSolucionInicial(solucionActual.solucion, solucionActual.coste, iteraciones);
         mejorSolucion = new Solucion(solucionActual);
         do {
             generarMejorVecino();
             realizarMovimiento();
             actualizaMemoriaLargoPlazo(mejorVecino);
 
-            //Utils.escribirMovimiento(entorno, mejorVecino, solucionActual.coste, iteraciones); // logs
+            Utils.escribirMovimiento(entorno, mejorVecino, solucionActual.coste, iteraciones); // logs
             iteraciones++;
 
             if (solucionActual.coste < mejorSolucion.coste) {
@@ -60,7 +58,6 @@ class BusquedaTabu {
             listaTabues.clear();
         } while (iteraciones < MAX_ITERACIONES);
     }
-
 
     private void generarMejorVecino(){
         Vecino vecinoActual;
@@ -81,8 +78,8 @@ class BusquedaTabu {
     private Vecino generarVecino() {
         Vecino nuevoVecino = new Vecino();
         do {
-            nuevoVecino.setPrimeraPosicion(random.nextInt(tamSolucion));
-            nuevoVecino.setSegundaPosicion(random.nextInt(tamSolucion));
+            nuevoVecino.setPrimeraPosicion(Main.random.nextInt(tamSolucion));
+            nuevoVecino.setSegundaPosicion(Main.random.nextInt(tamSolucion));
             if (nuevoVecino.getPrimeraPosicion() > nuevoVecino.getSegundaPosicion()) {
                 nuevoVecino.intercambiarPosiciones();
             }
@@ -131,7 +128,7 @@ class BusquedaTabu {
      * Elegimos entre diversificar o intensificar
      */
     private void calcularEstrategia() {
-        double probabilidad = random.nextDouble();
+        double probabilidad = Main.random.nextDouble();
         DIVERSIFICAR = probabilidad < 0.5;
     }
 
