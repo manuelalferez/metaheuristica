@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.Random;
 
 class BusquedaTabu {
+    // Variables compartidas entre funciones de la clase
     private static boolean DIVERSIFICAR = false; // Si no diversificamos, intensificamos
-    private static final int MAX_ITERACIONES = 10000;
+    private static final int MAX_ITERACIONES = 50000;
     private static final int MAX_INTENTOS = 100;
     private static final int NUM_VECINOS = 10;
+
     private static int intentos = 0;
     private static int iteraciones = 0;
     private static int entorno = 0;
@@ -17,13 +19,13 @@ class BusquedaTabu {
     private static Vecino mejorVecino = new Vecino();
     private static int costeMejorVecino = Integer.MAX_VALUE;
 
+    // Atributos
     private Random random;
     private int tamSolucion;
 
-    private Solucion mejorSolucion;
-
     private List<Vecino> listaTabues;
     private int[][] memoriaLargoPlazo;
+    private Solucion mejorSolucion;
 
     BusquedaTabu(int seed, int tam) {
         random = new Random(seed);
@@ -40,7 +42,7 @@ class BusquedaTabu {
             realizarMovimiento();
             actualizaMemoriaLargoPlazo(mejorVecino);
 
-            //Utils.escribirMovimiento(entorno, mejorVecino, solucionActual.coste, iteraciones);
+            Utils.escribirMovimiento(entorno, mejorVecino, solucionActual.coste, iteraciones); // logs
             iteraciones++;
 
             if (solucionActual.coste < mejorSolucion.coste) {
@@ -58,35 +60,6 @@ class BusquedaTabu {
         } while (iteraciones < MAX_ITERACIONES);
     }
 
-    /**
-     * Elegimos entre diversificar o intensificar
-     */
-    private void calcularEstrategia() {
-        double probabilidad = random.nextDouble();
-        DIVERSIFICAR = probabilidad < 0.5;
-    }
-
-    private void realizarMovimiento(){
-        Utils.realizarMovimiento(solucionActual.solucion, mejorVecino);
-        solucionActual.coste = costeMejorVecino;
-    }
-
-    private void generarMejorVecino(){
-        Vecino vecinoActual;
-        costeMejorVecino = Integer.MAX_VALUE;
-        int costeVecinoActual;
-        // Generamos los 10 vecinos
-        for (int i = 0; i < NUM_VECINOS; i++) {
-            vecinoActual = generarVecino();
-            costeVecinoActual = Utils.calcularCosteParametrizado(solucionActual.solucion, solucionActual.coste, vecinoActual);
-
-            if (costeVecinoActual < costeMejorVecino) {
-                mejorVecino.copiarVecino(vecinoActual);
-                costeMejorVecino = costeVecinoActual;
-            }
-        }
-    }
-
     private void generarSolucionInicial() {
         int[] posicionesGeneradas = new int[tamSolucion];
         int tamLogico = tamSolucion;
@@ -102,6 +75,22 @@ class BusquedaTabu {
 
         solucionActual.coste = Utils.calcularCoste(solucionActual.solucion);
         Utils.escribirSolucionInicial(solucionActual.solucion, solucionActual.coste, iteraciones);
+    }
+
+    private void generarMejorVecino(){
+        Vecino vecinoActual;
+        costeMejorVecino = Integer.MAX_VALUE;
+        int costeVecinoActual;
+
+        for (int i = 0; i < NUM_VECINOS; i++) {
+            vecinoActual = generarVecino();
+            costeVecinoActual = Utils.calcularCosteParametrizado(solucionActual.solucion, solucionActual.coste, vecinoActual);
+
+            if (costeVecinoActual < costeMejorVecino) {
+                mejorVecino.copiarVecino(vecinoActual);
+                costeMejorVecino = costeVecinoActual;
+            }
+        }
     }
 
     private Vecino generarVecino() {
@@ -140,12 +129,25 @@ class BusquedaTabu {
         }
     }
 
+    private void realizarMovimiento(){
+        Utils.realizarMovimiento(solucionActual.solucion, mejorVecino);
+        solucionActual.coste = costeMejorVecino;
+    }
+
     /**
      * Se copia dos veces, hace más simple la búsqueda de los mejores valores en la generación del entorno
      */
     private void actualizaMemoriaLargoPlazo(Vecino vecino) {
         memoriaLargoPlazo[vecino.getPrimeraPosicion()][vecino.getSegundaPosicion()] += 1;
         memoriaLargoPlazo[vecino.getSegundaPosicion()][vecino.getPrimeraPosicion()] += 1;
+    }
+
+    /**
+     * Elegimos entre diversificar o intensificar
+     */
+    private void calcularEstrategia() {
+        double probabilidad = random.nextDouble();
+        DIVERSIFICAR = probabilidad < 0.5;
     }
 
     /**
@@ -175,14 +177,14 @@ class BusquedaTabu {
         solucionActual.coste = Utils.calcularCoste(solucionActual.solucion);
     }
 
-    private boolean calcularSiEsMejor(int fila, int columna, int mejorValor) {
-        if (DIVERSIFICAR) return memoriaLargoPlazo[fila][columna] < mejorValor;
-        else return memoriaLargoPlazo[fila][columna] > mejorValor;
-    }
-
     private int reiniciarMejorValor() {
         if (DIVERSIFICAR) return Integer.MAX_VALUE;
         else return Integer.MIN_VALUE;
+    }
+
+    private boolean calcularSiEsMejor(int fila, int columna, int mejorValor) {
+        if (DIVERSIFICAR) return memoriaLargoPlazo[fila][columna] < mejorValor;
+        else return memoriaLargoPlazo[fila][columna] > mejorValor;
     }
 
     /**
