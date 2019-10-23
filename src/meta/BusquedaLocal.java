@@ -9,7 +9,7 @@ class BusquedaLocal {
     private int[][] vecinosGenerados;
     private int tamSolucion;
 
-    private int[] situacionActual;
+    private Solucion situacionActual;
     private int costeSituacionActual;
 
     BusquedaLocal(int seed, int tam) {
@@ -61,11 +61,11 @@ class BusquedaLocal {
         int[] posiciones = new int[tamSolucion];
         int tamLogico = tamSolucion;
         for (int i = 0; i < tamSolucion; i++) posiciones[i] = i;
-        situacionActual = new int[tamSolucion];
+        situacionActual = new Solucion(tamSolucion);
 
         while (tamLogico != 0) {
             int number = random.nextInt(tamLogico);
-            situacionActual[tamSolucion - tamLogico] = posiciones[number];
+            situacionActual.solucion[tamSolucion - tamLogico] = posiciones[number];
             posiciones[number] = posiciones[tamLogico - 1];
             tamLogico--;
         }
@@ -99,8 +99,8 @@ class BusquedaLocal {
         vecinosGenerados[vecino.getPrimeraPosicion()][vecino.getSegundaPosicion()] = VECINO_SELECCIONADO;
     }
 
-    int[] getSolucion() {
-        return this.situacionActual;
+    Solucion getSolucion() {
+        return situacionActual;
     }
 
     int getCosteSolucion() {
