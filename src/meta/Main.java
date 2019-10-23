@@ -196,6 +196,7 @@ public class Main {
                 contenidoLog += "\nCoste: " + busquedaTabu[i].getCosteSolucion();
                 contenidoLog += "\nTiempo: " + T_EJECUCION/1000 +" s";
                 Utils.escribirFichero(fichero_log, contenidoLog);
+                //COmentario
             }
         }
     } // main()
