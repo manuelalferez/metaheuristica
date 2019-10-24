@@ -1,3 +1,3 @@
-algorithm;greedy
-input;all
-seed;12345678
+algorithm;tabu
+input;madrid01.dat
+seed;56781234

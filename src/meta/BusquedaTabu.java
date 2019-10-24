@@ -54,7 +54,6 @@ class BusquedaTabu {
                 intentos = 0;
                 entorno++;
             }
-            listaTabues.clear();
         } while (iteraciones < MAX_ITERACIONES);
     }
 
@@ -83,7 +82,7 @@ class BusquedaTabu {
                 nuevoVecino.intercambiarPosiciones();
             }
         } while (esVecinoTabu(nuevoVecino) || nuevoVecino.tienePosicionesIguales());
-        anadirVecinoTabu(nuevoVecino);
+        anadirVecinoTabu(mejorVecino);
 
         return nuevoVecino;
     }
