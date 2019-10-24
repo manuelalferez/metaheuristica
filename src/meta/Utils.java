@@ -1,7 +1,6 @@
 package meta;
 
 import java.io.*;
-import java.util.Random;
 
 class Utils {
 
@@ -37,7 +36,6 @@ class Utils {
                 for (int j = i + 1; j < solucion.length; j++)
                     coste += 2 * (Main.aeropuertoActual.flujos[i][j] * Main.aeropuertoActual.distancias[solucion[i]][solucion[j]]);
         } else {
-            System.out.print("Es asimetrica.");
             for (int i = 0; i < solucion.length; i++)
                 for (int j = 0; j < solucion.length; j++)
                     if (i != j)
@@ -96,7 +94,7 @@ class Utils {
         return coste + costeDespues - costeAntes;
     }
 
-    static void escribirMovimiento(int entorno, Vecino vecino, int coste, int iteraciones) {
+    static void escribirMovimientoEnFichero(int entorno, Vecino vecino, int coste, int iteraciones) {
         Main.contenidoLog += "\nEntorno:             " + entorno;
         Main.contenidoLog += "\nMovimiento:          " + vecino.getPrimeraPosicion() + " " + vecino.getSegundaPosicion();
         Main.contenidoLog += "\nCoste:               " + coste;
@@ -105,7 +103,6 @@ class Utils {
     }
 
     static void escribirSolucionInicial(int[] situacionActual, int costeSituacionActual, int iteracion) {
-        Main.contenidoLog += "\n\n";
         Main.contenidoLog += "\nSolución inicial:    ";
         for (int i : situacionActual) {
             Main.contenidoLog += i + " ";
@@ -113,7 +110,7 @@ class Utils {
 
         Main.contenidoLog += "\nCoste:               " + costeSituacionActual;
         Main.contenidoLog += "\nIteración:           " + iteracion;
-        Main.contenidoLog += "\n\n";
+        Main.contenidoLog += "\n";
     }
 
 

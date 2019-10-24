@@ -13,7 +13,6 @@ class Aeropuerto {
     int[][] flujos;
     int[][] distancias;
     int numPuertas;
-    String nombreArchivo;
     private boolean esSimetrica;
 
     Aeropuerto(String direccionArchivo) {
@@ -22,7 +21,7 @@ class Aeropuerto {
         BufferedReader br;
 
         try {
-            archivo = new File(nombreArchivo = direccionArchivo);
+            archivo = new File(direccionArchivo);
             fr = new FileReader(archivo);
             br = new BufferedReader(fr);
 

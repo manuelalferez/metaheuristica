@@ -2,12 +2,11 @@ package meta;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 class BusquedaTabu {
     // Variables compartidas entre funciones de la clase
     private static boolean DIVERSIFICAR = false; // Si no diversificamos, intensificamos
-    private static final int MAX_ITERACIONES = 10000;
+    private static final int MAX_ITERACIONES = 50000;
     private static final int MAX_INTENTOS = 100;
     private static final int NUM_VECINOS = 10;
 
@@ -26,10 +25,10 @@ class BusquedaTabu {
     private int[][] memoriaLargoPlazo;
     private Solucion mejorSolucion;
 
-    BusquedaTabu(int tam) {
-        tamSolucion = tam;
+    BusquedaTabu() {
+        tamSolucion = Main.aeropuertoActual.numPuertas;
         listaTabues = new ArrayList<>();
-        memoriaLargoPlazo = new int[tam][tam];
+        memoriaLargoPlazo = new int[Main.aeropuertoActual.numPuertas][Main.aeropuertoActual.numPuertas];
     }
 
     void algoritmoTabu() {
@@ -41,7 +40,7 @@ class BusquedaTabu {
             realizarMovimiento();
             actualizaMemoriaLargoPlazo(mejorVecino);
 
-            Utils.escribirMovimiento(entorno, mejorVecino, solucionActual.coste, iteraciones); // logs
+            Utils.escribirMovimientoEnFichero(entorno, mejorVecino, solucionActual.coste, iteraciones); // logs
             iteraciones++;
 
             if (solucionActual.coste < mejorSolucion.coste) {
@@ -179,9 +178,5 @@ class BusquedaTabu {
 
     Solucion getSolucion() {
         return this.mejorSolucion;
-    }
-
-    int getCosteSolucion() {
-        return this.mejorSolucion.coste;
     }
 }

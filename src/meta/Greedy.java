@@ -1,14 +1,18 @@
 package meta;
 
-public class Greedy {
-    int[] sumatorio_flujos;
-    int[] sumatorio_distancias;
-    int tam;
-    Solucion solucion;
+class Greedy {
+    private int[] sumatorio_flujos;
+    private int[] sumatorio_distancias;
+    private int tam;
+    private Solucion solucion;
 
-    protected static final int MARCA = -1; // Posición añadida a la solución
+    private static final int MARCA = -1; // Posición añadida a la solución
 
-    public Greedy() {
+    // i=0 -> Posición del mejor flujo
+    // i=1 -> Posición de la mejor distancia
+    private static int[] mejoresPosiciones = new int[2];;
+
+    Greedy() {
         tam = Main.aeropuertoActual.numPuertas;
         sumatorio_flujos = new int[tam];
         sumatorio_distancias = new int[tam];
@@ -20,24 +24,24 @@ public class Greedy {
                 sumatorio_distancias[i] += Main.aeropuertoActual.distancias[i][j];
             }
         solucion = new Solucion(tam);
-    } // constructor()
+    }
 
-    public void algoritmoGreedy() {
-        // i=0 -> Posición del mejor flujo
-        // i=1 -> Posición de la mejor distancia
-        int[] pos_mejores = new int[2];
+    void algoritmoGreedy() {
         int tam_sol = 0;
         do {
-            seleccionar(pos_mejores);
-            eliminar(pos_mejores);
-            solucion.solucion[pos_mejores[0]]=pos_mejores[1];
+            seleccionarMejoresPosiciones();
+            eliminarMejores();
+            solucion.solucion[mejoresPosiciones[0]]=mejoresPosiciones[1];
             tam_sol++;
         }while (tam_sol<tam);
 
         solucion.coste = Utils.calcularCoste(solucion.solucion);
-    } // algoritmoGreedy()
+    }
 
-    public void seleccionar(int[] _pos_mejores) {
+    /**
+     * Selecciona el mejor flujo y la mejor distancia
+     */
+    private void seleccionarMejoresPosiciones() {
         int val_mejor_flujo = Integer.MIN_VALUE;
         int val_mejor_dist = Integer.MAX_VALUE;
 
@@ -45,20 +49,27 @@ public class Greedy {
             if (sumatorio_flujos[i] != MARCA) {
                 if (sumatorio_flujos[i] > val_mejor_flujo) {
                     val_mejor_flujo = sumatorio_flujos[i];
-                    _pos_mejores[0] = i;
+                    mejoresPosiciones[0] = i;
                 }
             }
             if (sumatorio_distancias[i] != MARCA) {
                 if (sumatorio_distancias[i] < val_mejor_dist) {
                     val_mejor_dist = sumatorio_distancias[i];
-                    _pos_mejores[1] = i;
+                    mejoresPosiciones[1] = i;
                 }
             }
         }
-    } // seleccionar()
+    }
 
-    public void eliminar(int[] _pos_mejores){
-        sumatorio_flujos[_pos_mejores[0]]= MARCA;
-        sumatorio_distancias[_pos_mejores[1]]= MARCA;
-    } // eliminar()
+    /**
+     * Marcamos las posiciones de los mejores dentro de cada matriz para no volver a sacarlos
+     */
+    private void eliminarMejores(){
+        sumatorio_flujos[mejoresPosiciones[0]]= MARCA;
+        sumatorio_distancias[mejoresPosiciones[1]]= MARCA;
+    }
+
+    Solucion getSolucion() {
+        return this.solucion;
+    }
 } // class Greedy

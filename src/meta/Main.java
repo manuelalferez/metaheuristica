@@ -16,7 +16,6 @@ public class Main {
     private static final int SEED = 2;
 
     private static final String TODOS_ARCHIVOS = "all";
-    private static final String GREEDY = "greedy";
     private static final String BL = "bl";
     private static final String TABU = "tabu";
 
@@ -68,11 +67,11 @@ public class Main {
     /**
      * Los datos se encuentran en archivos de texto con extensión .dat, dentro de la carpeta /_data
      */
-    private static void lecturaNombresArchivosDatos(){
+    private static void lecturaNombresArchivosDatos() {
         File folder = new File("_data/");
         File[] listOfFiles = folder.listFiles(((dir, name) -> name.toLowerCase().endsWith(".dat")));
         int numArchivos;
-        if(listOfFiles!=null) {
+        if (listOfFiles != null) {
             numArchivos = listOfFiles.length;
             nombres_archivos = new String[numArchivos];
 
@@ -87,7 +86,7 @@ public class Main {
     /**
      * Devuelve un Array con los archivos seleccionados en el archivo de parámetros
      */
-    private static String[] seleccionarArchivos(){
+    private static String[] seleccionarArchivos() {
         String[] archivosSeleccionados;
         if (parametros[INPUT].equals(TODOS_ARCHIVOS)) {
             archivosSeleccionados = nombres_archivos;
@@ -101,7 +100,7 @@ public class Main {
         return archivosSeleccionados;
     }
 
-    private static void crearAeropuertos(String[] archivosSeleccionados){
+    private static void crearAeropuertos(String[] archivosSeleccionados) {
         String direccionDeUnAeropuerto;
         aeropuertos = new Aeropuerto[archivosSeleccionados.length];
         for (int i = 0; i < archivosSeleccionados.length; i++) {
@@ -110,21 +109,32 @@ public class Main {
         }
     }
 
-    private static void escribirSolucionYTiempos(Solucion solucion, long tiempoEjecucionMilisegundos){
-        contenidoLog += "Solución: ";
+    /**
+     * La solución aparecerá en la cabecera del archivo
+     */
+    private static void escribirSolucionYTiempos(Solucion solucion, long tiempoEjecucionMilisegundos) {
+        String solucionEnCabecera = "";
+        solucionEnCabecera += "Solución:            ";
         for (int j = 0; j < solucion.solucion.length; j++) {
-            contenidoLog += solucion.solucion[j] + " ";
+            solucionEnCabecera += solucion.solucion[j] + " ";
         }
-        contenidoLog += "\nCoste: " + solucion.coste;
-        contenidoLog += "\nTiempo: " + tiempoEjecucionMilisegundos/1000 +" s";
+        solucionEnCabecera += "\nCoste:               " + solucion.coste;
+        solucionEnCabecera += "\nTiempo:              " + tiempoEjecucionMilisegundos / 1000 + " s";
+        solucionEnCabecera += "\n-------------------------------------------------------\n";
+        contenidoLog = solucionEnCabecera + contenidoLog;
     }
 
     /**
      * Crea el nombre del archivo log a partir del archivo de datos (forma: archivo.dat)
      */
-    private static void crearFicheroLog(String nombreArchivoDatos){
+    private static void crearFicheroLog(String nombreArchivoDatos) {
         String[] nombreSinFormato = nombreArchivoDatos.split("\\."); // Eliminamos .dat
         ficheroLogNombre = "_logs/log" + nombreSinFormato[0] + ".txt";
+    }
+
+    private static void crearDirectorioLogs() {
+        File directorio = new File("_logs");
+        directorio.mkdir();
     }
 
     public static void main(String[] args) {
@@ -132,88 +142,49 @@ public class Main {
         lecturaNombresArchivosDatos();
 
         String[] archivos_seleccionados = seleccionarArchivos();
-
-        long T_INICIO, T_FIN , T_EJECUCION; //Variables para determinar el tiempo de ejecución
-
         crearAeropuertos(archivos_seleccionados);
-
         Solucion solucion = new Solucion();
 
-        if (parametros[ALGORITHM].toLowerCase().equals(GREEDY)) {
-            Greedy[] greedy = new Greedy[archivos_seleccionados.length];
+        long T_INICIO, T_FIN, T_EJECUCION; //Variables para determinar el tiempo de ejecución
 
-            for (int i = 0; i < archivos_seleccionados.length; i++) {
-                aeropuertoActual = aeropuertos[i];
+        random = new Random(Integer.parseInt(parametros[SEED]));
+        crearDirectorioLogs();
 
-                greedy[i] = new Greedy();
-                T_INICIO = System.currentTimeMillis();
-                greedy[i].algoritmoGreedy();
-                T_FIN = System.currentTimeMillis();
-                T_EJECUCION = T_FIN - T_INICIO;
+        BusquedaLocal[] busquedaLocal = new BusquedaLocal[archivos_seleccionados.length];
+        BusquedaTabu[] busquedaTabu = new BusquedaTabu[archivos_seleccionados.length];
+        Greedy[] greedy = new Greedy[archivos_seleccionados.length];
 
-                escribirSolucionYTiempos(solucion,T_EJECUCION );
-                crearFicheroLog(archivos_seleccionados[i]);
-                Utils.escribirFichero(ficheroLogNombre, contenidoLog);
-            }
-        }
-        if (parametros[ALGORITHM].toLowerCase().equals(BL)) {
-            random= new Random(Integer.parseInt(parametros[SEED]));
-            String fichero_log;
-            File directorio = new File("_logs");
-            directorio.mkdir();
+        for (int i = 0; i < archivos_seleccionados.length; i++) {
+            aeropuertoActual = aeropuertos[i];
 
-            BusquedaLocal[] busqueda_local = new BusquedaLocal[archivos_seleccionados.length];
-            for (int i = 0; i < archivos_seleccionados.length; i++) {
-                busqueda_local[i] = new BusquedaLocal(aeropuertos[i].numPuertas);
-                aeropuertoActual = aeropuertos[i];
-                T_INICIO = System.currentTimeMillis();
-                busqueda_local[i].algoritmoBusquedaLocal();
-                T_FIN = System.currentTimeMillis();
-                T_EJECUCION = T_FIN - T_INICIO;
-                solucion.copiar(busqueda_local[i].getSolucion());
+            // Creación de cada algoritmo con el aeropuertoActual
+            if (parametros[ALGORITHM].toLowerCase().equals(BL))
+                busquedaLocal[i] = new BusquedaLocal();
+            else if (parametros[ALGORITHM].toLowerCase().equals(TABU))
+                busquedaTabu[i] = new BusquedaTabu();
+            else greedy[i] = new Greedy();
 
-                //Escribimos en archivo log
-                String[] nombre_sin_formato = archivos_seleccionados[i].split("\\.");
-                fichero_log = "_logs/log" + nombre_sin_formato[0] + ".txt";
-                Utils.escribirFichero(fichero_log, contenidoLog);
-
-                contenidoLog += "\nSolución: ";
-                for (int j = 0; j < aeropuertos[i].numPuertas; j++) {
-                    contenidoLog+=solucion.solucion[j]+" ";
-                }
-                contenidoLog += "\nCoste: " + busqueda_local[i].getCosteSolucion();
-                contenidoLog += "\nTiempo: " + T_EJECUCION/1000 +" s";
-                Utils.escribirFichero(fichero_log, contenidoLog);
-            }
-        }
-        if (parametros[ALGORITHM].toLowerCase().equals(TABU)) {
-            random= new Random(Integer.parseInt(parametros[SEED]));
-            String fichero_log;
-            File directorio = new File("_logs");
-            directorio.mkdir();
-
-            BusquedaTabu[] busquedaTabu = new BusquedaTabu[archivos_seleccionados.length];
-            for (int i = 0; i < archivos_seleccionados.length; i++) {
-                busquedaTabu[i] = new BusquedaTabu(aeropuertos[i].numPuertas);
-                aeropuertoActual = aeropuertos[i];
-                T_INICIO = System.currentTimeMillis();
+            // Cálculo de solución y medición de tiempo de ejecución del algoritmo
+            T_INICIO = System.currentTimeMillis();
+            if (parametros[ALGORITHM].toLowerCase().equals(BL))
+                busquedaLocal[i].algoritmoBusquedaLocal();
+            else if (parametros[ALGORITHM].toLowerCase().equals(TABU))
                 busquedaTabu[i].algoritmoTabu();
-                T_FIN = System.currentTimeMillis();
-                T_EJECUCION = T_FIN - T_INICIO;
-                solucion = busquedaTabu[i].getSolucion();
-                //Escribimos en archivo log
-                String[] nombre_sin_formato = archivos_seleccionados[i].split("\\.");
-                fichero_log = "_logs/log" + nombre_sin_formato[0] + ".txt";
+            else greedy[i].algoritmoGreedy();
+            T_FIN = System.currentTimeMillis();
+            T_EJECUCION = T_FIN - T_INICIO;
 
-                contenidoLog += "\nSolución: ";
-                for (int j = 0; j < aeropuertos[i].numPuertas; j++) {
-                    contenidoLog+=solucion.solucion[j]+" ";
-                }
-                contenidoLog += "\nCoste: " + busquedaTabu[i].getCosteSolucion();
-                contenidoLog += "\nTiempo: " + T_EJECUCION/1000 +" s";
-                Utils.escribirFichero(fichero_log, contenidoLog);
-                //COmentario
-            }
+            // Obtenemos la solución
+            if (parametros[ALGORITHM].toLowerCase().equals(BL))
+                solucion.copiar(busquedaLocal[i].getSolucion());
+            else if (parametros[ALGORITHM].toLowerCase().equals(TABU))
+                solucion.copiar(busquedaTabu[i].getSolucion());
+            else solucion.copiar(greedy[i].getSolucion());
+
+            escribirSolucionYTiempos(solucion, T_EJECUCION);
+            crearFicheroLog(archivos_seleccionados[i]);
+            Utils.escribirFichero(ficheroLogNombre, contenidoLog);
+            contenidoLog="";
         }
     } // main()
 } // Main()
