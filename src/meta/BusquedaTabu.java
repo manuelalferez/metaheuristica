@@ -10,10 +10,6 @@ class BusquedaTabu {
     private static final int MAX_INTENTOS = 100;
     private static final int NUM_VECINOS = 10;
 
-    private static int intentos = 0;
-    private static int iteraciones = 0;
-    private static int entorno = 0;
-
     private static Solucion solucionActual = new Solucion();
     private static Vecino mejorVecino = new Vecino();
     private static int costeMejorVecino = Integer.MAX_VALUE;
@@ -32,6 +28,7 @@ class BusquedaTabu {
     }
 
     void algoritmoTabu() {
+        int iteraciones = 0, intentos = 0, entorno = 0;
         solucionActual = Utils.generarSolucionInicial(tamSolucion);
         Utils.escribirSolucionInicial(solucionActual.solucion, solucionActual.coste, iteraciones);
         mejorSolucion = new Solucion(solucionActual);
@@ -110,7 +107,10 @@ class BusquedaTabu {
     }
 
     private void realizarMovimiento() {
-        Utils.realizarMovimiento(solucionActual.solucion, mejorVecino);
+        // Utils.realizarMovimiento(solucionActual.solucion, mejorVecino);
+        int aux = solucionActual.solucion[mejorVecino.getPrimeraPosicion()];
+        solucionActual.solucion[mejorVecino.getPrimeraPosicion()] = solucionActual.solucion[mejorVecino.getSegundaPosicion()];
+        solucionActual.solucion[mejorVecino.getSegundaPosicion()] = aux;
         solucionActual.coste = costeMejorVecino;
     }
 
