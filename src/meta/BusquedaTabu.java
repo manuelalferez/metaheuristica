@@ -32,13 +32,14 @@ class BusquedaTabu {
     }
 
     void algoritmoTabu() {
-        solucionActual=Utils.generarSolucionInicial(tamSolucion);
+        solucionActual = Utils.generarSolucionInicial(tamSolucion);
         Utils.escribirSolucionInicial(solucionActual.solucion, solucionActual.coste, iteraciones);
         mejorSolucion = new Solucion(solucionActual);
         do {
             generarMejorVecino();
             realizarMovimiento();
             actualizaMemoriaLargoPlazo(mejorVecino);
+            anadirVecinoTabu(mejorVecino);
 
             Utils.escribirMovimientoEnFichero(entorno, mejorVecino, solucionActual.coste, iteraciones); // logs
             iteraciones++;
@@ -57,7 +58,7 @@ class BusquedaTabu {
         } while (iteraciones < MAX_ITERACIONES);
     }
 
-    private void generarMejorVecino(){
+    private void generarMejorVecino() {
         Vecino vecinoActual;
         costeMejorVecino = Integer.MAX_VALUE;
         int costeVecinoActual;
@@ -82,7 +83,6 @@ class BusquedaTabu {
                 nuevoVecino.intercambiarPosiciones();
             }
         } while (esVecinoTabu(nuevoVecino) || nuevoVecino.tienePosicionesIguales());
-        anadirVecinoTabu(mejorVecino);
 
         return nuevoVecino;
     }
@@ -109,7 +109,7 @@ class BusquedaTabu {
         }
     }
 
-    private void realizarMovimiento(){
+    private void realizarMovimiento() {
         Utils.realizarMovimiento(solucionActual.solucion, mejorVecino);
         solucionActual.coste = costeMejorVecino;
     }
