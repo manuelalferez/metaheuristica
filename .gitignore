@@ -2,4 +2,7 @@
 meta-pr1.iml
 out/
 .DS_Store
-_logs/
+meta-pr1.properties
+module_meta-pr1.xml
+metapr1.imlmeta-pr1.xml
+
