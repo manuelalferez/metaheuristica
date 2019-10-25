@@ -25,6 +25,31 @@ class Utils {
         }
     }
 
+    static void escribirMovimientoEnFichero(int entorno, Vecino vecino, int coste, int iteraciones) {
+        Main.contenidoLog += "\nEntorno:             " + entorno;
+        Main.contenidoLog += "\nMovimiento:          " + vecino.getPrimeraPosicion() + " " + vecino.getSegundaPosicion();
+        Main.contenidoLog += "\nCoste:               " + coste;
+        Main.contenidoLog += "\nIteración:           " + iteraciones;
+        Main.contenidoLog += "\n";
+    }
+
+    static void escribirSolucionInicial(Solucion solucionInicial, int iteracion) {
+        Main.contenidoLog += "\nSolución inicial:    ";
+        for (int i : solucionInicial.solucion) {
+            Main.contenidoLog += i + " ";
+        }
+
+        Main.contenidoLog += "\nCoste:               " + solucionInicial.coste;
+        Main.contenidoLog += "\nIteración:           " + iteracion;
+        Main.contenidoLog += "\n";
+    }
+
+    static void realizarMovimiento(int[] v, Vecino vecino) {
+        int aux = v[vecino.getPrimeraPosicion()];
+        v[vecino.getPrimeraPosicion()] = v[vecino.getSegundaPosicion()];
+        v[vecino.getSegundaPosicion()] = aux;
+    }
+
     /**
      * Calcula el coste de una solución, cada posición con todas (n^2)
      */
@@ -42,6 +67,21 @@ class Utils {
                         coste += Main.aeropuertoActual.flujos[i][j] * Main.aeropuertoActual.distancias[solucion[i]][solucion[j]];
         }
         return coste;
+    }
+
+    /**
+     * Calcula el coste del movimiento antes de intercambiar las puertas y después. Después se restan a coste total
+     * para calcular el coste final asociado al movimiento
+     */
+    static int calcularCosteParametrizado(int[] permutacion, int coste, Vecino vecino) {
+        int costeAntes = 0, costeDespues = 0;
+        costeAntes = calcularCosteMovimiento(permutacion, vecino);
+        realizarMovimiento(permutacion, vecino);
+        costeDespues = calcularCosteMovimiento(permutacion, vecino);
+        // Deshacemos el intercambio
+        realizarMovimiento(permutacion, vecino);
+
+        return coste + costeDespues - costeAntes;
     }
 
     /**
@@ -72,47 +112,6 @@ class Utils {
         }
         return coste;
     }
-
-    static void realizarMovimiento(int[] v, Vecino vecino) {
-        int aux = v[vecino.getPrimeraPosicion()];
-        v[vecino.getPrimeraPosicion()] = v[vecino.getSegundaPosicion()];
-        v[vecino.getSegundaPosicion()] = aux;
-    }
-
-    /**
-     * Calcula el coste del movimiento antes de intercambiar las puertas y después. Después se restan a coste total
-     * para calcular el coste final asociado al movimiento
-     */
-    static int calcularCosteParametrizado(int[] permutacion, int coste, Vecino vecino) {
-        int costeAntes = 0, costeDespues = 0;
-        costeAntes = calcularCosteMovimiento(permutacion, vecino);
-        realizarMovimiento(permutacion, vecino);
-        costeDespues = calcularCosteMovimiento(permutacion, vecino);
-        // Deshacemos el intercambio
-        realizarMovimiento(permutacion, vecino);
-
-        return coste + costeDespues - costeAntes;
-    }
-
-    static void escribirMovimientoEnFichero(int entorno, Vecino vecino, int coste, int iteraciones) {
-        Main.contenidoLog += "\nEntorno:             " + entorno;
-        Main.contenidoLog += "\nMovimiento:          " + vecino.getPrimeraPosicion() + " " + vecino.getSegundaPosicion();
-        Main.contenidoLog += "\nCoste:               " + coste;
-        Main.contenidoLog += "\nIteración:           " + iteraciones;
-        Main.contenidoLog += "\n";
-    }
-
-    static void escribirSolucionInicial(Solucion solucionInicial, int iteracion) {
-        Main.contenidoLog += "\nSolución inicial:    ";
-        for (int i : solucionInicial.solucion) {
-            Main.contenidoLog += i + " ";
-        }
-
-        Main.contenidoLog += "\nCoste:               " + solucionInicial.coste;
-        Main.contenidoLog += "\nIteración:           " + iteracion;
-        Main.contenidoLog += "\n";
-    }
-
 
     static Solucion generarSolucionInicial(int tamSolucion) {
         Solucion solucionInicial = new Solucion(tamSolucion);
