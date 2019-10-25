@@ -102,13 +102,13 @@ class Utils {
         Main.contenidoLog += "\n";
     }
 
-    static void escribirSolucionInicial(int[] situacionActual, int costeSituacionActual, int iteracion) {
+    static void escribirSolucionInicial(Solucion solucionInicial, int iteracion) {
         Main.contenidoLog += "\nSolución inicial:    ";
-        for (int i : situacionActual) {
+        for (int i : solucionInicial.solucion) {
             Main.contenidoLog += i + " ";
         }
 
-        Main.contenidoLog += "\nCoste:               " + costeSituacionActual;
+        Main.contenidoLog += "\nCoste:               " + solucionInicial.coste;
         Main.contenidoLog += "\nIteración:           " + iteracion;
         Main.contenidoLog += "\n";
     }

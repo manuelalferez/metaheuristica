@@ -107,10 +107,7 @@ class BusquedaTabu {
     }
 
     private void realizarMovimiento() {
-        // Utils.realizarMovimiento(solucionActual.solucion, mejorVecino);
-        int aux = solucionActual.solucion[mejorVecino.getPrimeraPosicion()];
-        solucionActual.solucion[mejorVecino.getPrimeraPosicion()] = solucionActual.solucion[mejorVecino.getSegundaPosicion()];
-        solucionActual.solucion[mejorVecino.getSegundaPosicion()] = aux;
+        Utils.realizarMovimiento(solucionActual.solucion, mejorVecino);
         solucionActual.coste = costeMejorVecino;
     }
 

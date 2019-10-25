@@ -22,7 +22,7 @@ class BusquedaLocal {
         int iteraciones = 0, intentos = 0, entorno = 0;
         solucionActual = Utils.generarSolucionInicial(tamSolucion);
         solucionActual.coste = Utils.calcularCoste(solucionActual.solucion);
-        Utils.escribirSolucionInicial(solucionActual.solucion, solucionActual.coste, iteraciones);
+        Utils.escribirSolucionInicial(solucionActual, iteraciones);
 
         do {
             generarMejorVecino();
