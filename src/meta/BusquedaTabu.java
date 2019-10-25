@@ -62,7 +62,7 @@ class BusquedaTabu {
 
         for (int i = 0; i < NUM_VECINOS; i++) {
             vecinoActual = generarVecino();
-            costeVecinoActual = Utils.calcularCosteParametrizado(solucionActual.solucion, solucionActual.coste, vecinoActual);
+            costeVecinoActual = Utils.calcularCosteParametrizado(solucionActual, vecinoActual);
 
             if (costeVecinoActual < costeMejorVecino) {
                 mejorVecino.copiarVecino(vecinoActual);

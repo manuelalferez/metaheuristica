@@ -73,15 +73,15 @@ class Utils {
      * Calcula el coste del movimiento antes de intercambiar las puertas y después. Después se restan a coste total
      * para calcular el coste final asociado al movimiento
      */
-    static int calcularCosteParametrizado(int[] permutacion, int coste, Vecino vecino) {
+    static int calcularCosteParametrizado(Solucion solucion,  Vecino vecino) {
         int costeAntes = 0, costeDespues = 0;
-        costeAntes = calcularCosteMovimiento(permutacion, vecino);
-        realizarMovimiento(permutacion, vecino);
-        costeDespues = calcularCosteMovimiento(permutacion, vecino);
+        costeAntes = calcularCosteMovimiento(solucion.solucion, vecino);
+        realizarMovimiento(solucion.solucion, vecino);
+        costeDespues = calcularCosteMovimiento(solucion.solucion, vecino);
         // Deshacemos el intercambio
-        realizarMovimiento(permutacion, vecino);
+        realizarMovimiento(solucion.solucion, vecino);
 
-        return coste + costeDespues - costeAntes;
+        return solucion.coste + costeDespues - costeAntes;
     }
 
     /**
