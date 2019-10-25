@@ -1,9 +1,9 @@
 package meta;
 
 class Greedy {
-    private int[] sumatorio_flujos;
-    private int[] sumatorio_distancias;
-    private int tam;
+    private int[] sumatorioFlujos;
+    private int[] sumatorioDistancias;
+    private int tamSolucion;
     private Solucion solucion;
 
     private static final int MARCA = -1; // Posición añadida a la solución
@@ -13,27 +13,27 @@ class Greedy {
     private static int[] mejoresPosiciones = new int[2];;
 
     Greedy() {
-        tam = Main.aeropuertoActual.numPuertas;
-        sumatorio_flujos = new int[tam];
-        sumatorio_distancias = new int[tam];
+        tamSolucion = Main.aeropuertoActual.numPuertas;
+        sumatorioFlujos = new int[tamSolucion];
+        sumatorioDistancias = new int[tamSolucion];
 
         // Creación de los vectores suma de flujos y distancias
-        for (int i = 0; i < tam; i++)
-            for (int j = 0; j < tam; j++) {
-                sumatorio_flujos[i] += Main.aeropuertoActual.flujos[i][j];
-                sumatorio_distancias[i] += Main.aeropuertoActual.distancias[i][j];
+        for (int i = 0; i < tamSolucion; i++)
+            for (int j = 0; j < tamSolucion; j++) {
+                sumatorioFlujos[i] += Main.aeropuertoActual.flujos[i][j];
+                sumatorioDistancias[i] += Main.aeropuertoActual.distancias[i][j];
             }
-        solucion = new Solucion(tam);
+        solucion = new Solucion(tamSolucion);
     }
 
     void algoritmoGreedy() {
-        int tam_sol = 0;
+        int tamLogicoSolucion = 0;
         do {
             seleccionarMejoresPosiciones();
             eliminarMejores();
             solucion.solucion[mejoresPosiciones[0]]=mejoresPosiciones[1];
-            tam_sol++;
-        }while (tam_sol<tam);
+            tamLogicoSolucion++;
+        }while (tamLogicoSolucion< tamSolucion);
 
         solucion.coste = Utils.calcularCoste(solucion.solucion);
     }
@@ -45,16 +45,16 @@ class Greedy {
         int val_mejor_flujo = Integer.MIN_VALUE;
         int val_mejor_dist = Integer.MAX_VALUE;
 
-        for (int i = 0; i < tam; i++) {
-            if (sumatorio_flujos[i] != MARCA) {
-                if (sumatorio_flujos[i] > val_mejor_flujo) {
-                    val_mejor_flujo = sumatorio_flujos[i];
+        for (int i = 0; i < tamSolucion; i++) {
+            if (sumatorioFlujos[i] != MARCA) {
+                if (sumatorioFlujos[i] > val_mejor_flujo) {
+                    val_mejor_flujo = sumatorioFlujos[i];
                     mejoresPosiciones[0] = i;
                 }
             }
-            if (sumatorio_distancias[i] != MARCA) {
-                if (sumatorio_distancias[i] < val_mejor_dist) {
-                    val_mejor_dist = sumatorio_distancias[i];
+            if (sumatorioDistancias[i] != MARCA) {
+                if (sumatorioDistancias[i] < val_mejor_dist) {
+                    val_mejor_dist = sumatorioDistancias[i];
                     mejoresPosiciones[1] = i;
                 }
             }
@@ -65,8 +65,8 @@ class Greedy {
      * Marcamos las posiciones de los mejores dentro de cada matriz para no volver a sacarlos
      */
     private void eliminarMejores(){
-        sumatorio_flujos[mejoresPosiciones[0]]= MARCA;
-        sumatorio_distancias[mejoresPosiciones[1]]= MARCA;
+        sumatorioFlujos[mejoresPosiciones[0]]= MARCA;
+        sumatorioDistancias[mejoresPosiciones[1]]= MARCA;
     }
 
     Solucion getSolucion() {

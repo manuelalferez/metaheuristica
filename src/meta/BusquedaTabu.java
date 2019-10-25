@@ -33,7 +33,7 @@ class BusquedaTabu {
         Utils.escribirSolucionInicial(solucionActual, iteraciones);
         mejorSolucion = new Solucion(solucionActual);
         do {
-            generarMejorVecino();
+            generarMejorVecino();//TODO
             realizarMovimiento();
             actualizaMemoriaLargoPlazo(mejorVecino);
             anadirVecinoTabu(mejorVecino);
@@ -131,7 +131,7 @@ class BusquedaTabu {
      * Genera el entorno teniendo en cuenta que la memoria a largo plazo es una matriz triangular superior. Empezamos
      * a recorrerla desde abajo hacia arriba, de menos elementos en la fila a más elementos
      */
-    private void generarEntorno() {
+    private void generarEntorno() { //TODO
         solucionActual = new Solucion(tamSolucion); // La situación actual cambiará por el nuevo entorno
         int mejorValor, posicionMejor;
         boolean esMejor;
