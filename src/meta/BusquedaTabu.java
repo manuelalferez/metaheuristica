@@ -30,7 +30,7 @@ class BusquedaTabu {
     void algoritmoTabu() {
         int iteraciones = 0, intentos = 0, entorno = 0;
         solucionActual = Utils.generarSolucionInicial(tamSolucion);
-        Utils.escribirSolucionInicial(solucionActual.solucion, solucionActual.coste, iteraciones);
+        Utils.escribirSolucionInicial(solucionActual, iteraciones);
         mejorSolucion = new Solucion(solucionActual);
         do {
             generarMejorVecino();
