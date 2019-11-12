@@ -129,15 +129,8 @@ class BusquedaTabu {
     }
 
     private void realizarMovimiento() {
-/*        Main.contenidoLog += "Movimiento:  ";
-        for (int i : solucionActual.solucion) {
-            Main.contenidoLog += " " + i;
-        }
-        Main.contenidoLog += "     Coste: " + solucionActual.coste + " Movimiento: " +
-                mejorVecino.getPrimeraPosicion() + " " + mejorVecino.getSegundaPosicion() + "\n";*/
         Utils.realizarMovimiento(solucionActual.solucion, mejorVecino);
         solucionActual.coste = costeMejorVecino;
-
     }
 
     /**
@@ -181,11 +174,6 @@ class BusquedaTabu {
             solucionActual.solucion[i] = posicionMejor;
         }
         solucionActual.coste = Utils.calcularCoste(solucionActual.solucion);
-    /*    Main.contenidoLog += "Oscilación:  ";
-        for (int i : solucionActual.solucion) {
-            Main.contenidoLog += " " + i;
-        }
-        Main.contenidoLog += "     Coste: " + solucionActual.coste + "\n";*/
     }
 
     private int reiniciarMejorValor() {
