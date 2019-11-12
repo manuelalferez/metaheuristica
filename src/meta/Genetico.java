@@ -33,11 +33,22 @@ public class Genetico {
 
     private void recombinar() {
         double probabilidad = Main.random.nextDouble();
-        for (int i = 0; i < poblacion.getTamPoblacion(); i+=2) {
+        int posPadre = 0; //posMadre = posPadre +1
+        while (posPadre < poblacion.getTamPoblacion()) {
             if (probabilidad < 0.7) {
-
+                if (Main.esCruceMOC) cruceMOC(posPadre);
+                else cruceOX2(posPadre);
             }
+            posPadre += 2;
         }
+    }
+
+    private void cruceMOC(int posPadre) {
+        double puntoDeCorte = Main.random.nextInt(poblacion.tamIndividuo);
+
+    }
+
+    private void cruceOX2(int posPadre) {
 
     }
 

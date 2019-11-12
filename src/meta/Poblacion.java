@@ -4,16 +4,17 @@ public class Poblacion {
     private Solucion[] individuos;
     private int tamFisico;
     private int tamLogico;
+    int tamIndividuo;
+
     Poblacion(int tamFisico, int tamSolucion) {
         individuos = new Solucion[this.tamFisico = tamFisico];
         for (int i = 0; i < tamFisico; i++)
-            individuos[i] = Utils.generarSolucionInicial(tamSolucion);
+            individuos[i] = Utils.generarSolucionInicial(tamIndividuo= tamSolucion);
     }
 
-
     Poblacion (int tamFisico){
-        individuos = new Solucion[tamFisico];
-        this.tamFisico = 0;//TODO , aniadirIndividuo añade sin darle la posicion
+        individuos = new Solucion[this.tamFisico= tamFisico];
+        this.tamLogico = 0;
     }
 
     public void evaluarPoblacion() {
@@ -28,10 +29,10 @@ public class Poblacion {
     }
 
     public int getTamPoblacion(){
-        return tamPoblacion;
+        return tamFisico;
     }
     public void aniadirIndividuo(Solucion individuo){
-            individuos[tamFisico++]= new Solucion (individuo);
+            individuos[tamLogico++]= new Solucion (individuo);
     }
 
 }
