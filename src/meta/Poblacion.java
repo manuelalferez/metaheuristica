@@ -2,12 +2,18 @@ package meta;
 
 public class Poblacion {
     private Solucion[] individuos;
-    private int tamPoblacion;
-
-    Poblacion(int tamPoblacion, int tamSolucion) {
-        individuos = new Solucion[this.tamPoblacion= tamPoblacion];
-        for (int i = 0; i < tamPoblacion; i++)
+    private int tamFisico;
+    private int tamLogico;
+    Poblacion(int tamFisico, int tamSolucion) {
+        individuos = new Solucion[this.tamFisico = tamFisico];
+        for (int i = 0; i < tamFisico; i++)
             individuos[i] = Utils.generarSolucionInicial(tamSolucion);
+    }
+
+
+    Poblacion (int tamFisico){
+        individuos = new Solucion[tamFisico];
+        this.tamFisico = 0;//TODO , aniadirIndividuo añade sin darle la posicion
     }
 
     public void evaluarPoblacion() {
@@ -17,18 +23,16 @@ public class Poblacion {
         }
     }
 
-    public void seleccionTorneo(int kIndividuos){
-
-        int seleccionados = 0;
-        while (seleccionados != kIndividuos){
-            Main.random.nextInt();
-            int number = Main.random.nextInt(individuos.length);
-
-        }
+    public Solucion getIndividuo(int posicion){
+        return individuos[posicion];
     }
 
     public int getTamPoblacion(){
         return tamPoblacion;
     }
+    public void aniadirIndividuo(Solucion individuo){
+            individuos[tamFisico++]= new Solucion (individuo);
+    }
+
 }
 
