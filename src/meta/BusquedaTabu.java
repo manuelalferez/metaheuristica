@@ -9,6 +9,7 @@ class BusquedaTabu {
     private static final int MAX_ITERACIONES = 50000;
     private static final int MAX_INTENTOS = 100;
     private static final int NUM_VECINOS = 10;
+    private static final int NUM_ENTORNOS = 100;
 
     private static Solucion solucionActual = new Solucion();
     private static Vecino mejorVecino = new Vecino();
@@ -70,7 +71,7 @@ class BusquedaTabu {
             }
             entornosLocales++;
             entorno++;
-        } while (entornosLocales < 100 && costeMejorVecino > solucionActual.coste);
+        } while (entornosLocales < NUM_ENTORNOS && costeMejorVecino > solucionActual.coste);
 
         if (!mejorEntornos.sonIguales(mejorVecino))
             mejorVecino.copiarVecino(mejorEntornos);
@@ -128,8 +129,15 @@ class BusquedaTabu {
     }
 
     private void realizarMovimiento() {
+/*        Main.contenidoLog += "Movimiento:  ";
+        for (int i : solucionActual.solucion) {
+            Main.contenidoLog += " " + i;
+        }
+        Main.contenidoLog += "     Coste: " + solucionActual.coste + " Movimiento: " +
+                mejorVecino.getPrimeraPosicion() + " " + mejorVecino.getSegundaPosicion() + "\n";*/
         Utils.realizarMovimiento(solucionActual.solucion, mejorVecino);
         solucionActual.coste = costeMejorVecino;
+
     }
 
     /**
@@ -152,7 +160,7 @@ class BusquedaTabu {
      * Genera el entorno teniendo en cuenta que la memoria a largo plazo es una matriz triangular superior. Empezamos
      * a recorrerla desde abajo hacia arriba, de menos elementos en la fila a más elementos
      */
-    private void oscilacionEstrategica() { //TODO
+    private void oscilacionEstrategica() {
         solucionActual = new Solucion(tamSolucion); // La situación actual cambiará por el nuevo entorno
         int mejorValor, posicionMejor;
         boolean esMejor;
@@ -173,6 +181,11 @@ class BusquedaTabu {
             solucionActual.solucion[i] = posicionMejor;
         }
         solucionActual.coste = Utils.calcularCoste(solucionActual.solucion);
+    /*    Main.contenidoLog += "Oscilación:  ";
+        for (int i : solucionActual.solucion) {
+            Main.contenidoLog += " " + i;
+        }
+        Main.contenidoLog += "     Coste: " + solucionActual.coste + "\n";*/
     }
 
     private int reiniciarMejorValor() {
@@ -189,7 +202,9 @@ class BusquedaTabu {
      * El entorno se va generando desde el inicio. La cotaSuperior mejora la eficiencia
      */
     private boolean valorNoEsta(int[] entorno, int cotaSuperior, int valor) {
-        for (int i = 0; i < cotaSuperior; i++) if (entorno[i] == valor) return false;
+        for (int i = 0; i <= cotaSuperior; i++)
+            if (entorno[i] == valor)
+                return false;
         return true;
     }
 
