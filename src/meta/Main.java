@@ -14,6 +14,7 @@ public class Main {
     private static final int ALGORITHM = 0;
     private static final int INPUT = 1;
     private static final int SEED = 2;
+    private static boolean esCruceMOC = false; // Si no es MOC, es OX2
 
     private static final String TODOS_ARCHIVOS = "all";
     private static final String BL = "bl";

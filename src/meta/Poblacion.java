@@ -2,9 +2,10 @@ package meta;
 
 public class Poblacion {
     private Solucion[] individuos;
+    private int tamPoblacion;
 
     Poblacion(int tamPoblacion, int tamSolucion) {
-        individuos = new Solucion[tamPoblacion];
+        individuos = new Solucion[this.tamPoblacion= tamPoblacion];
         for (int i = 0; i < tamPoblacion; i++)
             individuos[i] = Utils.generarSolucionInicial(tamSolucion);
     }
@@ -26,6 +27,8 @@ public class Poblacion {
         }
     }
 
-
+    public int getTamPoblacion(){
+        return tamPoblacion;
+    }
 }
 
