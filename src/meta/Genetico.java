@@ -34,4 +34,14 @@ public class Genetico {
     }
 
 
+    public void TorneoBinario() {
+        int kIndividuos = 2;
+        int individuosSeleccionados = 0;
+        while (seleccionados != kIndividuos) {
+            int number = Main.random.nextInt(individuos.length);
+            poblacion.getIndividuo(i);
+        }
+
+
+    }
 }
