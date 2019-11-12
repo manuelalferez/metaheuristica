@@ -73,7 +73,7 @@ class Utils {
      * Calcula el coste del movimiento antes de intercambiar las puertas y después. Después se restan a coste total
      * para calcular el coste final asociado al movimiento
      */
-    static int calcularCosteParametrizado(Solucion solucion,  Vecino vecino) {
+    static int calcularCosteParametrizado(Solucion solucion, Vecino vecino) {
         int costeAntes = 0, costeDespues = 0;
         costeAntes = calcularCosteMovimiento(solucion.solucion, vecino);
         realizarMovimiento(solucion.solucion, vecino);
@@ -95,8 +95,10 @@ class Utils {
         int s = vecino.getSegundaPosicion();
         if (Main.aeropuertoActual.getEsSimetrica()) {
             for (int i = 0; i < solucion.length; i++) {
-                if (i != r) coste += 2 * Main.aeropuertoActual.flujos[r][i] * Main.aeropuertoActual.distancias[solucion[r]][solucion[i]];
-                if (i != s) coste += 2 * Main.aeropuertoActual.flujos[s][i] * Main.aeropuertoActual.distancias[solucion[s]][solucion[i]];
+                if (i != r)
+                    coste += 2 * Main.aeropuertoActual.flujos[r][i] * Main.aeropuertoActual.distancias[solucion[r]][solucion[i]];
+                if (i != s)
+                    coste += 2 * Main.aeropuertoActual.flujos[s][i] * Main.aeropuertoActual.distancias[solucion[s]][solucion[i]];
             }
         } else {
             for (int i = 0; i < solucion.length; i++) {
@@ -119,14 +121,12 @@ class Utils {
         int tamLogico = tamSolucion;
         for (int i = 0; i < tamSolucion; i++) posiciones[i] = i;
 
-
         while (tamLogico != 0) {
             int number = Main.random.nextInt(tamLogico);
             solucionInicial.solucion[tamSolucion - tamLogico] = posiciones[number];
             posiciones[number] = posiciones[tamLogico - 1];
             tamLogico--;
         }
-        solucionInicial.coste = Utils.calcularCoste(solucionInicial.solucion);
 
         return solucionInicial;
     }

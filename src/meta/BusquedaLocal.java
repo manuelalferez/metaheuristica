@@ -21,6 +21,8 @@ class BusquedaLocal {
     void algoritmoBusquedaLocal() {
         int iteraciones = 0, intentos = 0, entorno = 0;
         solucionActual = Utils.generarSolucionInicial(tamSolucion);
+        solucionActual.coste = Utils.calcularCoste(solucionInicial.solucion);
+
         Utils.escribirSolucionInicial(solucionActual, iteraciones);
 
         do {
