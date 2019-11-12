@@ -13,6 +13,8 @@ class BusquedaTabu {
     private static Solucion solucionActual = new Solucion();
     private static Vecino mejorVecino = new Vecino();
     private static int costeMejorVecino = Integer.MAX_VALUE;
+    private static int entornoMejorVecino;
+    private static int entorno;
 
     // Atributos
     private int tamSolucion;
@@ -28,17 +30,18 @@ class BusquedaTabu {
     }
 
     void algoritmoTabu() {
-        int iteraciones = 0, intentos = 0, entorno = 0;
+        int iteraciones = 0, intentos = 0;
+        entorno = 0;
         solucionActual = Utils.generarSolucionInicial(tamSolucion);
         Utils.escribirSolucionInicial(solucionActual, iteraciones);
         mejorSolucion = new Solucion(solucionActual);
         do {
-            generarMejorVecino();//TODO
+            generarEntornos();
             realizarMovimiento();
             actualizaMemoriaLargoPlazo(mejorVecino);
             anadirVecinoTabu(mejorVecino);
 
-            Utils.escribirMovimientoEnFichero(entorno, mejorVecino, solucionActual.coste, iteraciones); // logs
+            Utils.escribirMovimientoEnFichero(entornoMejorVecino, mejorVecino, solucionActual.coste, iteraciones); // logs
             iteraciones++;
 
             if (solucionActual.coste < mejorSolucion.coste) {
@@ -48,11 +51,29 @@ class BusquedaTabu {
 
             if (intentos == MAX_INTENTOS) {
                 calcularEstrategia();
-                generarEntorno();
+                oscilacionEstrategica();
                 intentos = 0;
-                entorno++;
             }
         } while (iteraciones < MAX_ITERACIONES);
+    }
+
+    private void generarEntornos() {
+        int entornosLocales = 0;
+        Vecino mejorEntornos = new Vecino();
+        int costeMejorEntornos = Integer.MAX_VALUE;
+        do {
+            generarMejorVecino();
+            if (costeMejorEntornos > costeMejorVecino) {
+                mejorEntornos.copiarVecino(mejorVecino);
+                costeMejorEntornos = costeMejorVecino;
+                entornoMejorVecino = entorno;
+            }
+            entornosLocales++;
+            entorno++;
+        } while (entornosLocales < 100 && costeMejorVecino > solucionActual.coste);
+
+        if (!mejorEntornos.sonIguales(mejorVecino))
+            mejorVecino.copiarVecino(mejorEntornos);
     }
 
     private void generarMejorVecino() {
@@ -131,7 +152,7 @@ class BusquedaTabu {
      * Genera el entorno teniendo en cuenta que la memoria a largo plazo es una matriz triangular superior. Empezamos
      * a recorrerla desde abajo hacia arriba, de menos elementos en la fila a más elementos
      */
-    private void generarEntorno() { //TODO
+    private void oscilacionEstrategica() { //TODO
         solucionActual = new Solucion(tamSolucion); // La situación actual cambiará por el nuevo entorno
         int mejorValor, posicionMejor;
         boolean esMejor;
