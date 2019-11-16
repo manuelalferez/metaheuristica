@@ -52,26 +52,10 @@ public class Genetico {
     }
 
     private void cruceMOC() {
-        int puntoDeCorte = Main.random.nextInt(poblacion.tamIndividuo);
-        boolean copiaPadre[ poblacionDescendiente.tamIndividuo];
-        boolean copiaMadre[ poblacionDescendiente.tamIndividuo];
-        for (int i = 0; i < poblacionDescendiente.tamIndividuo; i++) {
 
-            poblacionDescendiente.individuos[posPadre]
-        }
     }
 
-    private boolean[] eliminacionCruzada(int puntoDeCorte) {
-        boolean esValorAntesDeCorte[NUM_INDIVIDUOS_CRUZADOS][poblacionDescendiente.tamIndividuo];
-        for (int i = 0; i < puntoDeCorte; i++) {
-            for (int j = 0; j < poblacionDescendiente.tamIndividuo; j++) {
-                if (esValorAntesDeCorte[2][i] != true)
-                    if (poblacionDescendiente.individuos[posPadre + 1] =)
-            }
-        }
-    }
-
-    private void cruceOX2(int posPadre) {
+    private void cruceOX2() {
 
     }
 
