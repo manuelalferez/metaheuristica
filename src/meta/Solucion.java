@@ -14,12 +14,14 @@ class Solucion {
     Solucion(int tam){
         solucion = new int[tam];
         coste=0;
-        estaModificado = false;
+        estaModificado = true;
     }
 
     Solucion(Solucion copia){
         solucion = new int[copia.solucion.length];
-        for(int i=0;i<solucion.length;i++) solucion[i]= copia.solucion[i];
+        for(int i=0;i<solucion.length;i++) {
+            solucion[i]= copia.solucion[i];
+        }
         coste=copia.coste;
         estaModificado=copia.estaModificado;
     }
@@ -28,6 +30,6 @@ class Solucion {
         solucion = new int[copia.solucion.length];
         for(int i=0;i<solucion.length;i++) solucion[i]= copia.solucion[i];
         coste=copia.coste;
-        estaModificado=copia.estaModificado
+        estaModificado=copia.estaModificado;
     }
 }

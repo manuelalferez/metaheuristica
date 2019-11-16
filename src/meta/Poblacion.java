@@ -1,7 +1,7 @@
 package meta;
 
 public class Poblacion {
-    private Solucion[] individuos;
+    Solucion[] individuos;
     private int tamFisico;
     private int tamLogico;
     int tamIndividuo;
@@ -22,10 +22,6 @@ public class Poblacion {
             individuos[i].coste = Utils.calcularCoste(individuos[i].solucion);
             individuos[i].estaModificado = false;
         }
-    }
-
-    public Solucion getIndividuo(int posicion){
-        return individuos[posicion];
     }
 
     public int getTamPoblacion(){
