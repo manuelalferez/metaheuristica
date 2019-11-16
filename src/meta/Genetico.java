@@ -3,6 +3,10 @@ package meta;
 public class Genetico {
     Poblacion poblacion;
     Poblacion poblacionDescendiente;
+    private int TAM_TORNEO = 2;
+    private int NUM_INDIVIDUOS_CRUZADOS = 2;
+    private int posPadre;
+    private int posMadre = posPadre + 1;
 
     public void algoritmoGenetico() {
         int iteraciones = 0;
@@ -43,13 +47,28 @@ public class Genetico {
                 if (Main.esCruceMOC) cruceMOC(posPadre);
                 else cruceOX2(posPadre);
             }
-            posPadre += 2;
+            posPadre += TAM_TORNEO;
         }
     }
 
-    private void cruceMOC(int posPadre) {
-        double puntoDeCorte = Main.random.nextInt(poblacion.tamIndividuo);
+    private void cruceMOC() {
+        int puntoDeCorte = Main.random.nextInt(poblacion.tamIndividuo);
+        boolean copiaPadre[ poblacionDescendiente.tamIndividuo];
+        boolean copiaMadre[ poblacionDescendiente.tamIndividuo];
+        for (int i = 0; i < poblacionDescendiente.tamIndividuo; i++) {
 
+            poblacionDescendiente.individuos[posPadre]
+        }
+    }
+
+    private boolean[] eliminacionCruzada(int puntoDeCorte) {
+        boolean esValorAntesDeCorte[NUM_INDIVIDUOS_CRUZADOS][poblacionDescendiente.tamIndividuo];
+        for (int i = 0; i < puntoDeCorte; i++) {
+            for (int j = 0; j < poblacionDescendiente.tamIndividuo; j++) {
+                if (esValorAntesDeCorte[2][i] != true)
+                    if (poblacionDescendiente.individuos[posPadre + 1] =)
+            }
+        }
     }
 
     private void cruceOX2(int posPadre) {

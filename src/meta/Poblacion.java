@@ -25,10 +25,6 @@ public class Poblacion {
         }
     }
 
-    public Solucion getIndividuo(int posicion){
-        return individuos[posicion];
-    }
-
     public int getTamPoblacion(){
         return tamFisico;
     }

@@ -115,6 +115,11 @@ class Utils {
         return coste;
     }
 
+    static void copiarVectores(int[] destino, int[] fuente) {
+        for (int i = 0; destino.length; i++)
+            destino[i] = fuente[i];
+    }
+
     static Solucion generarSolucionInicial(int tamSolucion) {
         Solucion solucionInicial = new Solucion(tamSolucion);
         int[] posiciones = new int[tamSolucion];

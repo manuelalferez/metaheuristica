@@ -22,7 +22,9 @@ class Solucion {
 
     Solucion(Solucion copia){
         solucion = new int[copia.solucion.length];
-        for(int i=0;i<solucion.length;i++) solucion[i]= copia.solucion[i];
+        for(int i=0;i<solucion.length;i++) {
+            solucion[i]= copia.solucion[i];
+        }
         coste=copia.coste;
         estaModificado=copia.estaModificado;
         id = contador++;
@@ -32,6 +34,6 @@ class Solucion {
         solucion = new int[copia.solucion.length];
         for(int i=0;i<solucion.length;i++) solucion[i]= copia.solucion[i];
         coste=copia.coste;
-        estaModificado=copia.estaModificado
+        estaModificado=copia.estaModificado;
     }
 }
