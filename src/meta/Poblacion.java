@@ -1,13 +1,14 @@
 package meta;
 
 public class Poblacion {
-    private Solucion[] individuos;
+    Solucion[] individuos;
     private int tamFisico;
     private int tamLogico;
     int tamIndividuo;
+    int [] posicionElites;
 
     Poblacion(int tamFisico, int tamSolucion) {
-        individuos = new Solucion[this.tamFisico = tamFisico];
+        individuos = new Solucion[this.tamFisico = this.tamLogico = tamFisico];
         for (int i = 0; i < tamFisico; i++)
             individuos[i] = Utils.generarSolucionInicial(tamIndividuo= tamSolucion);
     }
@@ -31,9 +32,11 @@ public class Poblacion {
     public int getTamPoblacion(){
         return tamFisico;
     }
-    public void aniadirIndividuo(Solucion individuo){
+    public void incluirIndividuo(Solucion individuo){
             individuos[tamLogico++]= new Solucion (individuo);
     }
-
+public void inicializarElites(int [] posElites){
+        posicionElites = posElites.clone();
+}
 }
 

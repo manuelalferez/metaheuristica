@@ -28,7 +28,11 @@ public class Genetico {
     }
 
     public void seleccionar() {
-
+        Solucion individuo ;
+        for (int i= 0; i< poblacion.getTamPoblacion(); i++) {
+            individuo = torneoBinario();
+            poblacionDescendiente.incluirIndividuo(individuo);
+        }
     }
 
     private void recombinar() {
@@ -52,14 +56,51 @@ public class Genetico {
 
     }
 
-    public void TorneoBinario() {
-        int kIndividuos = 2;
-        int individuosSeleccionados = 0;
-        while (seleccionados != kIndividuos) {
-            int number = Main.random.nextInt(individuos.length);
-            poblacion.getIndividuo(i);
+    public Solucion torneoBinario() {
+        int posPrimerIndividuo = Main.random.nextInt(individuos.length);
+        int posSegundoIndividuo;
+
+        do {
+            posSegundoIndividuo= Main.random.nextInt(individuos.length);
+        }while(posPrimerIndividuo == posSegundoIndividuo);
+
+        if (poblacion.individuos[posPrimerIndividuo].coste < poblacion.individuos[posSegundoIndividuo].coste)
+            return poblacion.individuos[posPrimerIndividuo];
+        else
+            return poblacion.individuos[posSegundoIndividuo];
+    }
+
+    public void calcularElite( int numElites){
+
+        int posElite[] = new int[numElites];
+        int costeElite[] = new int[numElites];
+
+        for (int i = 0; i< numElites; i++) {
+            posElite[i]= i;
+            costeElite[i]= poblacion.individuos[i].coste;
         }
 
-
+        for (int i = numElites; i< poblacion.getTamPoblacion(); i++){
+            int posMayorCoste = calcularPosicionMaximoCoste(posElite,costeElite);
+            if (poblacion.individuos[i].coste < costeElite[posMayorCoste]){
+                posElite[posMayorCoste] = i;
+                costeElite[posMayorCoste] = poblacion.individuos[i].coste;
+            }
+        }
+        poblacion.inicializarElites(posElite);
     }
+
+    private int calcularPosicionMaximoCoste(int []posElite, int [] costeElite){
+        int posicionMaximo = 0;
+        int costeMaximo= costeElite[0];
+
+        for (int i = 1; i < posElite.length; i++){
+            if (costeMaximo<costeElite[i]){
+                posicionMaximo = i;
+                costeMaximo = costeElite[i];
+            }
+        }
+        return posicionMaximo;
+    }
+
 }
