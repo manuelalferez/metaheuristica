@@ -4,9 +4,6 @@ public class Genetico {
     Poblacion poblacion;
     Poblacion poblacionDescendiente;
     private int TAM_TORNEO = 2;
-    private int NUM_INDIVIDUOS_CRUZADOS = 2;
-    private int posPadre;
-    private int posMadre = posPadre + 1;
 
     public void algoritmoGenetico() {
         int iteraciones = 0;
