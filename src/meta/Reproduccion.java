@@ -20,17 +20,17 @@ public class Reproduccion {
     private int[][] posMarcadasOX2;
     private int[] tamPosMarcadasOX2;
 
-    Reproduccion(int[] padre, int[] madre) {
-        this.TAM_PROGENITORES = padre.length;
+    Reproduccion(Solucion padre, Solucion madre) {
+        this.TAM_PROGENITORES = padre.solucion.length;
         this.progenitores = new int[NUM_PROGENITORES][TAM_PROGENITORES];
 
         for (int i = 0; i < TAM_PROGENITORES; i++) {
-            this.progenitores[POS_PADRE][i] = padre[i];
-            this.progenitores[POS_MADRE][i] = madre[i];
+            this.progenitores[POS_PADRE][i] = padre.solucion[i];
+            this.progenitores[POS_MADRE][i] = madre.solucion[i];
         }
     }
 
-    private void cruceMOC() {
+    public void cruceMOC() {
         puntoDeCorte = Main.random.nextInt(TAM_PROGENITORES);
         posMarcadasMOC = new boolean[NUM_PROGENITORES][TAM_PROGENITORES];
         eliminacionCruzada();
@@ -78,7 +78,7 @@ public class Reproduccion {
         }
     }
 
-    private void cruceOX2() {
+    public void cruceOX2() {
         progenitorOrigen = 0;
         copiaProgenitores = progenitores.clone();
         while (progenitorOrigen < NUM_PROGENITORES) {

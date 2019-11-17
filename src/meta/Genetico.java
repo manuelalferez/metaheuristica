@@ -4,14 +4,14 @@ public class Genetico {
     Poblacion poblacion;
     Poblacion poblacionDescendiente;
     private int TAM_TORNEO = 2;
+    private static int TAM_POBLACION = 50;
 
     public void algoritmoGenetico() {
         int iteraciones = 0;
         inicializarPoblacion();
-
+        crearPoblacionDescendientes();
         while (iteraciones < TAM) {
             evaluarPoblacion();
-            //Calcular elite
             seleccionar();
             recombinar();
             mutar();
@@ -20,69 +20,74 @@ public class Genetico {
         }
     }
 
-    public void inicializarPoblacion() {
-        poblacion = new Poblacion(numIndividuos, numPuertas);
+    private void inicializarPoblacion() {
+        poblacion = new Poblacion(TAM_POBLACION, Main.aeropuertoActual.numPuertas);
+        poblacion.inicializar();
     }
 
-    public void evaluarPoblacion() {
+    private void crearPoblacionDescendientes() {
+        poblacionDescendiente = new Poblacion(TAM_POBLACION, Main.aeropuertoActual.numPuertas);
+    }
+
+    private void evaluarPoblacion() {
         poblacion.evaluarPoblacion();
     }
 
-    public void seleccionar() {
-        Solucion individuo ;
-        for (int i= 0; i< poblacion.getTamPoblacion(); i++) {
-            individuo = torneoBinario();
-            poblacionDescendiente.incluirIndividuo(individuo);
+    private void seleccionar() {
+        int posIndividuoGanador;
+        for (int i = 0; i < poblacion.getTam(); i++) {
+            posIndividuoGanador = torneoBinario();
+            poblacionDescendiente.incluirIndividuo(poblacion.individuos[posIndividuoGanador]);
         }
+    }
+
+    private int torneoBinario() {
+        int posPrimerIndividuo = Main.random.nextInt(poblacion.individuos.length);
+        int posSegundoIndividuo = generarPosDistintaPrimerIndividuo(posPrimerIndividuo);
+        return mejorIndividuo(posPrimerIndividuo, posSegundoIndividuo);
+    }
+
+    private int generarPosDistintaPrimerIndividuo(int posPrimerIndividuo){
+        int posSegundoIndividuo;
+        do {
+            posSegundoIndividuo= Main.random.nextInt(poblacion.individuos.length);
+        }while(posPrimerIndividuo == posSegundoIndividuo);
+        return posSegundoIndividuo;
+    }
+
+    private int mejorIndividuo(int primer, int segundo) {
+        if (poblacion.individuos[primer].coste < poblacion.individuos[segundo].coste)
+            return primer;
+        else return segundo;
     }
 
     private void recombinar() {
-        double probabilidad = Main.random.nextDouble();
-        int posPadre = 0; //posMadre = posPadre +1
-        while (posPadre < poblacion.getTamPoblacion()) {
+        int i=0;
+        while (i < poblacion.getTam()) {
+            double probabilidad = Main.random.nextDouble();
             if (probabilidad < 0.7) {
-                if (Main.esCruceMOC) cruceMOC(posPadre);
-                else cruceOX2(posPadre);
+                Reproduccion nuevaReproduccion =
+                        new Reproduccion(poblacionDescendiente.individuos[i], poblacionDescendiente.individuos[i+1]);
+                if (Main.esCruceMOC) nuevaReproduccion.cruceMOC();
+                else nuevaReproduccion.cruceOX2();
             }
-            posPadre += TAM_TORNEO;
+            i += TAM_TORNEO;
         }
     }
 
-    private void cruceMOC() {
-
-    }
-
-    private void cruceOX2() {
-
-    }
-
-    public Solucion torneoBinario() {
-        int posPrimerIndividuo = Main.random.nextInt(individuos.length);
-        int posSegundoIndividuo;
-
-        do {
-            posSegundoIndividuo= Main.random.nextInt(individuos.length);
-        }while(posPrimerIndividuo == posSegundoIndividuo);
-
-        if (poblacion.individuos[posPrimerIndividuo].coste < poblacion.individuos[posSegundoIndividuo].coste)
-            return poblacion.individuos[posPrimerIndividuo];
-        else
-            return poblacion.individuos[posSegundoIndividuo];
-    }
-
-    public void calcularElite( int numElites){
+    private void calcularElite(int numElites) {
 
         int posElite[] = new int[numElites];
         int costeElite[] = new int[numElites];
 
-        for (int i = 0; i< numElites; i++) {
-            posElite[i]= i;
-            costeElite[i]= poblacion.individuos[i].coste;
+        for (int i = 0; i < numElites; i++) {
+            posElite[i] = i;
+            costeElite[i] = poblacion.individuos[i].coste;
         }
 
-        for (int i = numElites; i< poblacion.getTamPoblacion(); i++){
-            int posMayorCoste = calcularPosicionMaximoCoste(posElite,costeElite);
-            if (poblacion.individuos[i].coste < costeElite[posMayorCoste]){
+        for (int i = numElites; i < poblacion.getTam(); i++) {
+            int posMayorCoste = calcularPosicionMaximoCoste(posElite, costeElite);
+            if (poblacion.individuos[i].coste < costeElite[posMayorCoste]) {
                 posElite[posMayorCoste] = i;
                 costeElite[posMayorCoste] = poblacion.individuos[i].coste;
             }
@@ -90,12 +95,12 @@ public class Genetico {
         poblacion.inicializarElites(posElite);
     }
 
-    private int calcularPosicionMaximoCoste(int []posElite, int [] costeElite){
+    private int calcularPosicionMaximoCoste(int[] posElite, int[] costeElite) {
         int posicionMaximo = 0;
-        int costeMaximo= costeElite[0];
+        int costeMaximo = costeElite[0];
 
-        for (int i = 1; i < posElite.length; i++){
-            if (costeMaximo<costeElite[i]){
+        for (int i = 1; i < posElite.length; i++) {
+            if (costeMaximo < costeElite[i]) {
                 posicionMaximo = i;
                 costeMaximo = costeElite[i];
             }
