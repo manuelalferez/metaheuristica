@@ -8,13 +8,19 @@ public class Reproduccion {
     private int[][] progenitores;
     private int TAM_PROGENITORES;
 
+    private int POS_PADRE = 0, POS_MADRE = 1, NUM_PROGENITORES = 2;
+
     // Variables de soporte
     private int puntoDeCorte;
     private boolean[][] valoresAgregados;
-    private int POS_PADRE = 0, POS_MADRE = 1, NUM_PROGENITORES = 2;
     private int[] cotaInferior;
 
-    private int progenitorOrigen;
+    private int progenitorOrigen, progenitorDestino;
+    private int[] posMarcadasOrigen;
+    private int[] posMarcadasDestino;
+    private int tamPosMarcadasOrigen, tamPosMarcadasDestino;
+
+    private int[][] copiaProgenitores;
 
     Reproduccion(int[] padre, int[] madre) {
         this.TAM_PROGENITORES = padre.length;
@@ -43,20 +49,20 @@ public class Reproduccion {
     /**
      * Chequea si la posicionEvaluada esta dentro de los valores anteriores al punto de corte
      */
-    private void estaAntesDePuntoDeCorte(int progenitorEvaluado, int posicionEvaluada) {
+    private void estaAntesDePuntoDeCorte(int progenitorEvaluado, int posEvaluada) {
         int elOtroProgenitor;
         if (progenitorEvaluado == POS_PADRE) elOtroProgenitor = POS_MADRE;
         else elOtroProgenitor = POS_PADRE;
         for (int i = 0; i < puntoDeCorte; i++) {
-            if (progenitores[progenitorEvaluado][posicionEvaluada] == progenitores[elOtroProgenitor][i]) {
-                valoresAgregados[progenitorEvaluado][posicionEvaluada] = true;
+            if (progenitores[progenitorEvaluado][posEvaluada] == progenitores[elOtroProgenitor][i]) {
+                valoresAgregados[progenitorEvaluado][posEvaluada] = true;
                 break;
             }
         }
     }
 
     private void rellenarValoresCruzados() {
-        int[][] copiaProgenitores = progenitores.clone();
+        copiaProgenitores = progenitores.clone();
         cotaInferior = new int[NUM_PROGENITORES];
         for (int i = puntoDeCorte; i < TAM_PROGENITORES; i++) {
             rellenarValor(POS_MADRE, copiaProgenitores[POS_PADRE][i]);
@@ -76,27 +82,51 @@ public class Reproduccion {
 
     private void cruceOX2() {
         progenitorOrigen = 0;
-        while(progenitorOrigen<NUM_PROGENITORES){
-            valoresAgregados = new boolean[NUM_PROGENITORES][TAM_PROGENITORES];
+        copiaProgenitores = progenitores.clone();
+        while (progenitorOrigen < NUM_PROGENITORES) {
+            inicializarVariables();
             seleccionAleatoria();
             eliminacionProgenitorDestino();
-            rellenarValoresCruzados();
+            rellenarValores();
             progenitorOrigen++;
-            //TODO comprobar
         }
+    }
 
+    private void inicializarVariables() {
+        posMarcadasOrigen = new int[TAM_PROGENITORES];
+        posMarcadasDestino = new int[TAM_PROGENITORES];
+        tamPosMarcadasOrigen = 0;
+        tamPosMarcadasDestino = 0;
+        if (progenitorOrigen == POS_PADRE)
+            progenitorDestino = POS_MADRE;
+        else
+            progenitorDestino = POS_PADRE;
     }
 
     private void seleccionAleatoria() {
         for (int i = 0; i < TAM_PROGENITORES; i++) {
             double aleatorio = Main.random.nextDouble();
-            if (aleatorio > 0.5) {
-                valoresAgregados[progenitorOrigen][i]=true;
+            if (aleatorio > 0.5)
+                posMarcadasOrigen[tamPosMarcadasOrigen++] = i;
+        }
+    }
+
+    private void eliminacionProgenitorDestino() {
+        for (int i = 0; i < TAM_PROGENITORES; i++)
+            marcarSiEsta(i);
+    }
+
+    private void marcarSiEsta(int posEvaluada) {
+        for (int i = 0; i < tamPosMarcadasOrigen; i++) {
+            if (copiaProgenitores[progenitorDestino][posEvaluada] == copiaProgenitores[progenitorOrigen][posMarcadasOrigen[i]]) {
+                posMarcadasDestino[tamPosMarcadasDestino++] = posEvaluada;
+                break;
             }
         }
     }
 
-    private void eliminacionProgenitorDestino(){
-        //TODO implementar
+    private void rellenarValores() {
+        for (int i = 0; i < tamPosMarcadasOrigen; i++)
+            progenitores[progenitorDestino][posMarcadasDestino[i]] = copiaProgenitores[progenitorOrigen][posMarcadasOrigen[i]];
     }
 }
