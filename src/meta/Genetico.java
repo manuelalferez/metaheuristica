@@ -5,9 +5,12 @@ public class Genetico {
     Poblacion poblacionDescendiente;
     private int TAM_TORNEO = 2;
     private static int TAM_POBLACION = 50;
+    private static int NUM_POSICIONES_INTERCAMBIADAS = 3;
     private static int NUM_EVALUACIONES = 50000;
 
     Reproduccion nuevaReproduccion;
+
+    int[] posIntercambio;
 
     public void algoritmoGenetico() {
         int iteraciones = 0;
@@ -91,15 +94,76 @@ public class Genetico {
     }
 
     private void mutar() {
-        for (Solucion individuo : poblacionDescendiente.individuos) {
-            for (int i = 0; i < individuo.solucion.length; i++) {
+        for (int i = 0; i < poblacionDescendiente.getTam(); i++) {
+            for (int j = 0; j < poblacionDescendiente.tamIndividuo; j++) {
                 double probabilidad = Main.random.nextDouble();
                 if (probabilidad < 0.05) {
-                    realizarCruce(i);//TODO
-                    copiarIndividuosCruzados(i);
+                    seleccionarPosiciones(j);
+                    ordenarPosiciones();
+                    rotacion(i);
                 }
             }
         }
+    }
+
+    private void seleccionarPosiciones(int primeraPosicion) {
+        posIntercambio = new int[NUM_POSICIONES_INTERCAMBIADAS];
+        posIntercambio[0] = primeraPosicion;
+        int posAleatoria;
+        for (int i = 1; i < NUM_POSICIONES_INTERCAMBIADAS; i++) {
+            do {
+                posAleatoria = Main.random.nextInt(poblacion.tamIndividuo);
+            } while (estaPosicion(posAleatoria, i));
+            posIntercambio[i] = posAleatoria;
+        }
+    }
+
+    private boolean estaPosicion(int pos, int tam) {
+        for (int i = 0; i < tam; i++)
+            if (posIntercambio[i] == pos)
+                return true;
+        return false;
+    }
+
+    private void ordenarPosiciones() {
+        for (int i = 0; i < NUM_POSICIONES_INTERCAMBIADAS - 1; i++) {
+            for (int j = i + 1; j < NUM_POSICIONES_INTERCAMBIADAS; j++) {
+                if (posIntercambio[i] > posIntercambio[j])
+                    intercambiarPosIntercambio(i, j);
+            }
+        }
+    }
+
+    private void intercambiarPosIntercambio(int a, int b) {
+        int aux = posIntercambio[a];
+        posIntercambio[a] = posIntercambio[b];
+        posIntercambio[b] = aux;
+    }
+
+    private void rotacion(int posIndividuo) {
+        int valorPrimeraPosicion = 0;
+        for (int i = 0; i < NUM_POSICIONES_INTERCAMBIADAS; i++) {
+            if (i == 0)
+                valorPrimeraPosicion = poblacionDescendiente.individuos[posIndividuo].solucion[posIntercambio[i]];
+            else
+                rotacionIzquierda(posIndividuo, i - 1);
+        }
+        rotacionPrimeroAUltimaPos(posIndividuo, valorPrimeraPosicion);
+    }
+
+    private void rotacionIzquierda(int posIndividuo, int posicionDestino) {
+        int posFuente = posicionDestino + 1;
+        poblacionDescendiente.individuos[posIndividuo].solucion[posIntercambio[posicionDestino]] =
+                poblacionDescendiente.individuos[posIndividuo].solucion[posIntercambio[posFuente]];
+    }
+
+    /**
+     * Copia el valor del individuo que se encuentra en la primera posición del vector posIntercambio
+     * dentro del individuo en la última posición que indica el vector posIntercambio
+     */
+    private void rotacionPrimeroAUltimaPos(int posIndividuo, int valorPrimeraPosicion) {
+        poblacionDescendiente.individuos[posIndividuo].solucion[posIntercambio[NUM_POSICIONES_INTERCAMBIADAS - 1]] =
+                valorPrimeraPosicion;
     }
 
     private void calcularElite() {
