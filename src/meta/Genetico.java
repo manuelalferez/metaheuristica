@@ -9,6 +9,7 @@ public class Genetico {
     private int posMadre = posPadre + 1;
 
     public void algoritmoGenetico() {
+        int numElites = 3;
         int iteraciones = 0;
         inicializarPoblacion();
 
@@ -19,6 +20,8 @@ public class Genetico {
             recombinar();
             mutar();
             //Calcular el o los elites
+            poblacion.calcularElite(numElites);
+
             reemplazar();
         }
     }
@@ -76,11 +79,11 @@ public class Genetico {
     }
 
     public Solucion torneoBinario() {
-        int posPrimerIndividuo = Main.random.nextInt(individuos.length);
+        int posPrimerIndividuo = Main.random.nextInt(poblacion.individuos.length);
         int posSegundoIndividuo;
 
         do {
-            posSegundoIndividuo= Main.random.nextInt(individuos.length);
+            posSegundoIndividuo= Main.random.nextInt(poblacion.individuos.length);
         }while(posPrimerIndividuo == posSegundoIndividuo);
 
         if (poblacion.individuos[posPrimerIndividuo].coste < poblacion.individuos[posSegundoIndividuo].coste)
@@ -89,37 +92,29 @@ public class Genetico {
             return poblacion.individuos[posSegundoIndividuo];
     }
 
-    public void calcularElite( int numElites){
 
-        int posElite[] = new int[numElites];
-        int costeElite[] = new int[numElites];
 
-        for (int i = 0; i< numElites; i++) {
-            posElite[i]= i;
-            costeElite[i]= poblacion.individuos[i].coste;
+    public void reemplazar(){
+        int posicionElites [] = poblacion.getPosicionElites();
+        int idElites[] = new int [posicionElites.length];
+        boolean estaElites[]= new boolean[posicionElites.length];
+
+        for (int i = 0; i< estaElites.length; i++){
+            estaElites[i] = false;
+        }
+        //Sacamos los id
+        for (int i = 0; i< posicionElites.length; i++){
+            idElites[i]= poblacion.individuos[posicionElites[i]].id;
         }
 
-        for (int i = numElites; i< poblacion.getTamPoblacion(); i++){
-            int posMayorCoste = calcularPosicionMaximoCoste(posElite,costeElite);
-            if (poblacion.individuos[i].coste < costeElite[posMayorCoste]){
-                posElite[posMayorCoste] = i;
-                costeElite[posMayorCoste] = poblacion.individuos[i].coste;
+        for (int i = 0; i < poblacion.individuos.length; i++){
+            for (int j = 0; j< posicionElites.length; j++){
+                if (poblacion.individuos[i].id == idElites[j])
+                    estaElites[j] = true;
             }
         }
-        poblacion.inicializarElites(posElite);
+
+
+        poblacion = poblacionDescendiente;
     }
-
-    private int calcularPosicionMaximoCoste(int []posElite, int [] costeElite){
-        int posicionMaximo = 0;
-        int costeMaximo= costeElite[0];
-
-        for (int i = 1; i < posElite.length; i++){
-            if (costeMaximo<costeElite[i]){
-                posicionMaximo = i;
-                costeMaximo = costeElite[i];
-            }
-        }
-        return posicionMaximo;
-    }
-
 }
