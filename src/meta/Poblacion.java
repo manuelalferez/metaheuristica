@@ -6,6 +6,8 @@ public class Poblacion {
     private int tamLogico;
     int tamIndividuo;
     int[] posicionElites;
+    int[] posicionPeoresIndividuos;
+
 
     Poblacion(int numIndividuos, int tamIndividuo) {
         individuos = new Solucion[this.tamFisico = numIndividuos];
@@ -59,7 +61,7 @@ public class Poblacion {
             costeElite[i] = individuos[i].coste;
         }
 
-        for (int i = numElites; i < getTamPoblacion(); i++) {
+        for (int i = numElites; i < getTam(); i++) {
             int posMayorCoste = calcularPosicionMaximoCoste(posElite, costeElite);
             if (individuos[i].coste < costeElite[posMayorCoste]) {
                 posElite[posMayorCoste] = i;
@@ -80,6 +82,50 @@ public class Poblacion {
             }
         }
         return posicionMaximo;
+    }
+
+
+
+
+
+
+
+
+    public void calcularPeoresIndividuos(int numIndividuosAbuscar) {
+
+        int posPeorIndividuo[] = new int[numIndividuosAbuscar];
+        int costeElite[] = new int[numIndividuosAbuscar];
+
+        for (int i = 0; i < numIndividuosAbuscar; i++) {
+            posPeorIndividuo[i] = i;
+            costeElite[i] = individuos[i].coste;
+        }
+
+        for (int i = numIndividuosAbuscar; i < getTam(); i++) {
+            int posMenorCoste = calcularPosicionMinimoCoste(posPeorIndividuo, costeElite);
+            if (individuos[i].coste > costeElite[posMenorCoste]) {
+                posPeorIndividuo[posMenorCoste] = i;
+                costeElite[posMenorCoste] = individuos[i].coste;
+            }
+        }
+        inicializarPeoresInvididuos(posPeorIndividuo);
+    }
+
+    private int calcularPosicionMinimoCoste(int[] posElite, int[] costeElite) {
+        int posicionMinimo = 0;
+        int costeMinimo = costeElite[0];
+
+        for (int i = 1; i < posElite.length; i++) {
+            if (costeMinimo>costeElite[i]) {
+                posicionMinimo = i;
+                costeMinimo = costeElite[i];
+            }
+        }
+        return posicionMinimo;
+    }
+
+    public void inicializarPeoresInvididuos(int[] posicionPeoresIndividuos) {
+        this.posicionPeoresIndividuos = posicionPeoresIndividuos.clone();
     }
 }
 
