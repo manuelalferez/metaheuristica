@@ -10,7 +10,6 @@ public class Genetico {
     Reproduccion nuevaReproduccion;
 
     public void algoritmoGenetico() {
-        int numElites = 3;
         int iteraciones = 0;
         inicializarPoblacion();
         crearPoblacionDescendientes();
@@ -20,7 +19,7 @@ public class Genetico {
             recombinar();
             mutar();
             //Calcular el o los elites
-            poblacion.calcularElite(numElites);
+            poblacion.calcularElite();
 
             reemplazar();
         }
@@ -103,11 +102,11 @@ public class Genetico {
         }
     }
 
-    private void calcularElite(int numElites) {
-        int posElite[] = new int[numElites];
-        int costeElite[] = new int[numElites];
+    private void calcularElite() {
+        int posElite[] = new int[Main.NUM_ELITES];
+        int costeElite[] = new int[Main.NUM_ELITES];
 
-        for (int i = 0; i < numElites; i++) {
+        for (int i = 0; i < Main.NUM_ELITES; i++) {
             posElite[i] = i;
             costeElite[i] = poblacion.individuos[i].coste;
         }
@@ -118,7 +117,7 @@ public class Genetico {
         int idElites[] = new int[posicionElites.length];
         boolean estaElites[] = new boolean[posicionElites.length];
 
-        for (int i = numElites; i < poblacion.getTam(); i++) {
+        for (int i = Main.NUM_ELITES; i < poblacion.getTam(); i++) {
             int posMayorCoste = calcularPosicionMaximoCoste(posElite, costeElite);
             if (poblacion.individuos[i].coste < costeElite[posMayorCoste]) {
                 posElite[posMayorCoste] = i;

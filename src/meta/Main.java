@@ -27,6 +27,7 @@ public class Main {
     private static Aeropuerto[] aeropuertos;
     private static String ficheroLogNombre;
     static Random random;
+    static int NUM_ELITES =3; //TODO lectura del archivo de parámetros
 
     /**
      * Lectura del archivo de configuración y almacenamiento de parámetros en el vector de parámetros (variable declarada
