@@ -22,7 +22,7 @@ public class Genetico {
             recombinar();
             mutar();
             //Calcular el o los elites
-            poblacion.calcularElite();
+            poblacion.calcularElite(Main.NUM_ELITES);
 
             reemplazar();
         }
@@ -175,46 +175,46 @@ public class Genetico {
             costeElite[i] = poblacion.individuos[i].coste;
         }
     }
+    public void reemplazar(){
+        int posicionElites [] = poblacion.getPosicionElites();
+        int idElites[] = new int [posicionElites.length];
+        boolean estaElites[]= new boolean[posicionElites.length];
 
-    private void reemplazar() {
-        int posicionElites[] = poblacion.getPosicionElites();
-        int idElites[] = new int[posicionElites.length];
-        boolean estaElites[] = new boolean[posicionElites.length];
-
-        for (int i = Main.NUM_ELITES; i < poblacion.getTam(); i++) {
-            int posMayorCoste = calcularPosicionMaximoCoste(posElite, costeElite);
-            if (poblacion.individuos[i].coste < costeElite[posMayorCoste]) {
-                posElite[posMayorCoste] = i;
-                costeElite[posMayorCoste] = poblacion.individuos[i].coste;
-            }
-            for (int i = 0; i < estaElites.length; i++) {
-                estaElites[i] = false;
-            }
-            //Sacamos los id
-            for (int i = 0; i < posicionElites.length; i++) {
-                idElites[i] = poblacion.individuos[posicionElites[i]].id;
-            }
-            poblacion.inicializarElites(posElite);
+        for (int i = 0; i< estaElites.length; i++){
+            estaElites[i] = false;
         }
-    }
-
-    private int calcularPosicionMaximoCoste(int[] posElite, int[] costeElite) {
-        int posicionMaximo = 0;
-        int costeMaximo = costeElite[0];
-
-        for (int i = 0; i < poblacion.individuos.length; i++) {
-            for (int j = 0; j < posicionElites.length; j++) {
-                if (poblacion.individuos[i].id == idElites[j])
+        //Sacamos los id
+        for (int i = 0; i< posicionElites.length; i++){
+            idElites[i]= poblacion.individuos[posicionElites[i]].id;
+        }
+        int contadorElites = Main.NUM_ELITES;
+        for (int i = 0; i < poblacionDescendiente.individuos.length; i++){
+            for (int j = 0; j< posicionElites.length; j++){
+                if (poblacionDescendiente.individuos[i].id == idElites[j]) {
                     estaElites[j] = true;
-                for (int i = 1; i < posElite.length; i++) {
-                    if (costeMaximo < costeElite[i]) {
-                        posicionMaximo = i;
-                        costeMaximo = costeElite[i];
-                    }
+                    contadorElites--;
                 }
-                poblacion = poblacionDescendiente;
             }
         }
-        return posicionMaximo;
+        if (contadorElites != 0){
+            buscarPeorInvidivuos(contadorElites);
+            insertarElites(posicionElites,estaElites);
+        }
+
+        poblacion = poblacionDescendiente;
     }
+
+    public void buscarPeorInvidivuos(int num){
+        poblacionDescendiente.calcularPeoresIndividuos(num);
+    }
+
+    public void insertarElites(int posicionElites [], boolean estaElites[]){
+        for (int i =0; i< posicionElites.length; i++){
+            if (!estaElites[i]) {
+                int posPeorIndivudioDescendiente = poblacionDescendiente.posicionPeoresIndividuos[i];
+                poblacionDescendiente.individuos[posPeorIndivudioDescendiente] = poblacion.individuos[posicionElites[i]];
+            }
+        }
+    }
+
 }
