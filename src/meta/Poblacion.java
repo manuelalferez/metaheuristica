@@ -40,29 +40,28 @@ public class Poblacion {
 
     public void inicializarElites(int[] posElites) {
         posicionElites = posElites.clone();
-}
+    }
 
-public void copiarPoblacion ()
+    public void copiarPoblacion() {
+    }
 
-
-
-
-public int[] getPosicionElites(){
+    public int[] getPosicionElites() {
         return posicionElites;
-}
-    public void calcularElite( int numElites){
+    }
+
+    public void calcularElite(int numElites) {
 
         int posElite[] = new int[numElites];
         int costeElite[] = new int[numElites];
 
-        for (int i = 0; i< numElites; i++) {
-            posElite[i]= i;
-            costeElite[i]=individuos[i].coste;
+        for (int i = 0; i < numElites; i++) {
+            posElite[i] = i;
+            costeElite[i] = individuos[i].coste;
         }
 
-        for (int i = numElites; i< getTamPoblacion(); i++){
-            int posMayorCoste = calcularPosicionMaximoCoste(posElite,costeElite);
-            if (individuos[i].coste < costeElite[posMayorCoste]){
+        for (int i = numElites; i < getTamPoblacion(); i++) {
+            int posMayorCoste = calcularPosicionMaximoCoste(posElite, costeElite);
+            if (individuos[i].coste < costeElite[posMayorCoste]) {
                 posElite[posMayorCoste] = i;
                 costeElite[posMayorCoste] = individuos[i].coste;
             }
@@ -70,19 +69,17 @@ public int[] getPosicionElites(){
         inicializarElites(posElite);
     }
 
-    private int calcularPosicionMaximoCoste(int []posElite, int [] costeElite){
+    private int calcularPosicionMaximoCoste(int[] posElite, int[] costeElite) {
         int posicionMaximo = 0;
-        int costeMaximo= costeElite[0];
+        int costeMaximo = costeElite[0];
 
-        for (int i = 1; i < posElite.length; i++){
-            if (costeMaximo<costeElite[i]){
+        for (int i = 1; i < posElite.length; i++) {
+            if (costeMaximo < costeElite[i]) {
                 posicionMaximo = i;
                 costeMaximo = costeElite[i];
             }
         }
         return posicionMaximo;
-    }
-
     }
 }
 
