@@ -5,8 +5,11 @@ public class Poblacion {
     private int tamFisico;
     private int tamLogico;
     int tamIndividuo;
-    int[] posicionElites;
-    int[] posicionPeoresIndividuos;
+    private int[] posElites;
+    private int[] costeElites;
+    private int[] idElites;
+    int[] posPeores;
+    private int[] costePeores;
 
 
     Poblacion(int numIndividuos, int tamIndividuo) {
@@ -19,113 +22,116 @@ public class Poblacion {
         this.tamLogico = 0;
     }
 
-    public void inicializar() {
+    void inicializar() {
         for (int i = 0; i < tamFisico; i++)
             individuos[i] = Utils.generarSolucionInicial(this.tamIndividuo);
         tamLogico = tamFisico;
     }
 
-    void evaluarPoblacion() {
-        for (int i = 0; i < individuos.length; i++) {
-            individuos[i].coste = Utils.calcularCoste(individuos[i].solucion);
-            individuos[i].estaModificado = false;
+    void evaluar() {
+        for (Solucion individuo : individuos) {
+            individuo.coste = Utils.calcularCoste(individuo.solucion);
+            individuo.estaModificado = false;
         }
     }
 
-    public int getTam() {
+    int getTam() {
         return tamFisico;
     }
 
-    public void incluirIndividuo(Solucion individuo) {
+    void incluirIndividuo(Solucion individuo) {
         individuos[tamLogico++] = new Solucion(individuo);
     }
 
-    public void inicializarElites(int[] posElites) {
-        posicionElites = posElites.clone();
+    public void copiarPoblacion(Poblacion copia) {
+        individuos = copia.individuos.clone();
     }
 
-    public void copiarPoblacion() {
+    int[] getElites() {
+        return posElites;
     }
 
-    public int[] getPosicionElites() {
-        return posicionElites;
+    int[] getIdElites() {
+        return idElites;
     }
 
-    public void calcularElite(int numElites) {
-
-        int posElite[] = new int[numElites];
-        int costeElite[] = new int[numElites];
-
-        for (int i = 0; i < numElites; i++) {
-            posElite[i] = i;
-            costeElite[i] = individuos[i].coste;
-        }
-
-        for (int i = numElites; i < getTam(); i++) {
-            int posMayorCoste = calcularPosicionMaximoCoste(posElite, costeElite);
-            if (individuos[i].coste < costeElite[posMayorCoste]) {
-                posElite[posMayorCoste] = i;
-                costeElite[posMayorCoste] = individuos[i].coste;
+    void calcularElites() {
+        inicializarElites();
+        for (int i = Main.NUM_ELITES; i < getTam(); i++) {
+            int posMayorCoste = calcularPosicionMaximoCoste();
+            if (individuos[i].coste < costeElites[posMayorCoste]) {
+                posElites[posMayorCoste] = i;
+                costeElites[posMayorCoste] = individuos[i].coste;
             }
         }
-        inicializarElites(posElite);
+        calcularIdElites();
     }
 
-    private int calcularPosicionMaximoCoste(int[] posElite, int[] costeElite) {
+    private void inicializarElites() {
+        posElites = new int[Main.NUM_ELITES];
+        costeElites = new int[Main.NUM_ELITES];
+        idElites = new int[Main.NUM_ELITES];
+
+        for (int i = 0; i < Main.NUM_ELITES; i++) {
+            posElites[i] = i;
+            costeElites[i] = individuos[i].coste;
+        }
+    }
+
+    private int calcularPosicionMaximoCoste() {
         int posicionMaximo = 0;
-        int costeMaximo = costeElite[0];
+        int costeMaximo = costeElites[0];
 
-        for (int i = 1; i < posElite.length; i++) {
-            if (costeMaximo < costeElite[i]) {
+        for (int i = 1; i < posElites.length; i++)
+            if (costeMaximo < costeElites[i]) {
                 posicionMaximo = i;
-                costeMaximo = costeElite[i];
+                costeMaximo = costeElites[i];
             }
-        }
         return posicionMaximo;
     }
 
-
-
-
-
-
-
-
-    public void calcularPeoresIndividuos(int numIndividuosAbuscar) {
-
-        int posPeorIndividuo[] = new int[numIndividuosAbuscar];
-        int costeElite[] = new int[numIndividuosAbuscar];
-
-        for (int i = 0; i < numIndividuosAbuscar; i++) {
-            posPeorIndividuo[i] = i;
-            costeElite[i] = individuos[i].coste;
+    private void calcularIdElites() {
+        for (int i = 0; i < Main.NUM_ELITES; i++) {
+            idElites[i] = individuos[posElites[i]].id;
         }
-
-        for (int i = numIndividuosAbuscar; i < getTam(); i++) {
-            int posMenorCoste = calcularPosicionMinimoCoste(posPeorIndividuo, costeElite);
-            if (individuos[i].coste > costeElite[posMenorCoste]) {
-                posPeorIndividuo[posMenorCoste] = i;
-                costeElite[posMenorCoste] = individuos[i].coste;
-            }
-        }
-        inicializarPeoresInvididuos(posPeorIndividuo);
     }
 
-    private int calcularPosicionMinimoCoste(int[] posElite, int[] costeElite) {
-        int posicionMinimo = 0;
-        int costeMinimo = costeElite[0];
+    void calcularPeoresIndividuos(int numIndividuosABuscar) {
+        inicializarPeores(numIndividuosABuscar);
+        for (int i = numIndividuosABuscar; i < getTam(); i++) {
+            int posMenorCoste = calcularPosicionMinimoCoste();
+            if (individuos[i].coste > costePeores[posMenorCoste]) {
+                posPeores[posMenorCoste] = i;
+                costePeores[posMenorCoste] = individuos[i].coste;
+            }
+        }
+    }
 
-        for (int i = 1; i < posElite.length; i++) {
-            if (costeMinimo>costeElite[i]) {
+    private void inicializarPeores(int numPeores) {
+        posPeores = new int[numPeores];
+        costePeores = new int[numPeores];
+
+        for (int i = 0; i < numPeores; i++) {
+            posPeores[i] = i;
+            costePeores[i] = individuos[i].coste;
+        }
+    }
+
+    private int calcularPosicionMinimoCoste() {
+        int posicionMinimo = 0;
+        int costeMinimo = costePeores[0];
+
+        for (int i = 1; i < posPeores.length; i++) {
+            if (costeMinimo > costePeores[i]) {
                 posicionMinimo = i;
-                costeMinimo = costeElite[i];
+                costeMinimo = costePeores[i];
             }
         }
         return posicionMinimo;
     }
 
-    public void inicializarPeoresInvididuos(int[] posicionPeoresIndividuos) {
-        this.posicionPeoresIndividuos = posicionPeoresIndividuos.clone();
+    private void inicializarPeoresIndividuos(int[] posicionPeoresIndividuos) {
+        this.posPeores = posicionPeoresIndividuos.clone();
     }
 }
 

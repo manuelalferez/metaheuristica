@@ -2,28 +2,27 @@ package meta;
 
 public class Genetico {
     Poblacion poblacion;
-    Poblacion poblacionDescendiente;
+    private Poblacion poblacionDescendiente;
     private int TAM_TORNEO = 2;
     private static int TAM_POBLACION = 50;
     private static int NUM_POSICIONES_INTERCAMBIADAS = 3;
     private static int NUM_EVALUACIONES = 50000;
 
-    Reproduccion nuevaReproduccion;
+    private Reproduccion nuevaReproduccion;
 
-    int[] posIntercambio;
+    private int[] posIntercambio;
 
     public void algoritmoGenetico() {
         int iteraciones = 0;
         inicializarPoblacion();
         crearPoblacionDescendientes();
         while (iteraciones < NUM_EVALUACIONES) {
-            evaluarPoblacion();
+            poblacion.evaluar();
             seleccionar();
             recombinar();
             mutar();
-            //Calcular el o los elites
-            poblacion.calcularElite(Main.NUM_ELITES);
-
+            poblacion.calcularElites();
+            //TODO Evaluación de poblacionDescendientes
             reemplazar();
         }
     }
@@ -37,9 +36,7 @@ public class Genetico {
         poblacionDescendiente = new Poblacion(TAM_POBLACION, Main.aeropuertoActual.numPuertas);
     }
 
-    private void evaluarPoblacion() {
-        poblacion.evaluarPoblacion();
-    }
+
 
     private void seleccionar() {
         int posIndividuoGanador;
@@ -166,55 +163,32 @@ public class Genetico {
                 valorPrimeraPosicion;
     }
 
-    private void calcularElite() {
-        int posElite[] = new int[Main.NUM_ELITES];
-        int costeElite[] = new int[Main.NUM_ELITES];
-
-        for (int i = 0; i < Main.NUM_ELITES; i++) {
-            posElite[i] = i;
-            costeElite[i] = poblacion.individuos[i].coste;
-        }
-    }
-    public void reemplazar(){
-        int posicionElites [] = poblacion.getPosicionElites();
-        int idElites[] = new int [posicionElites.length];
-        boolean estaElites[]= new boolean[posicionElites.length];
-
-        for (int i = 0; i< estaElites.length; i++){
-            estaElites[i] = false;
-        }
-        //Sacamos los id
-        for (int i = 0; i< posicionElites.length; i++){
-            idElites[i]= poblacion.individuos[posicionElites[i]].id;
-        }
+    private void reemplazar() {
+        int[] posicionElites = poblacion.getElites();
+        int[] idElites = poblacion.getIdElites();
+        boolean[] estaElites = new boolean[posicionElites.length];
         int contadorElites = Main.NUM_ELITES;
-        for (int i = 0; i < poblacionDescendiente.individuos.length; i++){
-            for (int j = 0; j< posicionElites.length; j++){
+
+        for (int i = 0; i < poblacionDescendiente.individuos.length; i++)
+            for (int j = 0; j < posicionElites.length; j++)
                 if (poblacionDescendiente.individuos[i].id == idElites[j]) {
                     estaElites[j] = true;
                     contadorElites--;
                 }
-            }
-        }
-        if (contadorElites != 0){
-            buscarPeorInvidivuos(contadorElites);
-            insertarElites(posicionElites,estaElites);
+        if (contadorElites != 0) {
+            poblacionDescendiente.calcularPeoresIndividuos(contadorElites);
+            insertarElites(posicionElites, estaElites);
         }
 
-        poblacion = poblacionDescendiente;
+        poblacion.copiarPoblacion(poblacionDescendiente);
     }
 
-    public void buscarPeorInvidivuos(int num){
-        poblacionDescendiente.calcularPeoresIndividuos(num);
-    }
-
-    public void insertarElites(int posicionElites [], boolean estaElites[]){
-        for (int i =0; i< posicionElites.length; i++){
+    private void insertarElites(int[] posicionElites, boolean[] estaElites) {
+        int contador = 0;
+        for (int i = 0; i < posicionElites.length; i++)
             if (!estaElites[i]) {
-                int posPeorIndivudioDescendiente = poblacionDescendiente.posicionPeoresIndividuos[i];
-                poblacionDescendiente.individuos[posPeorIndivudioDescendiente] = poblacion.individuos[posicionElites[i]];
+                int posPeorIndividuoDescendiente = poblacionDescendiente.posPeores[contador++];
+                poblacionDescendiente.individuos[posPeorIndividuoDescendiente].copiar(poblacion.individuos[posicionElites[i]]);
             }
-        }
     }
-
 }
