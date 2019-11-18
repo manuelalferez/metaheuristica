@@ -5,12 +5,15 @@ public class Genetico {
     Poblacion poblacionDescendiente;
     private int TAM_TORNEO = 2;
     private static int TAM_POBLACION = 50;
+    private static int NUM_EVALUACIONES = 50000;
+
+    Reproduccion nuevaReproduccion;
 
     public void algoritmoGenetico() {
         int iteraciones = 0;
         inicializarPoblacion();
         crearPoblacionDescendientes();
-        while (iteraciones < TAM) {
+        while (iteraciones < NUM_EVALUACIONES) {
             evaluarPoblacion();
             seleccionar();
             recombinar();
@@ -47,11 +50,11 @@ public class Genetico {
         return mejorIndividuo(posPrimerIndividuo, posSegundoIndividuo);
     }
 
-    private int generarPosDistintaPrimerIndividuo(int posPrimerIndividuo){
+    private int generarPosDistintaPrimerIndividuo(int posPrimerIndividuo) {
         int posSegundoIndividuo;
         do {
-            posSegundoIndividuo= Main.random.nextInt(poblacion.individuos.length);
-        }while(posPrimerIndividuo == posSegundoIndividuo);
+            posSegundoIndividuo = Main.random.nextInt(poblacion.individuos.length);
+        } while (posPrimerIndividuo == posSegundoIndividuo);
         return posSegundoIndividuo;
     }
 
@@ -62,21 +65,42 @@ public class Genetico {
     }
 
     private void recombinar() {
-        int i=0;
+        int i = 0;
         while (i < poblacion.getTam()) {
             double probabilidad = Main.random.nextDouble();
             if (probabilidad < 0.7) {
-                Reproduccion nuevaReproduccion =
-                        new Reproduccion(poblacionDescendiente.individuos[i], poblacionDescendiente.individuos[i+1]);
-                if (Main.esCruceMOC) nuevaReproduccion.cruceMOC();
-                else nuevaReproduccion.cruceOX2();
+                realizarCruce(i);
+                copiarIndividuosCruzados(i);
             }
             i += TAM_TORNEO;
         }
     }
 
-    private void calcularElite(int numElites) {
+    private void realizarCruce(int posPrimerProgenitor) {
+        nuevaReproduccion = new Reproduccion(poblacionDescendiente.individuos[posPrimerProgenitor],
+                poblacionDescendiente.individuos[posPrimerProgenitor + 1]);
+        if (Main.esCruceMOC) nuevaReproduccion.cruceMOC();
+        else nuevaReproduccion.cruceOX2();
+    }
 
+    private void copiarIndividuosCruzados(int posPrimerProgenitor) {
+        poblacionDescendiente.individuos[posPrimerProgenitor].copiar(nuevaReproduccion.getPrimerProgenitor());
+        poblacionDescendiente.individuos[posPrimerProgenitor + 1].copiar(nuevaReproduccion.getSegundoProgenitor());
+    }
+
+    private void mutar() {
+        for (Solucion individuo : poblacionDescendiente.individuos) {
+                for(int i=0;i<individuo.solucion.length;i++){
+                    double probabilidad = Main.random.nextDouble();
+                    if (probabilidad < 0.05) {
+                        realizarCruce(i);//TODO
+                        copiarIndividuosCruzados(i);
+                    }
+                }
+        }
+    }
+
+    private void calcularElite(int numElites) {
         int posElite[] = new int[numElites];
         int costeElite[] = new int[numElites];
 
