@@ -9,17 +9,22 @@ public class Main {
         0: algorithm
         1: input
         2: seed
+        3: type_of_crossing
+        4: num_elites
      */
-    private static String[] parametros = new String[3];
+    private static String[] parametros = new String[5];
     private static final int ALGORITHM = 0;
     private static final int INPUT = 1;
     private static final int SEED = 2;
+    private static final int TYPE_OF_CROSSING = 3;
+    private static final int NUM_ELITES = 4;
     static boolean esCruceMOC = false; // Si no es MOC, es OX2
 
     private static final String TODOS_ARCHIVOS = "all";
     private static final String BL = "bl";
     private static final String TABU = "tabu";
     private static final String GENETICO = "gen";
+
 
     static String contenidoLog = "";
     static Aeropuerto aeropuertoActual;
@@ -28,7 +33,7 @@ public class Main {
     private static Aeropuerto[] aeropuertos;
     private static String ficheroLogNombre;
     static Random random;
-    static int NUM_ELITES =3; //TODO lectura del archivo de parámetros
+
 
     /**
      * Lectura del archivo de configuración y almacenamiento de parámetros en el vector de parámetros (variable declarada
