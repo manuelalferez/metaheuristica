@@ -19,6 +19,7 @@ public class Main {
     private static final String TODOS_ARCHIVOS = "all";
     private static final String BL = "bl";
     private static final String TABU = "tabu";
+    private static final String GENETICO = "gen";
 
     static String contenidoLog = "";
     static Aeropuerto aeropuertoActual;

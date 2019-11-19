@@ -15,14 +15,14 @@ public class Genetico {
     public void algoritmoGenetico() {
         int iteraciones = 0;
         inicializarPoblacion();
+        poblacion.evaluar();
         crearPoblacionDescendientes();
         while (iteraciones < NUM_EVALUACIONES) {
-            poblacion.evaluar();
             seleccionar();
             recombinar();
             mutar();
             poblacion.calcularElites();
-            //TODO Evaluación de poblacionDescendientes
+            poblacionDescendiente.evaluar();
             reemplazar();
         }
     }
@@ -73,6 +73,8 @@ public class Genetico {
             if (probabilidad < 0.7) {
                 realizarCruce(i);
                 copiarIndividuosCruzados(i);
+                poblacionDescendiente.individuos[i].marcarComoModificado();
+                poblacionDescendiente.individuos[i+1].marcarComoModificado();
             }
             i += TAM_TORNEO;
         }

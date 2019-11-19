@@ -30,8 +30,10 @@ public class Poblacion {
 
     void evaluar() {
         for (Solucion individuo : individuos) {
-            individuo.coste = Utils.calcularCoste(individuo.solucion);
-            individuo.estaModificado = false;
+            if(individuo.estaModificado) {
+                individuo.coste = Utils.calcularCoste(individuo.solucion);
+                individuo.estaModificado = false;
+            }
         }
     }
 

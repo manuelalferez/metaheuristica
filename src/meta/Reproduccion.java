@@ -5,7 +5,7 @@ package meta;
  * forma en la que pueden reproducirse
  */
 public class Reproduccion {
-    Solucion[] progenitores;
+    private Solucion[] progenitores;
     private int TAM_PROGENITORES;
 
     private int POS_PADRE = 0, POS_MADRE = 1, NUM_PROGENITORES = 2;
@@ -30,7 +30,7 @@ public class Reproduccion {
         }
     }
 
-    public void cruceMOC() {
+    void cruceMOC() {
         puntoDeCorte = Main.random.nextInt(TAM_PROGENITORES);
         posMarcadasMOC = new boolean[NUM_PROGENITORES][TAM_PROGENITORES];
         eliminacionCruzada();
@@ -78,7 +78,7 @@ public class Reproduccion {
         }
     }
 
-    public void cruceOX2() {
+    void cruceOX2() {
         progenitorOrigen = 0;
         crearCopiaProgenitores();
         while (progenitorOrigen < NUM_PROGENITORES) {
@@ -134,11 +134,11 @@ public class Reproduccion {
                     copiaProgenitores[progenitorOrigen].solucion[posMarcadasOX2[progenitorOrigen][i]];
     }
 
-    public Solucion getPrimerProgenitor(){
+    Solucion getPrimerProgenitor() {
         return progenitores[POS_PADRE];
     }
 
-    public Solucion getSegundoProgenitor(){
+    Solucion getSegundoProgenitor() {
         return progenitores[POS_MADRE];
     }
 }

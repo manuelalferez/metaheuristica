@@ -29,8 +29,13 @@ class Solucion {
         id = copia.id;
     }
 
-    void modificarIdentificador(){
-        id=contador++;
+    void marcarComoModificado() {
+        estaModificado = true;
+        modificarIdentificador();
+    }
+
+    private void modificarIdentificador() {
+        id = contador++;
     }
 
     void copiar(Solucion copia) {
