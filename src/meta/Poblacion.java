@@ -7,7 +7,6 @@ public class Poblacion {
     int tamIndividuo;
     private int[] posElites;
     private int[] costeElites;
-    private int[] idElites;
     int[] posPeores;
     private int[] costePeores;
 
@@ -53,9 +52,7 @@ public class Poblacion {
         return posElites;
     }
 
-    int[] getIdElites() {
-        return idElites;
-    }
+
 
     void calcularElites() {
         inicializarElites();
@@ -66,13 +63,11 @@ public class Poblacion {
                 costeElites[posMayorCoste] = individuos[i].coste;
             }
         }
-        calcularIdElites();
     }
 
     private void inicializarElites() {
         posElites = new int[Main.getNumElites()];
         costeElites = new int[Main.getNumElites()];
-        idElites = new int[Main.getNumElites()];
 
         for (int i = 0; i < Main.getNumElites(); i++) {
             posElites[i] = i;
@@ -92,11 +87,7 @@ public class Poblacion {
         return posicionMaximo;
     }
 
-    private void calcularIdElites() {
-        for (int i = 0; i < Main.getNumElites(); i++) {
-            idElites[i] = individuos[posElites[i]].id;
-        }
-    }
+
 
     void calcularPeoresIndividuos(int numIndividuosABuscar) {
         inicializarPeores(numIndividuosABuscar);
