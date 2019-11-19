@@ -18,12 +18,12 @@ public class Main {
     private static final int SEED = 2;
     private static final int TYPE_OF_CROSSING = 3;
     private static final int NUM_ELITES = 4;
-    static boolean esCruceMOC = false; // Si no es MOC, es OX2
 
     private static final String TODOS_ARCHIVOS = "all";
     private static final String BL = "bl";
     private static final String TABU = "tabu";
     private static final String GENETICO = "gen";
+    private static final String MOC = "moc";
 
 
     static String contenidoLog = "";
@@ -145,6 +145,14 @@ public class Main {
         directorio.mkdir();
     }
 
+    public static boolean esCruceMOC() {
+        return parametros[TYPE_OF_CROSSING].equals(MOC);
+    }
+
+    public static int getNumElites() {
+        return Integer.parseInt(parametros[NUM_ELITES]);
+    }
+
     public static void main(String[] args) {
         lecturaParametrosConfiguracion();
         lecturaNombresArchivosDatos();
@@ -192,7 +200,7 @@ public class Main {
             escribirSolucionYTiempos(solucion, T_EJECUCION);
             crearFicheroLog(archivos_seleccionados[i]);
             Utils.escribirFichero(ficheroLogNombre, contenidoLog);
-            contenidoLog="";
+            contenidoLog = "";
         }
     } // main()
 } // Main()

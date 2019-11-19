@@ -83,7 +83,7 @@ public class Genetico {
     private void realizarCruce(int posPrimerProgenitor) {
         nuevaReproduccion = new Reproduccion(poblacionDescendiente.individuos[posPrimerProgenitor],
                 poblacionDescendiente.individuos[posPrimerProgenitor + 1]);
-        if (Main.esCruceMOC) nuevaReproduccion.cruceMOC();
+        if (Main.esCruceMOC()) nuevaReproduccion.cruceMOC();
         else nuevaReproduccion.cruceOX2();
     }
 
@@ -169,7 +169,7 @@ public class Genetico {
         int[] posicionElites = poblacion.getElites();
         int[] idElites = poblacion.getIdElites();
         boolean[] estaElites = new boolean[posicionElites.length];
-        int contadorElites = Main.NUM_ELITES;
+        int contadorElites = Main.getNumElites();
 
         for (int i = 0; i < poblacionDescendiente.individuos.length; i++)
             for (int j = 0; j < posicionElites.length; j++)

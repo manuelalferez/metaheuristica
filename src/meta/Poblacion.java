@@ -45,7 +45,7 @@ public class Poblacion {
         individuos[tamLogico++] = new Solucion(individuo);
     }
 
-    public void copiarPoblacion(Poblacion copia) {
+    void copiarPoblacion(Poblacion copia) {
         individuos = copia.individuos.clone();
     }
 
@@ -59,7 +59,7 @@ public class Poblacion {
 
     void calcularElites() {
         inicializarElites();
-        for (int i = Main.NUM_ELITES; i < getTam(); i++) {
+        for (int i = Main.getNumElites(); i < getTam(); i++) {
             int posMayorCoste = calcularPosicionMaximoCoste();
             if (individuos[i].coste < costeElites[posMayorCoste]) {
                 posElites[posMayorCoste] = i;
@@ -70,11 +70,11 @@ public class Poblacion {
     }
 
     private void inicializarElites() {
-        posElites = new int[Main.NUM_ELITES];
-        costeElites = new int[Main.NUM_ELITES];
-        idElites = new int[Main.NUM_ELITES];
+        posElites = new int[Main.getNumElites()];
+        costeElites = new int[Main.getNumElites()];
+        idElites = new int[Main.getNumElites()];
 
-        for (int i = 0; i < Main.NUM_ELITES; i++) {
+        for (int i = 0; i < Main.getNumElites(); i++) {
             posElites[i] = i;
             costeElites[i] = individuos[i].coste;
         }
@@ -93,7 +93,7 @@ public class Poblacion {
     }
 
     private void calcularIdElites() {
-        for (int i = 0; i < Main.NUM_ELITES; i++) {
+        for (int i = 0; i < Main.getNumElites(); i++) {
             idElites[i] = individuos[posElites[i]].id;
         }
     }
