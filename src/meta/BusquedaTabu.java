@@ -34,7 +34,7 @@ class BusquedaTabu {
         int iteraciones = 0, intentos = 0;
         entorno = 0;
         solucionActual = Utils.generarSolucionInicial(tamSolucion);
-        solucionActual.coste = Utils.calcularCoste(solucionInicial.solucion);
+        solucionActual.coste = Utils.calcularCoste(solucionActual.solucion);
         Utils.escribirSolucionInicial(solucionActual, iteraciones);
         mejorSolucion = new Solucion(solucionActual);
         do {

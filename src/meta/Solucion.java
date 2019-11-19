@@ -36,4 +36,14 @@ class Solucion {
         coste = copia.coste;
         estaModificado = copia.estaModificado;
     }
+
+    boolean sonIguales(Solucion otraSolucion) {
+        if (this.coste == otraSolucion.coste) {
+            for (int i = 0; i < solucion.length; i++)
+                if (solucion[i] != otraSolucion.solucion[i])
+                    return false;
+            return true;
+        } else
+            return false;
+    }
 }

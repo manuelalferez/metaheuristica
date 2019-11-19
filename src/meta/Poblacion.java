@@ -1,6 +1,6 @@
 package meta;
 
-public class Poblacion {
+class Poblacion {
     Solucion[] individuos;
     private int tamFisico;
     private int tamLogico;
