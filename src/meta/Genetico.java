@@ -15,7 +15,7 @@ public class Genetico {
     Genetico() {
     }
 
-    public void algoritmoGenetico() {
+    void algoritmoGenetico() {
         int iteraciones = 0;
         inicializarPoblacion();
         poblacion.evaluar();
@@ -169,13 +169,12 @@ public class Genetico {
 
     private void reemplazar() {
         int[] posicionElites = poblacion.getElites();
-        int[] idElites = poblacion.getIdElites();
         boolean[] estaElites = new boolean[posicionElites.length];
         int contadorElites = Main.getNumElites();
 
         for (int i = 0; i < poblacionDescendiente.individuos.length; i++)
             for (int j = 0; j < posicionElites.length; j++)
-                if (poblacionDescendiente.individuos[i].id == idElites[j]) {
+                if (poblacionDescendiente.individuos[i].sonIguales(poblacion.individuos[posicionElites[j]])) {
                     estaElites[j] = true;
                     contadorElites--;
                 }
