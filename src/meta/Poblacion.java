@@ -131,9 +131,5 @@ public class Poblacion {
         }
         return posicionMinimo;
     }
-
-    private void inicializarPeoresIndividuos(int[] posicionPeoresIndividuos) {
-        this.posPeores = posicionPeoresIndividuos.clone();
-    }
 }
 
