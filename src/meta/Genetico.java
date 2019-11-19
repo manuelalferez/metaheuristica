@@ -12,6 +12,9 @@ public class Genetico {
 
     private int[] posIntercambio;
 
+    Genetico() {
+    }
+
     public void algoritmoGenetico() {
         int iteraciones = 0;
         inicializarPoblacion();
@@ -35,7 +38,6 @@ public class Genetico {
     private void crearPoblacionDescendientes() {
         poblacionDescendiente = new Poblacion(TAM_POBLACION, Main.aeropuertoActual.numPuertas);
     }
-
 
 
     private void seleccionar() {
@@ -74,7 +76,7 @@ public class Genetico {
                 realizarCruce(i);
                 copiarIndividuosCruzados(i);
                 poblacionDescendiente.individuos[i].marcarComoModificado();
-                poblacionDescendiente.individuos[i+1].marcarComoModificado();
+                poblacionDescendiente.individuos[i + 1].marcarComoModificado();
             }
             i += TAM_TORNEO;
         }
@@ -192,5 +194,21 @@ public class Genetico {
                 int posPeorIndividuoDescendiente = poblacionDescendiente.posPeores[contador++];
                 poblacionDescendiente.individuos[posPeorIndividuoDescendiente].copiar(poblacion.individuos[posicionElites[i]]);
             }
+    }
+
+    Solucion getSolucion() {
+        return new Solucion(calcularMejorIndividuo());
+    }
+
+    private Solucion calcularMejorIndividuo() {
+        int posMejorIndividuo = 0;
+        int costeMejorIndividuo = Integer.MAX_VALUE;
+        for (int i = 0; i < poblacion.getTam(); i++) {
+            if (poblacion.individuos[i].coste < costeMejorIndividuo) {
+                posMejorIndividuo = i;
+                costeMejorIndividuo = poblacion.individuos[i].coste;
+            }
+        }
+        return poblacion.individuos[posMejorIndividuo];
     }
 }

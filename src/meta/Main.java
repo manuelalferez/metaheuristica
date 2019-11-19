@@ -145,11 +145,11 @@ public class Main {
         directorio.mkdir();
     }
 
-    public static boolean esCruceMOC() {
+    static boolean esCruceMOC() {
         return parametros[TYPE_OF_CROSSING].equals(MOC);
     }
 
-    public static int getNumElites() {
+    static int getNumElites() {
         return Integer.parseInt(parametros[NUM_ELITES]);
     }
 
@@ -169,33 +169,61 @@ public class Main {
         BusquedaLocal[] busquedaLocal = new BusquedaLocal[archivos_seleccionados.length];
         BusquedaTabu[] busquedaTabu = new BusquedaTabu[archivos_seleccionados.length];
         Greedy[] greedy = new Greedy[archivos_seleccionados.length];
+        Genetico[] geneticos = new Genetico[archivos_seleccionados.length];
 
         for (int i = 0; i < archivos_seleccionados.length; i++) {
             aeropuertoActual = aeropuertos[i];
 
             // Creación de cada algoritmo con el aeropuertoActual
-            if (parametros[ALGORITHM].toLowerCase().equals(BL))
-                busquedaLocal[i] = new BusquedaLocal();
-            else if (parametros[ALGORITHM].toLowerCase().equals(TABU))
-                busquedaTabu[i] = new BusquedaTabu();
-            else greedy[i] = new Greedy();
+            switch (parametros[ALGORITHM].toLowerCase()) {
+                case BL:
+                    busquedaLocal[i] = new BusquedaLocal();
+                    break;
+                case TABU:
+                    busquedaTabu[i] = new BusquedaTabu();
+                    break;
+                case GENETICO:
+                    geneticos[i] = new Genetico();
+                    break;
+                default:
+                    greedy[i] = new Greedy();
+                    break;
+            }
 
             // Cálculo de solución y medición de tiempo de ejecución del algoritmo
             T_INICIO = System.currentTimeMillis();
-            if (parametros[ALGORITHM].toLowerCase().equals(BL))
-                busquedaLocal[i].algoritmoBusquedaLocal();
-            else if (parametros[ALGORITHM].toLowerCase().equals(TABU))
-                busquedaTabu[i].algoritmoTabu();
-            else greedy[i].algoritmoGreedy();
+            switch (parametros[ALGORITHM].toLowerCase()) {
+                case BL:
+                    busquedaLocal[i].algoritmoBusquedaLocal();
+                    break;
+                case TABU:
+                    busquedaTabu[i].algoritmoTabu();
+                    break;
+                case GENETICO:
+                    geneticos[i].algoritmoGenetico();
+                    break;
+                default:
+                    greedy[i].algoritmoGreedy();
+                    break;
+            }
             T_FIN = System.currentTimeMillis();
             T_EJECUCION = T_FIN - T_INICIO;
 
             // Obtenemos la solución
-            if (parametros[ALGORITHM].toLowerCase().equals(BL))
-                solucion.copiar(busquedaLocal[i].getSolucion());
-            else if (parametros[ALGORITHM].toLowerCase().equals(TABU))
-                solucion.copiar(busquedaTabu[i].getSolucion());
-            else solucion.copiar(greedy[i].getSolucion());
+            switch (parametros[ALGORITHM].toLowerCase()) {
+                case BL:
+                    solucion.copiar(busquedaLocal[i].getSolucion());
+                    break;
+                case TABU:
+                    solucion.copiar(busquedaTabu[i].getSolucion());
+                    break;
+                case GENETICO:
+                    solucion.copiar(geneticos[i].getSolucion());
+                    break;
+                default:
+                    solucion.copiar(greedy[i].getSolucion());
+                    break;
+            }
 
             escribirSolucionYTiempos(solucion, T_EJECUCION);
             crearFicheroLog(archivos_seleccionados[i]);
