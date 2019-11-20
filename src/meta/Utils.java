@@ -43,6 +43,16 @@ class Utils {
         Main.contenidoLog += "\nIteración:           " + iteracion;
         Main.contenidoLog += "\n";
     }
+    static void escribirIndividuo(Solucion solucionInicial, int generacion) {
+        Main.contenidoLog += "\nSolución inicial:    ";
+        for (int i : solucionInicial.solucion) {
+            Main.contenidoLog += i + " ";
+        }
+
+        Main.contenidoLog += "\nCoste:               " + solucionInicial.coste;
+        Main.contenidoLog += "\n";
+    }
+
 
     static void realizarMovimiento(int[] v, Vecino vecino) {
         int aux = v[vecino.getPrimeraPosicion()];

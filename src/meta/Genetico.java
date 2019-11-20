@@ -6,9 +6,9 @@ public class Genetico {
     private int TAM_TORNEO = 2;
     private static int TAM_POBLACION = 50;
     private static int NUM_POSICIONES_INTERCAMBIADAS = 3;
-    private static int NUM_EVALUACIONES = 50000;
+    private static int NUM_EVALUACIONES = 1000;
     private static int iteraciones;
-
+    static int generacion;
     private Reproduccion nuevaReproduccion;
 
     private int[] posIntercambio;
@@ -18,6 +18,7 @@ public class Genetico {
 
     void algoritmoGenetico() {
         iteraciones=0;
+        generacion = 0;
         inicializarPoblacion();
         poblacion.evaluar();
         while (iteraciones < NUM_EVALUACIONES) {
@@ -28,6 +29,7 @@ public class Genetico {
             poblacion.calcularElites();
             poblacionDescendiente.evaluar();
             reemplazar();
+            generacion++;
         }
     }
 
@@ -74,8 +76,10 @@ public class Genetico {
         while (i < poblacion.getTam()) {
             double probabilidad = Main.random.nextDouble();
             if (probabilidad < 0.7) {
+                escribirLogIndividuos(i);//Individuos Antes de Mutar
                 realizarCruce(i);
                 copiarIndividuosCruzados(i);
+                escribirLogIndividuos(i);//Individuos Despues de Mutar
                 poblacionDescendiente.individuos[i].marcarComoModificado();
                 poblacionDescendiente.individuos[i + 1].marcarComoModificado();
             }
@@ -93,6 +97,12 @@ public class Genetico {
     private void copiarIndividuosCruzados(int posPrimerProgenitor) {
         poblacionDescendiente.individuos[posPrimerProgenitor].copiar(nuevaReproduccion.getPrimerProgenitor());
         poblacionDescendiente.individuos[posPrimerProgenitor + 1].copiar(nuevaReproduccion.getSegundoProgenitor());
+    }
+
+
+    private void escribirLogIndividuos(int i){
+        Utils.escribirIndividuo(poblacionDescendiente.individuos[i], generacion);
+        Utils.escribirIndividuo(poblacionDescendiente.individuos[i+1], generacion);
     }
 
     private void mutar() {
