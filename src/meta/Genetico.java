@@ -77,10 +77,10 @@ public class Genetico {
         while (i < poblacion.getTam()) {
             double probabilidad = Main.random.nextDouble();
             if (probabilidad < 0.7) {
-                escribirLogIndividuos(i, PADRES);//Individuos Antes de Mutar
+                escribirLogIndividuos(i, PADRES, generacion);//Individuos Antes de Mutar
                 realizarCruce(i);
                 copiarIndividuosCruzados(i);
-                escribirLogIndividuos(i, HIJOS);//Individuos Despues de Mutar
+                escribirLogIndividuos(i, HIJOS, generacion+1);//Individuos Despues de Mutar
                 poblacionDescendiente.individuos[i].marcarComoModificado();
                 poblacionDescendiente.individuos[i + 1].marcarComoModificado();
             }
@@ -101,9 +101,10 @@ public class Genetico {
     }
 
 
-    private void escribirLogIndividuos(int i, int parentesco){
-        Utils.escribirIndividuo(poblacionDescendiente.individuos[i], generacion, parentesco);
-        Utils.escribirIndividuo(poblacionDescendiente.individuos[i+1], generacion, parentesco);
+    private void escribirLogIndividuos(int posicion, int parentesco, int generacion){
+        Utils.escribirIndividuo(poblacionDescendiente.individuos[posicion], generacion, parentesco);
+        Utils.escribirIndividuo(poblacionDescendiente.individuos[posicion+1], generacion, parentesco);
+        Main.contenidoLog += "\n";
     }
 
     private void mutar() {
