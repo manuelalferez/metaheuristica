@@ -13,11 +13,7 @@ class Poblacion {
 
     Poblacion(int numIndividuos, int tamIndividuo) {
         individuos = new Solucion[this.tamFisico = numIndividuos];
-        this.tamLogico = 0;
-    }
-
-    Poblacion(int numIndividuos) {
-        individuos = new Solucion[this.tamFisico = numIndividuos];
+        this.tamIndividuo = tamIndividuo;
         this.tamLogico = 0;
     }
 
@@ -29,9 +25,10 @@ class Poblacion {
 
     void evaluar() {
         for (Solucion individuo : individuos) {
-            if(individuo.estaModificado) {
+            if (individuo.estaModificado) {
                 individuo.coste = Utils.calcularCoste(individuo.solucion);
                 individuo.estaModificado = false;
+                Genetico.incrementarIteraciones();
             }
         }
     }
@@ -51,7 +48,6 @@ class Poblacion {
     int[] getElites() {
         return posElites;
     }
-
 
 
     void calcularElites() {
@@ -88,7 +84,6 @@ class Poblacion {
     }
 
 
-
     void calcularPeoresIndividuos(int numIndividuosABuscar) {
         inicializarPeores(numIndividuosABuscar);
         for (int i = numIndividuosABuscar; i < getTam(); i++) {
@@ -103,7 +98,6 @@ class Poblacion {
     private void inicializarPeores(int numPeores) {
         posPeores = new int[numPeores];
         costePeores = new int[numPeores];
-
         for (int i = 0; i < numPeores; i++) {
             posPeores[i] = i;
             costePeores[i] = individuos[i].coste;

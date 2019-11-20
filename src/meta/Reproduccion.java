@@ -24,10 +24,8 @@ public class Reproduccion {
         this.progenitores = new Solucion[NUM_PROGENITORES];
         this.TAM_PROGENITORES = padre.solucion.length;
 
-        for (int i = 0; i < TAM_PROGENITORES; i++) {
-            this.progenitores[POS_PADRE].copiar(padre);
-            this.progenitores[POS_MADRE].copiar(madre);
-        }
+        this.progenitores[POS_PADRE] = new Solucion(padre);
+        this.progenitores[POS_MADRE] = new Solucion(madre);
     }
 
     void cruceMOC() {
@@ -69,11 +67,10 @@ public class Reproduccion {
     }
 
     private void rellenarValor(int progenitorDestino, int valor) {
-        while (!posMarcadasMOC[progenitorDestino][cotaInferior[progenitorDestino]]) {
+        while (!posMarcadasMOC[progenitorDestino][cotaInferior[progenitorDestino]] ) {
             if (!posMarcadasMOC[progenitorDestino][cotaInferior[progenitorDestino]]) {
                 progenitores[progenitorDestino].solucion[cotaInferior[progenitorDestino]] = valor;
                 posMarcadasMOC[progenitorDestino][cotaInferior[progenitorDestino]] = true;
-                cotaInferior[progenitorDestino]++;
             } else cotaInferior[progenitorDestino]++;
         }
     }

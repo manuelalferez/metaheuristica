@@ -7,6 +7,7 @@ public class Genetico {
     private static int TAM_POBLACION = 50;
     private static int NUM_POSICIONES_INTERCAMBIADAS = 3;
     private static int NUM_EVALUACIONES = 50000;
+    private static int iteraciones;
 
     private Reproduccion nuevaReproduccion;
 
@@ -16,11 +17,11 @@ public class Genetico {
     }
 
     void algoritmoGenetico() {
-        int iteraciones = 0;
+        iteraciones=0;
         inicializarPoblacion();
         poblacion.evaluar();
-        crearPoblacionDescendientes();
         while (iteraciones < NUM_EVALUACIONES) {
+            crearPoblacionDescendientes();
             seleccionar();
             recombinar();
             mutar();
@@ -83,8 +84,8 @@ public class Genetico {
     }
 
     private void realizarCruce(int posPrimerProgenitor) {
-        nuevaReproduccion = new Reproduccion(poblacionDescendiente.individuos[posPrimerProgenitor],
-                poblacionDescendiente.individuos[posPrimerProgenitor + 1]);
+        nuevaReproduccion = new Reproduccion(poblacion.individuos[posPrimerProgenitor],
+                poblacion.individuos[posPrimerProgenitor + 1]);
         if (Main.esCruceMOC()) nuevaReproduccion.cruceMOC();
         else nuevaReproduccion.cruceOX2();
     }
@@ -174,7 +175,7 @@ public class Genetico {
 
         for (int i = 0; i < poblacionDescendiente.individuos.length; i++)
             for (int j = 0; j < posicionElites.length; j++)
-                if (poblacionDescendiente.individuos[i].sonIguales(poblacion.individuos[posicionElites[j]])) {
+                if (poblacionDescendiente.individuos[i].sonIguales(poblacion.individuos[posicionElites[j]]) && !estaElites[j]) {
                     estaElites[j] = true;
                     contadorElites--;
                 }
@@ -209,5 +210,9 @@ public class Genetico {
             }
         }
         return poblacion.individuos[posMejorIndividuo];
+    }
+
+    public static void incrementarIteraciones(){
+        iteraciones++;
     }
 }
