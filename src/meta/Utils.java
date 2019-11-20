@@ -43,13 +43,17 @@ class Utils {
         Main.contenidoLog += "\nIteración:           " + iteracion;
         Main.contenidoLog += "\n";
     }
-    static void escribirIndividuo(Solucion solucionInicial, int generacion) {
+    static void escribirIndividuo(Solucion solucionInicial, int generacion, int parentesco) {
+        Main.contenidoLog += "\nGeneracion:          " + generacion ;
+        if (parentesco == Genetico.PADRES)
+                Main.contenidoLog += "\nParentesco:          " + "Padre" ;
+            else
+                Main.contenidoLog += "\nParentesco:          " + "Hijo" ;
         Main.contenidoLog += "\nSolución inicial:    ";
         for (int i : solucionInicial.solucion) {
             Main.contenidoLog += i + " ";
         }
-
-        Main.contenidoLog += "\nCoste:               " + solucionInicial.coste;
+        //Main.contenidoLog += "\nCoste:               " + solucionInicial.coste;
         Main.contenidoLog += "\n";
     }
 
