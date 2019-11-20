@@ -1,5 +1,5 @@
 algorithm;gen
-input;madrid02.dat
+input;ejemplo.dat
 seed;70931043
 type_of_crossing;moc
 num_elites;2
