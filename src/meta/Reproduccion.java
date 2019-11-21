@@ -30,7 +30,6 @@ public class Reproduccion {
 
     void cruceMOC() {
         puntoDeCorte = Main.random.nextInt(TAM_PROGENITORES - 1) + 1;
-       // System.out.println(puntoDeCorte);
         posMarcadasMOC = new boolean[NUM_PROGENITORES][TAM_PROGENITORES];
         eliminacionCruzada();
         rellenarValoresCruzados();
