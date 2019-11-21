@@ -45,13 +45,14 @@ class Utils {
     }
     static void escribirIndividuo(Solucion solucionInicial, int generacion, int parentesco) {
         if (parentesco == Genetico.PADRES)
-                Main.contenidoLog += "\nCruce antes:          |"+ generacion + "|    ";
+                Main.contenidoLog += "Antes:          |"+ generacion + "|    ";
             else
-                Main.contenidoLog += "\nCruce despues:        |"+ generacion + "|    ";
+                Main.contenidoLog += "Despues:        |"+ generacion + "|    ";
 
         for (int i : solucionInicial.solucion) {
             Main.contenidoLog += i + " ";
         }
+        Main.contenidoLog += " \n";
     }
 
 

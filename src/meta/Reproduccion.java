@@ -29,7 +29,8 @@ public class Reproduccion {
     }
 
     void cruceMOC() {
-        puntoDeCorte = Main.random.nextInt(TAM_PROGENITORES);
+        puntoDeCorte = Main.random.nextInt(TAM_PROGENITORES - 1) + 1;
+        System.out.println(puntoDeCorte);
         posMarcadasMOC = new boolean[NUM_PROGENITORES][TAM_PROGENITORES];
         eliminacionCruzada();
         rellenarValoresCruzados();
@@ -58,7 +59,9 @@ public class Reproduccion {
     }
 
     private void rellenarValoresCruzados() {
-        copiaProgenitores = progenitores.clone();
+        copiaProgenitores = new Solucion[NUM_PROGENITORES];
+        copiaProgenitores[POS_PADRE] = new Solucion(progenitores[POS_PADRE]);
+        copiaProgenitores[POS_MADRE]= new Solucion(progenitores[POS_MADRE]);
         cotaInferior = new int[NUM_PROGENITORES];
         for (int i = puntoDeCorte; i < TAM_PROGENITORES; i++) {
             rellenarValor(POS_MADRE, copiaProgenitores[POS_PADRE].solucion[i]);
@@ -67,12 +70,11 @@ public class Reproduccion {
     }
 
     private void rellenarValor(int progenitorDestino, int valor) {
-        while (!posMarcadasMOC[progenitorDestino][cotaInferior[progenitorDestino]] ) {
-            if (!posMarcadasMOC[progenitorDestino][cotaInferior[progenitorDestino]]) {
-                progenitores[progenitorDestino].solucion[cotaInferior[progenitorDestino]] = valor;
-                posMarcadasMOC[progenitorDestino][cotaInferior[progenitorDestino]] = true;
-            } else cotaInferior[progenitorDestino]++;
+        while (posMarcadasMOC[progenitorDestino][cotaInferior[progenitorDestino]]) {
+            cotaInferior[progenitorDestino]++;
         }
+        progenitores[progenitorDestino].solucion[cotaInferior[progenitorDestino]] = valor;
+        cotaInferior[progenitorDestino]++;
     }
 
     void cruceOX2() {
@@ -90,7 +92,7 @@ public class Reproduccion {
     private void crearCopiaProgenitores() {
         copiaProgenitores = new Solucion[NUM_PROGENITORES];
         for (int i = 0; i < NUM_PROGENITORES; i++)
-            copiaProgenitores[i].copiar(progenitores[i]);
+            copiaProgenitores[i] = new Solucion(progenitores[i]);
     }
 
     private void inicializarVariables() {
