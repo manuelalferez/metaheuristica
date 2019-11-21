@@ -8,7 +8,7 @@ public class Genetico {
     private int TAM_TORNEO = 2;
     private static int TAM_POBLACION = 50;
     private static int NUM_POSICIONES_INTERCAMBIADAS = 3;
-    private static int NUM_EVALUACIONES = 100;
+    private static int NUM_EVALUACIONES = 10000;
     private static int iteraciones;
     static int generacion;
     private Reproduccion nuevaReproduccion;
@@ -20,10 +20,11 @@ public class Genetico {
     }
 
     void algoritmoGenetico() {
-        iteraciones=0;
+        iteraciones = 0;
         generacion = 0;
         inicializarPoblacion();
         poblacion.evaluar();
+        Utils.escribirPoblacion(poblacion, generacion);
         while (iteraciones < NUM_EVALUACIONES) {
             crearPoblacionDescendientes();
             seleccionar();
@@ -33,6 +34,7 @@ public class Genetico {
             poblacionDescendiente.evaluar();
             reemplazar();
             generacion++;
+            Utils.escribirPoblacion(poblacion, generacion);
         }
     }
 
@@ -86,7 +88,7 @@ public class Genetico {
                 copiarIndividuosCruzados(i);
                 Main.contenidoLog += "Cruce\n";
                 Main.contenidoLog += "------------\n";
-                escribirLogIndividuos(i, HIJOS, generacion+1);//Individuos Despues de cruzar
+                escribirLogIndividuos(i, HIJOS, generacion + 1);//Individuos Despues de cruzar
                 poblacionDescendiente.individuos[i].marcarComoModificado();
                 poblacionDescendiente.individuos[i + 1].marcarComoModificado();
             }
@@ -107,13 +109,13 @@ public class Genetico {
     }
 
 
-    private void escribirLogIndividuos(int posicion, int parentesco, int generacion){
+    private void escribirLogIndividuos(int posicion, int parentesco, int generacion) {
         Utils.escribirIndividuo(poblacionDescendiente.individuos[posicion], generacion, parentesco);
-        Utils.escribirIndividuo(poblacionDescendiente.individuos[posicion+1], generacion, parentesco);
+        Utils.escribirIndividuo(poblacionDescendiente.individuos[posicion + 1], generacion, parentesco);
         Main.contenidoLog += "\n";
     }
 
-    private void escribirLogIndividuo(int posicion, int parentesco, int generacion){
+    private void escribirLogIndividuo(int posicion, int parentesco, int generacion) {
         Utils.escribirIndividuo(poblacionDescendiente.individuos[posicion], generacion, parentesco);
         Main.contenidoLog += "\n";
     }
@@ -127,11 +129,11 @@ public class Genetico {
                     ordenarPosiciones();
                     Main.contenidoLog += "Mutación\n";
                     Main.contenidoLog += "------------\n";
-                    escribirLogIndividuo(i, PADRES, generacion+1);//Individuos Antes de mutar
+                    escribirLogIndividuo(i, PADRES, generacion + 1);//Individuos Antes de mutar
                     rotacion(i);
                     Main.contenidoLog += "Mutación\n";
                     Main.contenidoLog += "------------\n";
-                    escribirLogIndividuo(i, HIJOS, generacion+1);//Individuos Antes de mutar
+                    escribirLogIndividuo(i, HIJOS, generacion + 1);//Individuos Antes de mutar
                 }
             }
         }
@@ -220,9 +222,21 @@ public class Genetico {
         int contador = 0;
         for (int i = 0; i < posicionElites.length; i++)
             if (!estaElites[i]) {
+                Main.contenidoLog += "Elite: ";
+                for (int j = 0; j < poblacion.tamIndividuo; j++)
+                    Main.contenidoLog += poblacion.individuos[posicionElites[i]].solucion[j] + " ";
+                Main.contenidoLog += "\nCoste: "+poblacion.individuos[posicionElites[i]].coste;
+
                 int posPeorIndividuoDescendiente = poblacionDescendiente.posPeores[contador++];
+
+                Main.contenidoLog += "\nPeor: ";
+                for (int j = 0; j < poblacionDescendiente.tamIndividuo; j++)
+                    Main.contenidoLog += poblacionDescendiente.individuos[posPeorIndividuoDescendiente].solucion[j] + " ";
+                Main.contenidoLog += "\nCoste: "+poblacionDescendiente.individuos[posPeorIndividuoDescendiente].coste+"\n\n";
+
                 poblacionDescendiente.individuos[posPeorIndividuoDescendiente].copiar(poblacion.individuos[posicionElites[i]]);
             }
+        Main.contenidoLog += "\n";
     }
 
     Solucion getSolucion() {
@@ -241,7 +255,7 @@ public class Genetico {
         return poblacion.individuos[posMejorIndividuo];
     }
 
-    public static void incrementarIteraciones(){
+    public static void incrementarIteraciones() {
         iteraciones++;
     }
 }

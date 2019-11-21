@@ -43,11 +43,12 @@ class Utils {
         Main.contenidoLog += "\nIteración:           " + iteracion;
         Main.contenidoLog += "\n";
     }
+
     static void escribirIndividuo(Solucion solucionInicial, int generacion, int parentesco) {
         if (parentesco == Genetico.PADRES)
-                Main.contenidoLog += "Antes:          |"+ generacion + "|    ";
-            else
-                Main.contenidoLog += "Despues:        |"+ generacion + "|    ";
+            Main.contenidoLog += "Antes:          |" + generacion + "|    ";
+        else
+            Main.contenidoLog += "Despues:        |" + generacion + "|    ";
 
         for (int i : solucionInicial.solucion) {
             Main.contenidoLog += i + " ";
@@ -141,5 +142,15 @@ class Utils {
         }
 
         return solucionInicial;
+    }
+
+    static void escribirPoblacion(Poblacion poblacion, int generacion) {
+        for (int i = 0; i < poblacion.getTam(); i++) {
+            Main.contenidoLog +="Individuo "+i+": ";
+            for (int j = 0; j < poblacion.tamIndividuo; j++) {
+                Main.contenidoLog += poblacion.individuos[i].solucion[j] + " ";
+            }
+            Main.contenidoLog +="\nCoste: "+poblacion.individuos[i].coste+"\n\n";
+        }
     }
 }

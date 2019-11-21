@@ -9,13 +9,13 @@ class Solucion {
     Solucion() {
         solucion = new int[0];
         coste = 0;
-        estaModificado = false;
+        estaModificado = true;
     }
 
     Solucion(int tam) {
         solucion = new int[tam];
         coste = 0;
-        estaModificado = false;
+        estaModificado = true;
     }
 
     Solucion(Solucion copia) {

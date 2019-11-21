@@ -19,7 +19,7 @@ class Poblacion {
 
     void inicializar() {
         for (int i = 0; i < tamFisico; i++)
-            individuos[i] = Utils.generarSolucionInicial(this.tamIndividuo);
+            individuos[i] = new Solucion(Utils.generarSolucionInicial(this.tamIndividuo));
         tamLogico = tamFisico;
     }
 
