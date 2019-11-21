@@ -1,14 +1,10 @@
 package meta;
 
-import java.util.Collections;
-
 public class Genetico {
-    Poblacion poblacion;
+    private Poblacion poblacion;
     private Poblacion poblacionDescendiente;
-    private int TAM_TORNEO = 2;
     private static int TAM_POBLACION = 50;
     private static int NUM_POSICIONES_INTERCAMBIADAS = 3;
-    private static int NUM_EVALUACIONES = 10000;
     private static int iteraciones;
     static int generacion;
     private Reproduccion nuevaReproduccion;
@@ -24,7 +20,8 @@ public class Genetico {
         generacion = 0;
         inicializarPoblacion();
         poblacion.evaluar();
-        Utils.escribirPoblacion(poblacion, generacion);
+       // Utils.escribirPoblacion(poblacion, generacion);
+        int NUM_EVALUACIONES = 50000;
         while (iteraciones < NUM_EVALUACIONES) {
             crearPoblacionDescendientes();
             seleccionar();
@@ -34,7 +31,7 @@ public class Genetico {
             poblacionDescendiente.evaluar();
             reemplazar();
             generacion++;
-            Utils.escribirPoblacion(poblacion, generacion);
+           // Utils.escribirPoblacion(poblacion, generacion);
         }
     }
 
@@ -81,17 +78,18 @@ public class Genetico {
         while (i < poblacion.getTam()) {
             double probabilidad = Main.random.nextDouble();
             if (probabilidad < 0.7) {
-                Main.contenidoLog += "Cruce\n";
+/*                Main.contenidoLog += "Cruce\n";
                 Main.contenidoLog += "------------\n";
-                escribirLogIndividuos(i, PADRES, generacion);//Individuos Antes de cruzar
+                escribirLogIndividuos(i, PADRES, generacion);//Individuos Antes de cruzar*/
                 realizarCruce(i);
                 copiarIndividuosCruzados(i);
-                Main.contenidoLog += "Cruce\n";
+    /*            Main.contenidoLog += "Cruce\n";
                 Main.contenidoLog += "------------\n";
-                escribirLogIndividuos(i, HIJOS, generacion + 1);//Individuos Despues de cruzar
+                escribirLogIndividuos(i, HIJOS, generacion + 1);//Individuos Despues de cruzar*/
                 poblacionDescendiente.individuos[i].marcarComoModificado();
                 poblacionDescendiente.individuos[i + 1].marcarComoModificado();
             }
+            int TAM_TORNEO = 2;
             i += TAM_TORNEO;
         }
     }
@@ -127,13 +125,13 @@ public class Genetico {
                 if (probabilidad < 0.05) {
                     seleccionarPosiciones(j);
                     ordenarPosiciones();
-                    Main.contenidoLog += "Mutación\n";
+      /*              Main.contenidoLog += "Mutación\n";
                     Main.contenidoLog += "------------\n";
-                    escribirLogIndividuo(i, PADRES, generacion + 1);//Individuos Antes de mutar
+                    escribirLogIndividuo(i, PADRES, generacion + 1);//Individuos Antes de mutar*/
                     rotacion(i);
-                    Main.contenidoLog += "Mutación\n";
+                    /*Main.contenidoLog += "Mutación\n";
                     Main.contenidoLog += "------------\n";
-                    escribirLogIndividuo(i, HIJOS, generacion + 1);//Individuos Antes de mutar
+                    escribirLogIndividuo(i, HIJOS, generacion + 1);//Individuos Antes de mutar*/
                 }
             }
         }
