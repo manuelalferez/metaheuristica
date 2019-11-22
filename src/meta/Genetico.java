@@ -21,7 +21,7 @@ public class Genetico {
         inicializarPoblacion();
         poblacion.evaluar();
        Utils.escribirPoblacion(poblacion, generacion);
-        int NUM_EVALUACIONES = 50000;
+        int NUM_EVALUACIONES = 5000;
         while (iteraciones < NUM_EVALUACIONES) {
             crearPoblacionDescendientes();
             seleccionar();

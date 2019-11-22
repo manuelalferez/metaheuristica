@@ -1,5 +1,5 @@
 algorithm;gen
-input;madrid01.dat
+input;all
 seed;70931043
-type_of_crossing;ox2
-num_elites;2
+type_of_crossing;moc
+num_elites;3
