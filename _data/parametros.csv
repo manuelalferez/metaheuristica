@@ -3,3 +3,12 @@ input;all
 seed;70931043
 type_of_crossing;moc
 num_elites;3
+size_pop_meme;25
+max_generations_meme;1000
+pr_crossing_meme;1
+pr_mutation_meme;0.05
+range_application_tabu_meme;50
+max_iteration_tabu_meme;100
+max_attempts_tabu_meme;100
+num_neighbors_tabu_meme;10
+num_environments_tabu_meme;100

@@ -11,18 +11,38 @@ public class Main {
         2: seed
         3: type_of_crossing
         4: num_elites
+        5: size_pop_meme
+        6: max_generations_meme
+        7: pr_crossing_meme
+        8: pr_mutation_meme
+        9: range_application_tabu_meme
+        10: max_iteration_tabu_meme
+        11: max_attempts_tabu_meme
+        12: num_neighbors_tabu_meme
+        13: num_environments_tabu_meme
      */
-    private static String[] parametros = new String[5];
+    private static String[] parametros = new String[11];
     private static final int ALGORITHM = 0;
     private static final int INPUT = 1;
     private static final int SEED = 2;
     private static final int TYPE_OF_CROSSING = 3;
     private static final int NUM_ELITES = 4;
+    private static final int SIZE_POP_MEME = 5;
+    private static final int MAX_GENERATIONS_MEME = 6;
+    private static final int PR_CROSSING_MEME = 7;
+    private static final int PR_MUTATION_MEME = 8;
+    private static final int RANGE_APPLICATION_TABU_MEME = 9;
+    private static final int MAX_ITERATION_TABU_MEME = 10;
+    private static final int MAX_ATTEMPTS_TABU_MEME = 11;
+    private static final int MAX_NEIGHBORS_TABU_MEME = 12;
+    private static final int NUM_ENVIRONMENTS_TABU_MEME = 13;
+
 
     private static final String TODOS_ARCHIVOS = "all";
     private static final String BL = "bl";
     private static final String TABU = "tabu";
     private static final String GENETICO = "gen";
+    private static final String MEMETICO = "meme";
     private static final String MOC = "moc";
 
 
@@ -153,6 +173,42 @@ public class Main {
         return Integer.parseInt(parametros[NUM_ELITES]);
     }
 
+    static int getIteracionesMaximas(){
+        return Integer.parseInt(parametros[MAX_ITERATION_TABU_MEME]);
+    }
+
+    static int getIntentosMaximos(){
+        return Integer.parseInt(parametros[MAX_ATTEMPTS_TABU_MEME]);
+    }
+
+    static int getVecinosMaximos(){
+        return Integer.parseInt(parametros[MAX_NEIGHBORS_TABU_MEME]);
+    }
+
+    static int getEntornosMaximos(){
+        return Integer.parseInt(parametros[NUM_ENVIRONMENTS_TABU_MEME]);
+    }
+
+    static int getTamanioPoblacion(){
+        return Integer.parseInt(parametros[SIZE_POP_MEME]);
+    }
+
+    static int getGeneracionesMaximas(){
+        return Integer.parseInt(parametros[MAX_GENERATIONS_MEME]);
+    }
+
+    static int getProbabilidadCruce(){
+        return Integer.parseInt(parametros[PR_CROSSING_MEME]);
+    }
+
+    static int getProbabilidadMutacion(){
+        return Integer.parseInt(parametros[PR_MUTATION_MEME]);
+    }
+
+    static int getRangoDeAplicacionDeTabu(){
+        return Integer.parseInt(parametros[RANGE_APPLICATION_TABU_MEME]);
+    }
+
     public static void main(String[] args) {
         lecturaParametrosConfiguracion();
         lecturaNombresArchivosDatos();
@@ -170,6 +226,7 @@ public class Main {
         BusquedaTabu[] busquedaTabu = new BusquedaTabu[archivos_seleccionados.length];
         Greedy[] greedy = new Greedy[archivos_seleccionados.length];
         Genetico[] geneticos = new Genetico[archivos_seleccionados.length];
+        Memetico[] memeticos = new Memetico[archivos_seleccionados.length];
 
         for (int i = 0; i < archivos_seleccionados.length; i++) {
             aeropuertoActual = aeropuertos[i];
@@ -184,6 +241,9 @@ public class Main {
                     break;
                 case GENETICO:
                     geneticos[i] = new Genetico();
+                    break;
+                case MEMETICO:
+                    memeticos[i] = new Memetico();
                     break;
                 default:
                     greedy[i] = new Greedy();
@@ -202,6 +262,9 @@ public class Main {
                 case GENETICO:
                     geneticos[i].algoritmoGenetico();
                     break;
+                case MEMETICO:
+                    memeticos[i].algoritmoMemetico();
+                    break;
                 default:
                     greedy[i].algoritmoGreedy();
                     break;
@@ -219,6 +282,9 @@ public class Main {
                     break;
                 case GENETICO:
                     solucion.copiar(geneticos[i].getSolucion());
+                    break;
+                case MEMETICO:
+                    solucion.copiar(memeticos[i].getSolucion());
                     break;
                 default:
                     solucion.copiar(greedy[i].getSolucion());
