@@ -33,14 +33,14 @@ public class TabuMemetico {
         solucionActual = new Solucion(tamSolucion);
         solucionActual.copiar(solucion);
         solucionActual.coste = Utils.calcularCoste(solucionActual.solucion);
-        Utils.escribirSolucionInicial(solucionActual, iteraciones);
+        //Utils.escribirSolucionInicial(solucionActual, iteraciones);
         mejorSolucion = new Solucion(solucionActual);
         do {
             generarEntornos();
             realizarMovimiento();
             anadirVecinoTabu(mejorVecino);
 
-            Utils.escribirMovimientoEnFichero(entornoMejorVecino, mejorVecino, solucionActual.coste, iteraciones); // logs
+            //Utils.escribirMovimientoEnFichero(entornoMejorVecino, mejorVecino, solucionActual.coste, iteraciones); // logs
             iteraciones++;
 
             if (solucionActual.coste < mejorSolucion.coste) {

@@ -202,12 +202,12 @@ public class Main {
         return Integer.parseInt(parametros[MAX_GENERATIONS_MEME]);
     }
 
-    static int getProbabilidadCruce(){
-        return Integer.parseInt(parametros[PR_CROSSING_MEME]);
+    static double getProbabilidadCruce(){
+        return Double.parseDouble(parametros[PR_CROSSING_MEME]);
     }
 
-    static int getProbabilidadMutacion(){
-        return Integer.parseInt(parametros[PR_MUTATION_MEME]);
+    static double getProbabilidadMutacion(){
+        return Double.parseDouble(parametros[PR_MUTATION_MEME]);
     }
 
     static int getRangoDeAplicacionDeTabu(){

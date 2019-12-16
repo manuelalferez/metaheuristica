@@ -29,8 +29,13 @@ class Memetico {
             mutar();
             if (generacion % Main.getRangoDeAplicacionDeTabu() == 0) {
                 for(int i=0;i<descendientes.length;i++){
+                    Main.contenidoLog+="Búsqueda tabú:\n";
+                    Utils.escribirIndividuo(descendientes[i],generacion,PADRES);
+                    Main.contenidoLog+="Coste: "+descendientes[i].coste+"\n";
                     tabu.algoritmoTabu(descendientes[i]);
                     descendientes[i].copiar(tabu.getSolucion());
+                    Utils.escribirIndividuo(descendientes[i],generacion,HIJOS);
+                    Main.contenidoLog+="Coste: "+descendientes[i].coste+"\n";
                 }
             }
             evaluarDescendientes();
@@ -47,6 +52,8 @@ class Memetico {
 
     private void crearDescendientes() {
         descendientes = new Solucion[Main.getNumIndividuosDescendientes()];
+        for(int i=0;i<descendientes.length;i++)
+            descendientes[i] = new Solucion();
     }
 
 
