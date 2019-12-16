@@ -24,13 +24,14 @@ public class TabuMemetico {
 
     TabuMemetico() {
         tamSolucion = Main.aeropuertoActual.numPuertas;
-        listaTabues = new ArrayList<>();
     }
 
-    void algoritmoTabu() {
+    void algoritmoTabu(Solucion solucion) {
         int iteraciones = 0, intentos = 0;
         entorno = 0;
-        solucionActual = Utils.generarSolucionInicial(tamSolucion);
+        listaTabues = new ArrayList<>();
+        solucionActual = new Solucion(tamSolucion);
+        solucionActual.copiar(solucion);
         solucionActual.coste = Utils.calcularCoste(solucionActual.solucion);
         Utils.escribirSolucionInicial(solucionActual, iteraciones);
         mejorSolucion = new Solucion(solucionActual);

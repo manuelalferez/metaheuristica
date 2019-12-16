@@ -1,3 +1,4 @@
+15
 algorithm;gen
 input;all
 seed;70931043
@@ -12,3 +13,4 @@ max_iteration_tabu_meme;100
 max_attempts_tabu_meme;100
 num_neighbors_tabu_meme;10
 num_environments_tabu_meme;100
+num_agents_mutated;2

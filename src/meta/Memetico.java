@@ -2,7 +2,6 @@ package meta;
 
 class Memetico {
     private Poblacion poblacion;
-    private Poblacion poblacionDescendiente;
     private static int TAM_POBLACION = Main.getTamanioPoblacion();
     private static int NUM_POSICIONES_INTERCAMBIADAS = 3;
     private static int iteraciones;
@@ -11,23 +10,30 @@ class Memetico {
     static int PADRES = 0;
     static int HIJOS = 1;
     private int[] posIntercambio;
+    private Solucion[] descendientes;
 
-     Memetico() {
+    Memetico() {
     }
 
-    void algoritmoMemetico() { //TODO actualizar para integrar el algoritmo tabu
+    void algoritmoMemetico() {
         generacion = 0;
         inicializarPoblacion();
         poblacion.evaluar();
         Utils.escribirPoblacion(poblacion, generacion);
         int MAX_GENERACIONES = Main.getGeneracionesMaximas();
+        TabuMemetico tabu = new TabuMemetico();
         while (generacion < MAX_GENERACIONES) {
-            crearPoblacionDescendientes();
+            crearDescendientes();
             seleccionar();
             recombinar();
             mutar();
-            poblacion.calcularElites();
-            poblacionDescendiente.evaluar();
+            if (generacion % Main.getRangoDeAplicacionDeTabu() == 0) {
+                for(int i=0;i<descendientes.length;i++){
+                    tabu.algoritmoTabu(descendientes[i]);
+                    descendientes[i].copiar(tabu.getSolucion());
+                }
+            }
+            evaluarDescendientes();
             reemplazar();
             generacion++;
             Utils.escribirPoblacion(poblacion, generacion);
@@ -39,16 +45,16 @@ class Memetico {
         poblacion.inicializar();
     }
 
-    private void crearPoblacionDescendientes() {
-        poblacionDescendiente = new Poblacion(TAM_POBLACION, Main.aeropuertoActual.numPuertas);
+    private void crearDescendientes() {
+        descendientes = new Solucion[Main.getNumIndividuosDescendientes()];
     }
 
 
     private void seleccionar() {
         int posIndividuoGanador;
-        for (int i = 0; i < poblacion.getTam(); i++) {
+        for (int i = 0; i < descendientes.length; i++) {
             posIndividuoGanador = torneoBinario();
-            poblacionDescendiente.incluirIndividuo(poblacion.individuos[posIndividuoGanador]);
+            descendientes[i].copiar(poblacion.individuos[posIndividuoGanador]);
         }
     }
 
@@ -73,55 +79,50 @@ class Memetico {
     }
 
     private void recombinar() {
-        int i = 0;
-        while (i < poblacion.getTam()) {
-            double probabilidad = Main.random.nextDouble();
-            if (probabilidad < 0.7) {
-                Main.contenidoLog += "Cruce\n";
-                Main.contenidoLog += "------------\n";
-                escribirLogIndividuos(i, PADRES, generacion);//Individuos Antes de cruzar
-                realizarCruce(i);
-                copiarIndividuosCruzados(i);
-                Main.contenidoLog += "Cruce\n";
-                Main.contenidoLog += "------------\n";
-                escribirLogIndividuos(i, HIJOS, generacion + 1);//Individuos Despues de cruzar
-                poblacionDescendiente.individuos[i].marcarComoModificado();
-                poblacionDescendiente.individuos[i + 1].marcarComoModificado();
-            }
-            int TAM_TORNEO = 2;
-            i += TAM_TORNEO;
+        double probabilidad = Main.random.nextDouble();
+        if (probabilidad <= Main.getProbabilidadCruce()) {
+            Main.contenidoLog += "Cruce\n";
+            Main.contenidoLog += "------------\n";
+            escribirLogIndividuos(PADRES, generacion);//Individuos Antes de cruzar
+            realizarCruce();
+            copiarIndividuosCruzados();
+            Main.contenidoLog += "Cruce\n";
+            Main.contenidoLog += "------------\n";
+            escribirLogIndividuos(HIJOS, generacion + 1);//Individuos Despues de cruzar
+            descendientes[0].marcarComoModificado();
+            descendientes[1].marcarComoModificado();
         }
     }
 
-    private void realizarCruce(int posPrimerProgenitor) {
-        nuevaReproduccion = new Reproduccion(poblacionDescendiente.individuos[posPrimerProgenitor],
-                poblacionDescendiente.individuos[posPrimerProgenitor + 1]);
+    private void realizarCruce() {
+        nuevaReproduccion = new Reproduccion(descendientes[0],
+                descendientes[1]);
         if (Main.esCruceMOC()) nuevaReproduccion.cruceMOC();
         else nuevaReproduccion.cruceOX2();
     }
 
-    private void copiarIndividuosCruzados(int posPrimerProgenitor) {
-        poblacionDescendiente.individuos[posPrimerProgenitor].copiar(nuevaReproduccion.getPrimerProgenitor());
-        poblacionDescendiente.individuos[posPrimerProgenitor + 1].copiar(nuevaReproduccion.getSegundoProgenitor());
+    private void copiarIndividuosCruzados() {
+        descendientes[0].copiar(nuevaReproduccion.getPrimerProgenitor());
+        descendientes[1].copiar(nuevaReproduccion.getSegundoProgenitor());
     }
 
 
-    private void escribirLogIndividuos(int posicion, int parentesco, int generacion) {
-        Utils.escribirIndividuo(poblacionDescendiente.individuos[posicion], generacion, parentesco);
-        Utils.escribirIndividuo(poblacionDescendiente.individuos[posicion + 1], generacion, parentesco);
+    private void escribirLogIndividuos(int parentesco, int generacion) {
+        Utils.escribirIndividuo(descendientes[0], generacion, parentesco);
+        Utils.escribirIndividuo(descendientes[1], generacion, parentesco);
         Main.contenidoLog += "\n";
     }
 
     private void escribirLogIndividuo(int posicion, int parentesco, int generacion) {
-        Utils.escribirIndividuo(poblacionDescendiente.individuos[posicion], generacion, parentesco);
+        Utils.escribirIndividuo(descendientes[posicion], generacion, parentesco);
         Main.contenidoLog += "\n";
     }
 
     private void mutar() {
-        for (int i = 0; i < poblacionDescendiente.getTam(); i++) {
-            for (int j = 0; j < poblacionDescendiente.tamIndividuo; j++) {
+        for (int i = 0; i < descendientes.length; i++) {
+            for (int j = 0; j < poblacion.tamIndividuo; j++) {
                 double probabilidad = Main.random.nextDouble();
-                if (probabilidad < 0.05) {
+                if (probabilidad <= Main.getProbabilidadMutacion()) {
                     seleccionarPosiciones(j);
                     ordenarPosiciones();
                     Main.contenidoLog += "Mutación\n";
@@ -174,7 +175,7 @@ class Memetico {
         int valorPrimeraPosicion = 0;
         for (int i = 0; i < NUM_POSICIONES_INTERCAMBIADAS; i++) {
             if (i == 0)
-                valorPrimeraPosicion = poblacionDescendiente.individuos[posIndividuo].solucion[posIntercambio[i]];
+                valorPrimeraPosicion = descendientes[posIndividuo].solucion[posIntercambio[i]];
             else
                 rotacionIzquierda(posIndividuo, i - 1);
         }
@@ -183,8 +184,8 @@ class Memetico {
 
     private void rotacionIzquierda(int posIndividuo, int posicionDestino) {
         int posFuente = posicionDestino + 1;
-        poblacionDescendiente.individuos[posIndividuo].solucion[posIntercambio[posicionDestino]] =
-                poblacionDescendiente.individuos[posIndividuo].solucion[posIntercambio[posFuente]];
+        descendientes[posIndividuo].solucion[posIntercambio[posicionDestino]] =
+                descendientes[posIndividuo].solucion[posIntercambio[posFuente]];
     }
 
     /**
@@ -192,49 +193,22 @@ class Memetico {
      * dentro del individuo en la última posición que indica el vector posIntercambio
      */
     private void rotacionPrimeroAUltimaPos(int posIndividuo, int valorPrimeraPosicion) {
-        poblacionDescendiente.individuos[posIndividuo].solucion[posIntercambio[NUM_POSICIONES_INTERCAMBIADAS - 1]] =
+        descendientes[posIndividuo].solucion[posIntercambio[NUM_POSICIONES_INTERCAMBIADAS - 1]] =
                 valorPrimeraPosicion;
     }
 
     private void reemplazar() {
-        int[] posicionElites = poblacion.getElites();
-        boolean[] estaElites = new boolean[posicionElites.length];
-        int contadorElites = Main.getNumElites();
+        poblacion.calcularPeoresIndividuos(2);
+        for (int i = 0; i < descendientes.length; i++)
+            poblacion.individuos[poblacion.posPeores[i]].copiar(descendientes[i]);
+    }
 
-        for (int i = 0; i < poblacionDescendiente.individuos.length; i++)
-            for (int j = 0; j < posicionElites.length; j++)
-                if (poblacionDescendiente.individuos[i].sonIguales(poblacion.individuos[posicionElites[j]]) && !estaElites[j]) {
-                    estaElites[j] = true;
-                    contadorElites--;
-                }
-        if (contadorElites != 0) {
-            poblacionDescendiente.calcularPeoresIndividuos(contadorElites);
-            insertarElites(posicionElites, estaElites);
+    void evaluarDescendientes() {
+        for (int i = 0; i < descendientes.length; i++) {
+            descendientes[i].coste = Utils.calcularCoste(descendientes[i].solucion);
         }
-
-        poblacion.copiarPoblacion(poblacionDescendiente);
     }
 
-    private void insertarElites(int[] posicionElites, boolean[] estaElites) {
-        int contador = 0;
-        for (int i = 0; i < posicionElites.length; i++)
-            if (!estaElites[i]) {
-                Main.contenidoLog += "Elite: ";
-                for (int j = 0; j < poblacion.tamIndividuo; j++)
-                    Main.contenidoLog += poblacion.individuos[posicionElites[i]].solucion[j] + " ";
-                Main.contenidoLog += "\nCoste: "+poblacion.individuos[posicionElites[i]].coste;
-
-                int posPeorIndividuoDescendiente = poblacionDescendiente.posPeores[contador++];
-
-                Main.contenidoLog += "\nPeor: ";
-                for (int j = 0; j < poblacionDescendiente.tamIndividuo; j++)
-                    Main.contenidoLog += poblacionDescendiente.individuos[posPeorIndividuoDescendiente].solucion[j] + " ";
-                Main.contenidoLog += "\nCoste: "+poblacionDescendiente.individuos[posPeorIndividuoDescendiente].coste+"\n\n";
-
-                poblacionDescendiente.individuos[posPeorIndividuoDescendiente].copiar(poblacion.individuos[posicionElites[i]]);
-            }
-        Main.contenidoLog += "\n";
-    }
 
     Solucion getSolucion() {
         return new Solucion(calcularMejorIndividuo());

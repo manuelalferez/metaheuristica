@@ -20,8 +20,9 @@ public class Main {
         11: max_attempts_tabu_meme
         12: num_neighbors_tabu_meme
         13: num_environments_tabu_meme
+        14: num_agents_mutated
      */
-    private static String[] parametros = new String[11];
+    private static String[] parametros;
     private static final int ALGORITHM = 0;
     private static final int INPUT = 1;
     private static final int SEED = 2;
@@ -36,6 +37,7 @@ public class Main {
     private static final int MAX_ATTEMPTS_TABU_MEME = 11;
     private static final int MAX_NEIGHBORS_TABU_MEME = 12;
     private static final int NUM_ENVIRONMENTS_TABU_MEME = 13;
+    private static final int NUM_AGENTS_MUTATED = 14;
 
 
     private static final String TODOS_ARCHIVOS = "all";
@@ -71,6 +73,9 @@ public class Main {
             br = new BufferedReader(fr);
 
             String linea;
+
+            linea = br.readLine();
+            parametros = new String[Integer.parseInt(linea)];
             int i = 0;
             while ((linea = br.readLine()) != null) {
                 String[] linea_troceada = linea.split(";");
@@ -207,6 +212,10 @@ public class Main {
 
     static int getRangoDeAplicacionDeTabu(){
         return Integer.parseInt(parametros[RANGE_APPLICATION_TABU_MEME]);
+    }
+
+    static int getNumIndividuosDescendientes(){
+        return Integer.parseInt(parametros[NUM_AGENTS_MUTATED]);
     }
 
     public static void main(String[] args) {
