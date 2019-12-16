@@ -19,7 +19,7 @@ class Memetico {
         generacion = 0;
         inicializarPoblacion();
         poblacion.evaluar();
-        Utils.escribirPoblacion(poblacion, generacion);
+        //Utils.escribirPoblacion(poblacion, generacion);
         int MAX_GENERACIONES = Main.getGeneracionesMaximas();
         TabuMemetico tabu = new TabuMemetico();
         while (generacion < MAX_GENERACIONES) {
@@ -29,19 +29,19 @@ class Memetico {
             mutar();
             if (generacion % Main.getRangoDeAplicacionDeTabu() == 0) {
                 for(int i=0;i<descendientes.length;i++){
-                    Main.contenidoLog+="Búsqueda tabú:\n";
-                    Utils.escribirIndividuo(descendientes[i],generacion,PADRES);
-                    Main.contenidoLog+="Coste: "+descendientes[i].coste+"\n";
+                    //Main.contenidoLog+="Búsqueda tabú:\n";
+                   // Utils.escribirIndividuo(descendientes[i],generacion,PADRES);
+                   // Main.contenidoLog+="Coste: "+descendientes[i].coste+"\n";
                     tabu.algoritmoTabu(descendientes[i]);
                     descendientes[i].copiar(tabu.getSolucion());
-                    Utils.escribirIndividuo(descendientes[i],generacion,HIJOS);
-                    Main.contenidoLog+="Coste: "+descendientes[i].coste+"\n";
+                    //Utils.escribirIndividuo(descendientes[i],generacion,HIJOS);
+                   // Main.contenidoLog+="Coste: "+descendientes[i].coste+"\n";
                 }
             }
             evaluarDescendientes();
             reemplazar();
             generacion++;
-            Utils.escribirPoblacion(poblacion, generacion);
+            //Utils.escribirPoblacion(poblacion, generacion);
         }
     }
 
@@ -88,14 +88,14 @@ class Memetico {
     private void recombinar() {
         double probabilidad = Main.random.nextDouble();
         if (probabilidad <= Main.getProbabilidadCruce()) {
-            Main.contenidoLog += "Cruce\n";
-            Main.contenidoLog += "------------\n";
-            escribirLogIndividuos(PADRES, generacion);//Individuos Antes de cruzar
+           // Main.contenidoLog += "Cruce\n";
+            //Main.contenidoLog += "------------\n";
+           // escribirLogIndividuos(PADRES, generacion);//Individuos Antes de cruzar
             realizarCruce();
             copiarIndividuosCruzados();
-            Main.contenidoLog += "Cruce\n";
-            Main.contenidoLog += "------------\n";
-            escribirLogIndividuos(HIJOS, generacion + 1);//Individuos Despues de cruzar
+            //Main.contenidoLog += "Cruce\n";
+           // Main.contenidoLog += "------------\n";
+            //escribirLogIndividuos(HIJOS, generacion + 1);//Individuos Despues de cruzar
             descendientes[0].marcarComoModificado();
             descendientes[1].marcarComoModificado();
         }
@@ -132,13 +132,13 @@ class Memetico {
                 if (probabilidad <= Main.getProbabilidadMutacion()) {
                     seleccionarPosiciones(j);
                     ordenarPosiciones();
-                    Main.contenidoLog += "Mutación\n";
-                    Main.contenidoLog += "------------\n";
-                    escribirLogIndividuo(i, PADRES, generacion + 1);//Individuos Antes de mutar
+                   // Main.contenidoLog += "Mutación\n";
+                    //Main.contenidoLog += "------------\n";
+                    //escribirLogIndividuo(i, PADRES, generacion + 1);//Individuos Antes de mutar
                     rotacion(i);
-                    Main.contenidoLog += "Mutación\n";
-                    Main.contenidoLog += "------------\n";
-                    escribirLogIndividuo(i, HIJOS, generacion + 1);//Individuos Antes de mutar
+                    //Main.contenidoLog += "Mutación\n";
+                   // Main.contenidoLog += "------------\n";
+                   // escribirLogIndividuo(i, HIJOS, generacion + 1);//Individuos Antes de mutar
                 }
             }
         }
